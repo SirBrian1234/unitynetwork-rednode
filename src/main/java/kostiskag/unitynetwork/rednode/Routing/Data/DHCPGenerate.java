@@ -1,14 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing.Data;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
@@ -28,8 +24,8 @@ public class DHCPGenerate {
         String info = pre + "Generating a DHCP frame - ";
         //intializing globals
         DhcpMacAddr = new MacAddress("02:00:00:00:00:00");
-        DestMac = lvl3RedNode.login.connection.MyMac;
-        DestIp = lvl3RedNode.login.connection.MyIP;
+        DestMac = App.login.connection.MyMac;
+        DestIp = App.login.connection.MyIP;
         yclIp = new byte[]{0x00, 0x00, 0x00, 0x00};
         TransactionId = new byte[]{0x00, 0x00, 0x00, 0x00};
         try {
@@ -73,8 +69,8 @@ public class DHCPGenerate {
 
         //12 Host name
         byte[] hostype = new byte[]{0x0c};
-        byte[] hostlen = new byte[]{(byte) lvl3RedNode.login.connection.Hostname.getBytes().length};
-        byte[] hostname = lvl3RedNode.login.connection.Hostname.getBytes();
+        byte[] hostlen = new byte[]{(byte) App.login.connection.Hostname.getBytes().length};
+        byte[] hostname = App.login.connection.Hostname.getBytes();
         opt[3] = new byte[hostype.length + hostlen.length + hostname.length];
         System.arraycopy(hostype, 0, opt[3], 0, hostype.length);
         System.arraycopy(hostlen, 0, opt[3], 1, hostlen.length);
@@ -130,22 +126,22 @@ public class DHCPGenerate {
             //dhcp offer (broadcast)
             opt[0] = new byte[]{0x35, 0x01, 0x02};
             DestMac = new MacAddress("ff:ff:ff:ff:ff:ff");
-            DestIp = lvl3RedNode.login.connection.MyIP;
-            yclIp = lvl3RedNode.login.connection.MyIP.getAddress();            
+            DestIp = App.login.connection.MyIP;
+            yclIp = App.login.connection.MyIP.getAddress();            
             lstime = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
             info = info + "offer (broadcast)";
         } else if (DHCPType == 1) {
             //dhcp offer (unicast)
             opt[0] = new byte[]{0x35, 0x01, 0x02};
-            DestMac = lvl3RedNode.login.connection.MyMac;
-            DestIp = lvl3RedNode.login.connection.MyIP;
-            yclIp = lvl3RedNode.login.connection.MyIP.getAddress();
+            DestMac = App.login.connection.MyMac;
+            DestIp = App.login.connection.MyIP;
+            yclIp = App.login.connection.MyIP.getAddress();
             lstime = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             info = info + "offer (unicast)";
         } else if (DHCPType == 2) {
             //6 DHCPNak 
             opt[0] = new byte[]{0x35, 0x01, 0x06};
-            DestMac = lvl3RedNode.login.connection.MyMac;
+            DestMac = App.login.connection.MyMac;
             try {
                 DestIp = InetAddress.getByName("255.255.255.255");
             } catch (UnknownHostException ex) {
@@ -159,15 +155,15 @@ public class DHCPGenerate {
         } else if (DHCPType == 3) {
             //dhcp ack
             opt[0] = new byte[]{0x35, 0x01, 0x05};
-            DestMac = lvl3RedNode.login.connection.MyMac;
-            DestIp = lvl3RedNode.login.connection.MyIP;
-            yclIp = lvl3RedNode.login.connection.MyIP.getAddress();
+            DestMac = App.login.connection.MyMac;
+            DestIp = App.login.connection.MyIP;
+            yclIp = App.login.connection.MyIP.getAddress();
             lstime = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             System.arraycopy(lstime, 0, opt[2], 2, lstime.length);                                 
             info = info + "ack";
         } 
         
-        lvl3RedNode.login.monitor.writeToIntWrite(info);
+        App.login.monitor.writeToIntWrite(info);
         
         /*
          * BOOTP HEAD         
@@ -228,7 +224,7 @@ public class DHCPGenerate {
         byte[] nextserv = new byte[]{0x00, 0x00, 0x00, 0x00};
         byte[] relag = new byte[]{0x00, 0x00, 0x00, 0x00};
         //client mac
-        byte[] clmac = lvl3RedNode.login.connection.MyMac.getAddress();
+        byte[] clmac = App.login.connection.MyMac.getAddress();
         //padding
         byte[] padding = new byte[10];
         //server host name

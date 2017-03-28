@@ -1,6 +1,10 @@
 package kostiskag.unitynetwork.rednode.Connection;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.RedThreads.AuthClient;
 import kostiskag.unitynetwork.rednode.RedThreads.DownService;
 import kostiskag.unitynetwork.rednode.RedThreads.KeepAlive;
@@ -10,10 +14,6 @@ import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import kostiskag.unitynetwork.rednode.Routing.Data.DetectOS;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.Data.ReverseArpTable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.p2pvpn.tuntap.TunTap;
 
 /*
@@ -115,14 +115,14 @@ public class ConnectionManager extends Thread {
         trafficMan = new UploadManager();
 
         if (!(BlueNodePort > 0 && BlueNodePort <= 65535)) {
-            lvl3RedNode.login.writeInfo("WRONG PORT GIVEN");
+            App.login.writeInfo("WRONG PORT GIVEN");
             BlueNodePort = -1;            
         }
 
         try {
             FullBlueNodeAddress = InetAddress.getByName(BlueNodeAddress);
         } catch (UnknownHostException ex) {
-            lvl3RedNode.login.writeInfo("WRONG ADDRESS SYNTAX GIVEN");            
+            App.login.writeInfo("WRONG ADDRESS SYNTAX GIVEN");            
         }                        
     }
 
@@ -132,16 +132,16 @@ public class ConnectionManager extends Thread {
     @Override
     public void run() {        
         OSType = new DetectOS().getType();
-        lvl3RedNode.login.writeInfo("Running On " + DetectOS.getString());                                                
-        lvl3RedNode.login.writeInfo("Starting Connection...");
-        lvl3RedNode.login.writeInfo("Loging in Blue Node " + BlueNodeAddress + ":" + BlueNodePort + " ...");
+        App.login.writeInfo("Running On " + DetectOS.getString());                                                
+        App.login.writeInfo("Starting Connection...");
+        App.login.writeInfo("Loging in Blue Node " + BlueNodeAddress + ":" + BlueNodePort + " ...");
         authClient = new AuthClient(Username, Password, Hostname, FullBlueNodeAddress, BlueNodePort);
         if (!authClient.auth()) {
-            lvl3RedNode.login.monitor.setLogedOut();
-            lvl3RedNode.login.setLogedOut();
+            App.login.monitor.setLogedOut();
+            App.login.setLogedOut();
             return;
         }
-        lvl3RedNode.login.writeInfo("Login OK");            
+        App.login.writeInfo("Login OK");            
         Vaddress = authClient.getVaddress();
         DownPort = authClient.getDownPort();
         UpPort = authClient.getUpport();        
@@ -151,40 +151,40 @@ public class ConnectionManager extends Thread {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        lvl3RedNode.login.writeInfo("Opening LINK...");
+        App.login.writeInfo("Opening LINK...");
         openThreads();
         
-        lvl3RedNode.login.writeInfo("Testing LINK...");
+        App.login.writeInfo("Testing LINK...");
         if (!LinkDiagnostic()) {
             nolink = true;
-            lvl3RedNode.login.writeInfo("LINK Error");
-            lvl3RedNode.login.writeInfo("Working On Commands, Switch to Monitor Mode to try to rescue your LINK");            
+            App.login.writeInfo("LINK Error");
+            App.login.writeInfo("Working On Commands, Switch to Monitor Mode to try to rescue your LINK");            
         }
         if (!startInterface()) {
             limited = true;
-            lvl3RedNode.login.writeInfo("INTERFACE ERROR");
-            lvl3RedNode.login.writeInfo("You may not send real data but you can send text and commands");
+            App.login.writeInfo("INTERFACE ERROR");
+            App.login.writeInfo("You may not send real data but you can send text and commands");
         } else if (!checkDHCP()) {
             limited = true;
-            lvl3RedNode.login.writeInfo("DHCP ERROR");
-            lvl3RedNode.login.writeInfo("Your interface failed to set the primal settings");
-            lvl3RedNode.login.writeInfo("You may not send real data but you can send text and commands");            
+            App.login.writeInfo("DHCP ERROR");
+            App.login.writeInfo("Your interface failed to set the primal settings");
+            App.login.writeInfo("You may not send real data but you can send text and commands");            
         } else {
-            lvl3RedNode.login.writeInfo("Interface OK");
+            App.login.writeInfo("Interface OK");
         }
-        lvl3RedNode.login.writeInfo("Connection Set");
-        lvl3RedNode.login.writeInfo("Wellcome " + Hostname + " ~ " + Vaddress);
+        App.login.writeInfo("Connection Set");
+        App.login.writeInfo("Wellcome " + Hostname + " ~ " + Vaddress);
         LoggedIn();        
         authCommands();
 
-        lvl3RedNode.login.writeInfo("Killing Tasks...");
+        App.login.writeInfo("Killing Tasks...");
         killTasks();
-        lvl3RedNode.login.writeInfo("Closing Interface...");
+        App.login.writeInfo("Closing Interface...");
         killInterface();
-        lvl3RedNode.login.writeInfo("Connection Closed");
-        lvl3RedNode.login.monitor.clearWindow();
-        lvl3RedNode.login.monitor.setLogedOut();
-        lvl3RedNode.login.setLogedOut();
+        App.login.writeInfo("Connection Closed");
+        App.login.monitor.clearWindow();
+        App.login.monitor.setLogedOut();
+        App.login.setLogedOut();
     }
    
     public void openThreads() {
@@ -216,26 +216,26 @@ public class ConnectionManager extends Thread {
             if (!authClient.ping()) {
                 return false;
             } else if (!dPing()) {
-                lvl3RedNode.login.writeInfo("THERE IS A PROBLEM WITH DOWNLINK TRYING TO FIX IT");
+                App.login.writeInfo("THERE IS A PROBLEM WITH DOWNLINK TRYING TO FIX IT");
                 dping = false;
                 drefresh();
             } else if (!uPing()) {
-                lvl3RedNode.login.writeInfo("THERE IS A PROBLEM WITH UPLINK TRYING TO FIX IT");
+                App.login.writeInfo("THERE IS A PROBLEM WITH UPLINK TRYING TO FIX IT");
                 uping = false;
                 urefresh();
             } else {
                 uping = true;
                 dping = true;
-                lvl3RedNode.login.writeInfo("LINK OK");
+                App.login.writeInfo("LINK OK");
                 break;
             }
         }
         if (!dping) {
-            lvl3RedNode.login.writeInfo("DOWNLOAD IS BROKEN");
+            App.login.writeInfo("DOWNLOAD IS BROKEN");
             link = false;
         }
         if (!uping) {
-            lvl3RedNode.login.writeInfo("UPLOAD IS BROKEN");
+            App.login.writeInfo("UPLOAD IS BROKEN");
             link = false;
         }
         return link;
@@ -243,7 +243,7 @@ public class ConnectionManager extends Thread {
 
     public boolean startInterface() {
 
-        lvl3RedNode.login.writeInfo("Setting Interface...");
+        App.login.writeInfo("Setting Interface...");
         //starting the real interface                
         try {
             tuntap = TunTap.createTunTap();
@@ -269,7 +269,7 @@ public class ConnectionManager extends Thread {
                         Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                lvl3RedNode.login.writeInfo("COULD NOT OPEN INTERFACE, check if your interface is activated and if its not being used");
+                App.login.writeInfo("COULD NOT OPEN INTERFACE, check if your interface is activated and if its not being used");
             }
             tuntap = null;
             return false;
@@ -280,10 +280,10 @@ public class ConnectionManager extends Thread {
             readMan = new QueueManager(20);
             writeMan = new QueueManager(1000);
 
-            read = new InterfaceRead(lvl3RedNode.login.connection.tuntap);
+            read = new InterfaceRead(App.login.connection.tuntap);
             read.start();
 
-            write = new InterfaceWrite(lvl3RedNode.login.connection.tuntap);
+            write = new InterfaceWrite(App.login.connection.tuntap);
             write.start();
 
             router = new EthernetRouter();
@@ -301,8 +301,8 @@ public class ConnectionManager extends Thread {
         byte[] payload = ("[HELLO PACKET]").getBytes();
         byte[] data = Packet.MakePacket(payload, MyIP, MyIP, 0);
         upMan.offer(data);
-        lvl3RedNode.login.monitor.setLogedIn();
-        lvl3RedNode.login.setLoggedIn();
+        App.login.monitor.setLogedIn();
+        App.login.setLoggedIn();
     }
 
     public synchronized void authCommands() {
@@ -316,7 +316,7 @@ public class ConnectionManager extends Thread {
             }            
             if (!command.equals("")) {
                 if (command.equals("EXIT")) {
-                    lvl3RedNode.login.writeInfo("Logging Out...");
+                    App.login.writeInfo("Logging Out...");
                     authClient.exit();
                     break;
                 } else if (command.equals("PING")) {
@@ -370,7 +370,7 @@ public class ConnectionManager extends Thread {
             try {
                 tuntap.close();
             } catch (Exception ex) {
-                Logger.getLogger(lvl3RedNode.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
             }
             tuntap = null;
         }
@@ -384,7 +384,7 @@ public class ConnectionManager extends Thread {
 
     public void drefresh() {
         downlink.kill();
-        lvl3RedNode.login.monitor.clearDown();
+        App.login.monitor.clearDown();
         String returnstr = authClient.sendAuthData("DREFRESH");
         String[] args = returnstr.split("\\s+");
 
@@ -395,7 +395,7 @@ public class ConnectionManager extends Thread {
         if (downPort == -1) {
             return;
         }
-        downlink = new DownService(lvl3RedNode.login.connection.Vaddress, FullBlueNodeAddress, downPort);
+        downlink = new DownService(App.login.connection.Vaddress, FullBlueNodeAddress, downPort);
         downlink.start();
         try {
             sleep(4000);
@@ -407,7 +407,7 @@ public class ConnectionManager extends Thread {
 
     public void urefresh() {
         uplink.kill();
-        lvl3RedNode.login.monitor.clearUp();
+        App.login.monitor.clearUp();
         String returnstr = authClient.sendAuthData("UREFRESH");
         String[] args = returnstr.split("\\s+");
 
@@ -423,7 +423,7 @@ public class ConnectionManager extends Thread {
         if (upPort == -1) {
             return;
         }
-        uplink = new UpService(lvl3RedNode.login.connection.Vaddress, FullBlueNodeAddress, upPort);
+        uplink = new UpService(App.login.connection.Vaddress, FullBlueNodeAddress, upPort);
         uplink.start();
         try {
             sleep(4000);
@@ -485,9 +485,9 @@ public class ConnectionManager extends Thread {
     }
 
     private boolean checkDHCP() {
-        lvl3RedNode.login.writeInfo("Checking DHCP...");
+        App.login.writeInfo("Checking DHCP...");
         if (OSType == 2) {
-            lvl3RedNode.login.writeInfo("QUIIIICK SET YOUR DHCP!!!!!, 30sec, type...\n dhclient " + tuntap.getDev());
+            App.login.writeInfo("QUIIIICK SET YOUR DHCP!!!!!, 30sec, type...\n dhclient " + tuntap.getDev());
         }
         for (int i = 0; i < 60; i++) {
             if (IsDHCPset == true) {

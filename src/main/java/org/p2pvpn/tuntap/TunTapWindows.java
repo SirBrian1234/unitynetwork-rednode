@@ -18,10 +18,7 @@
  */
 package org.p2pvpn.tuntap;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.p2pvpn.tuntap.TunTap.loadLib;
+import kostiskag.unitynetwork.rednode.App;
 
 /**
  * The TunTap class for Windows
@@ -47,11 +44,11 @@ public class TunTapWindows extends TunTap {
             } else {
                 loadLib("clib\\libTunTapWindows.dll");
             }
-            lvl3RedNode.login.connection.libError=false;
+            App.login.connection.libError=false;
         } catch (Throwable e) {
-            lvl3RedNode.login.writeInfo("library error, check if clib folder exists in your application directory and if it has valid files");
+            App.login.writeInfo("library error, check if clib folder exists in your application directory and if it has valid files");
             erg = -1;
-            lvl3RedNode.login.connection.libError=true;
+            App.login.connection.libError=true;
             e.printStackTrace();
             return;
         }

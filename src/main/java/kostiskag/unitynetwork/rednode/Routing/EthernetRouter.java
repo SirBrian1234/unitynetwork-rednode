@@ -1,15 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing;
 
+import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
 import kostiskag.unitynetwork.rednode.Routing.Data.FrameType;
 import kostiskag.unitynetwork.rednode.Routing.Data.Frame;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
+
 import java.net.InetAddress;
 
 /**
@@ -41,7 +38,7 @@ public class EthernetRouter extends Thread {
         while (!kill) {
             //tha pairnei paketa apo thn oura kai tha ta grafei sto meso, ama einai adeia tha koimatai gia ligo                        
             try {
-                frame = lvl3RedNode.login.connection.readMan.poll();
+                frame = App.login.connection.readMan.poll();
             } catch (java.lang.NullPointerException ex1) {
                 continue;
             } catch (java.util.NoSuchElementException ex) {
@@ -63,11 +60,11 @@ public class EthernetRouter extends Thread {
             info = info + "Dest: " + destmac.toString() + " ";
             info = info + "Source: " + sourcemac.toString();
 
-            lvl3RedNode.login.monitor.writeToIntRead(info);
+            App.login.monitor.writeToIntRead(info);
 
             //unicast packets
             if (!destmac.isBroadcast()) {
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "Unicast");
+                App.login.monitor.writeToIntRead(pre + "Unicast");
                 if (type.toString().equals("IP")) {
                     ippacket = Packet.GetPacket(frame);
 
@@ -87,34 +84,34 @@ public class EthernetRouter extends Thread {
                     String info2 = pre + "IP Frame Version: " + pver + " ";
                     info2 = info2 + "Source: " + source.getHostAddress() + " ";
                     info2 = info2 + "Dest: " + dest.getHostAddress();
-                    lvl3RedNode.login.monitor.writeToIntRead(info2);
+                    App.login.monitor.writeToIntRead(info2);
 
                     if (connection.clearToSendIP(ippacket)) {                          
-                        lvl3RedNode.login.connection.arpTable.getByIP(dest).getTrafficMan().clearToSend();
-                        lvl3RedNode.login.connection.upMan.offer(ippacket);                        
+                        App.login.connection.arpTable.getByIP(dest).getTrafficMan().clearToSend();
+                        App.login.connection.upMan.offer(ippacket);                        
                     }
                 } else {
-                    lvl3RedNode.login.monitor.writeToIntRead(pre + "NOT INTRESTING FRAME");
+                    App.login.monitor.writeToIntRead(pre + "NOT INTRESTING FRAME");
                 }
             } else {
                 //broadcast packets
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "Broadcast");
+                App.login.monitor.writeToIntRead(pre + "Broadcast");
                 if (type.toString().equals("ARP")) {
-                    lvl3RedNode.login.monitor.writeToIntRead(pre + "ARP");
+                    App.login.monitor.writeToIntRead(pre + "ARP");
                     connection.giveARP(frame);
                 } else if (type.toString().equals("IP")) {
                     //make sure its bootstrap                        
                     if (DHCPrequest.isBootstrap(frame)) {
-                        lvl3RedNode.login.monitor.writeToIntRead(pre + "BOOTSTRAP");
+                        App.login.monitor.writeToIntRead(pre + "BOOTSTRAP");
                         connection.giveBootstrap(frame);
                     } else {
-                        lvl3RedNode.login.monitor.writeToIntRead(pre + "NOT RELEVANT");
+                        App.login.monitor.writeToIntRead(pre + "NOT RELEVANT");
                     }
                 }
             }
         }
-        lvl3RedNode.login.connection.readMan.clear();
-        lvl3RedNode.login.monitor.jTextField11.setText("");
+        App.login.connection.readMan.clear();
+        App.login.monitor.jTextField11.setText("");
     }
 
     public void kill() {

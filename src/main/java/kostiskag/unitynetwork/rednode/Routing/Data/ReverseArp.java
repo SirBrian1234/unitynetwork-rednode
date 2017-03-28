@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing.Data;
 
-import kostiskag.unitynetwork.rednode.Routing.UploadManager;
 import java.net.InetAddress;
+import kostiskag.unitynetwork.rednode.Routing.UploadManager;
 
 /**
  *

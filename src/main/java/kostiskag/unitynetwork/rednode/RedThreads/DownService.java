@@ -1,16 +1,11 @@
 package kostiskag.unitynetwork.rednode.RedThreads;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
-import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 
 /**
  *
@@ -47,7 +42,7 @@ public class DownService extends Thread {
         try {
             clientSocket = new DatagramSocket();
         } catch (java.net.BindException ex1) {
-            lvl3RedNode.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");
+            App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");
         } catch (SocketException ex) {
             Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -59,7 +54,7 @@ public class DownService extends Thread {
                 clientSocket.send(sendPacket);
             }
         } catch (java.net.SocketException ex1) {
-            lvl3RedNode.login.monitor.writeToDown("FISH PACKET SEND ERROR");
+            App.login.monitor.writeToDown("FISH PACKET SEND ERROR");
             return;
         } catch (IOException ex) {            
             Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
@@ -88,41 +83,41 @@ public class DownService extends Thread {
                     byte[] payload = Packet.getPayloadU(packet);
                     modifiedSentence = new String(payload) + '\0';
                     if (modifiedSentence.startsWith("00001")) {
-                        lvl3RedNode.login.monitor.writeToCommands("DPING OK");
-                        lvl3RedNode.login.connection.isClientDPinged = true;
+                        App.login.monitor.writeToCommands("DPING OK");
+                        App.login.connection.isClientDPinged = true;
                     }
-                    lvl3RedNode.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
                 } 
                 //rn command packets
                 else if (version.equals("1")){
                     byte[] payload = Packet.getPayloadU(packet);
                     modifiedSentence = new String(payload) + '\0';
                     if (modifiedSentence.startsWith("00004")) {                        
-                        if (lvl3RedNode.login.connection.arpTable.isAssociated(Packet.getUSourceAddress(packet)))
-                            lvl3RedNode.login.connection.arpTable.getByIP(Packet.getUSourceAddress(packet)).getTrafficMan().gotACK();
+                        if (App.login.connection.arpTable.isAssociated(Packet.getUSourceAddress(packet)))
+                            App.login.connection.arpTable.getByIP(Packet.getUSourceAddress(packet)).getTrafficMan().gotACK();
                     }
-                    lvl3RedNode.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
                 } 
                 //chat packets
                 else if (version.equals("2")) {
                     byte[] payload = new byte[Packet.getPayloadU(packet).length];
                     payload = Packet.getPayloadU(packet);
                     modifiedSentence = new String(payload) + '\0';
-                    lvl3RedNode.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
                 } 
                 //ipv4 packets
                 else if (version.equals("45")) {
-                    lvl3RedNode.login.monitor.writeToDown(version + " IPv4 Len: " + packet.length + " From " + Packet.getSourceAddress(packet).getHostAddress());
-                    lvl3RedNode.login.monitor.jTextField3.setText(""+lvl3RedNode.login.connection.downMan.getlen());
-                    lvl3RedNode.login.connection.downMan.offer(packet);                    
-                    ACK = Packet.MakePacket(("00004 [ACK]").getBytes(), lvl3RedNode.login.connection.MyIP, Packet.getSourceAddress(packet), 1);
-                    lvl3RedNode.login.connection.upMan.offer(ACK);
+                    App.login.monitor.writeToDown(version + " IPv4 Len: " + packet.length + " From " + Packet.getSourceAddress(packet).getHostAddress());
+                    App.login.monitor.jTextField3.setText(""+App.login.connection.downMan.getlen());
+                    App.login.connection.downMan.offer(packet);                    
+                    ACK = Packet.MakePacket(("00004 [ACK]").getBytes(), App.login.connection.MyIP, Packet.getSourceAddress(packet), 1);
+                    App.login.connection.upMan.offer(ACK);
                 }
             } else {
                 System.out.println("wrong len");
             }
         }
-        lvl3RedNode.login.connection.downMan.clear();
+        App.login.connection.downMan.clear();
     }
 
     public void kill() {

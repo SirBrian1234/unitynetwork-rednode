@@ -1,6 +1,5 @@
 package kostiskag.unitynetwork.rednode.Functions;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +9,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
@@ -36,16 +37,16 @@ public class SocketFunctions {
             socket = new Socket(IPaddress, authPort);
             socket.setSoTimeout(3000);
         } catch (java.net.NoRouteToHostException ex) {
-            lvl3RedNode.login.writeInfo(pre + "NO ROUTE");
+            App.login.writeInfo(pre + "NO ROUTE");
             return null;
         } catch (java.net.ConnectException ex) {
-            lvl3RedNode.login.writeInfo(pre + "CONNECTION REFUSED");
+            App.login.writeInfo(pre + "CONNECTION REFUSED");
             return null;
         } catch (java.net.SocketTimeoutException ex) {
-            lvl3RedNode.login.writeInfo(pre + "CONNECTION TIMED OUT");
+            App.login.writeInfo(pre + "CONNECTION TIMED OUT");
             return null;
         } catch (IOException ex) {
-            lvl3RedNode.login.writeInfo(pre + "CONNECTION ERROR");
+            App.login.writeInfo(pre + "CONNECTION ERROR");
             ex.printStackTrace();
             return null;
         }

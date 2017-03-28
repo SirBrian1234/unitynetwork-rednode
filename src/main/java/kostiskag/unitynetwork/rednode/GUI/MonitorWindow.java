@@ -1,7 +1,7 @@
 package kostiskag.unitynetwork.rednode.GUI;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.awt.event.KeyEvent;
+import kostiskag.unitynetwork.rednode.App;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -657,12 +657,12 @@ public class MonitorWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        lvl3RedNode.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
+        App.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
         jTextField4.setText("");
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        lvl3RedNode.login.connection.giveCommand(jTextField5.getText());        
+        App.login.connection.giveCommand(jTextField5.getText());        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -672,12 +672,12 @@ public class MonitorWindow extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        lvl3RedNode.login.connection.giveCommand("DPING");
+        App.login.connection.giveCommand("DPING");
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        lvl3RedNode.login.connection.giveCommand("DREFRESH");
+        App.login.connection.giveCommand("DREFRESH");
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
@@ -691,27 +691,27 @@ public class MonitorWindow extends javax.swing.JFrame {
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         // TODO add your handling code here:
-        lvl3RedNode.login.connection.giveCommand("UPING");
+        App.login.connection.giveCommand("UPING");
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-         lvl3RedNode.login.connection.giveCommand("UREFRESH");
+         App.login.connection.giveCommand("UREFRESH");
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         // TODO add your handling code here:
-         lvl3RedNode.login.connection.giveCommand("PING");
+         App.login.connection.giveCommand("PING");
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         // TODO add your handling code here:
-        lvl3RedNode.login.connection.giveCommand("DIAGNOSTICS");
+        App.login.connection.giveCommand("DIAGNOSTICS");
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         // TODO add your handling code here:                                       
-        lvl3RedNode.login.connection.giveCommand("UPISDOWN");
+        App.login.connection.giveCommand("UPISDOWN");
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -738,7 +738,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (loggedin == true) {
             int key = evt.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                lvl3RedNode.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
+                App.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
                 jTextField4.setText("");
             }
         }
@@ -749,7 +749,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (loggedin == true) {
             int key = evt.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                lvl3RedNode.login.connection.giveCommand(jTextField5.getText());
+                App.login.connection.giveCommand(jTextField5.getText());
                 jTextField5.setText("");
             }
         }

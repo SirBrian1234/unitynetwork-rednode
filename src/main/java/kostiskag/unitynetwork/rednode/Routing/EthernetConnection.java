@@ -1,16 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing;
 
+import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import kostiskag.unitynetwork.rednode.Routing.Data.ArpPacketRequest;
 import kostiskag.unitynetwork.rednode.Routing.Data.ArpGenerate;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPGenerate;
-import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 
 /**
  *
@@ -32,9 +27,9 @@ public class EthernetConnection {
 
     boolean clearToSendIP(byte[] ippacket) {
         //it means we had dhcp association
-        if (lvl3RedNode.login.connection.IsDHCPset == true) {
-            if (lvl3RedNode.login.connection.MyIP.equals(Packet.getSourceAddress(ippacket))) {
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "THE SOURCE IS ME");
+        if (App.login.connection.IsDHCPset == true) {
+            if (App.login.connection.MyIP.equals(Packet.getSourceAddress(ippacket))) {
+                App.login.monitor.writeToIntRead(pre + "THE SOURCE IS ME");
                 //frame unicast, ip unicast, source is me, cant do much more, we have to send it
                 return true;
             } else {
@@ -47,20 +42,20 @@ public class EthernetConnection {
 
     void giveARP(byte[] frame) {
         //if we had an association we can use arps
-        if (lvl3RedNode.login.connection.IsDHCPset == true) {
+        if (App.login.connection.IsDHCPset == true) {
             arppacket = new ArpPacketRequest(frame);
-            if (arppacket.getTarget().equals(lvl3RedNode.login.connection.MyIP)) {
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "Checking on me :P");
-            } else if (lvl3RedNode.login.connection.arpTable.isAssociated(arppacket.getTarget())) {
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "REGISTERED HOST");
-                answer = ArpGenerate.ArpGenerate(lvl3RedNode.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
+            if (arppacket.getTarget().equals(App.login.connection.MyIP)) {
+                App.login.monitor.writeToIntRead(pre + "Checking on me :P");
+            } else if (App.login.connection.arpTable.isAssociated(arppacket.getTarget())) {
+                App.login.monitor.writeToIntRead(pre + "REGISTERED HOST");
+                answer = ArpGenerate.ArpGenerate(App.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
                 for (int i = 0; i < 2; i++) {
-                    lvl3RedNode.login.connection.writeMan.offer(answer);
+                    App.login.connection.writeMan.offer(answer);
                 }
             } else {
-                lvl3RedNode.login.monitor.writeToIntRead(pre + "NEW HOST");
-                lvl3RedNode.login.monitor.writeToIntRead("leasing: " + arppacket.getTarget().getHostAddress());
-                lvl3RedNode.login.connection.arpTable.lease(arppacket.getTarget());
+                App.login.monitor.writeToIntRead(pre + "NEW HOST");
+                App.login.monitor.writeToIntRead("leasing: " + arppacket.getTarget().getHostAddress());
+                App.login.connection.arpTable.lease(arppacket.getTarget());
             }
         }
     }
@@ -68,9 +63,9 @@ public class EthernetConnection {
     void giveBootstrap(byte[] frame) {
         DHCPrequest req = new DHCPrequest(frame);
         if (HadFirstDHCP == false) {
-            lvl3RedNode.login.connection.MyMac = req.getSourceMac();
+            App.login.connection.MyMac = req.getSourceMac();
             HadFirstDHCP = true;
-            lvl3RedNode.login.monitor.writeToIntRead(pre + "MY MAC IS " + lvl3RedNode.login.connection.MyMac.toString());
+            App.login.monitor.writeToIntRead(pre + "MY MAC IS " + App.login.connection.MyMac.toString());
         }
 
         int type = req.getType();
@@ -81,7 +76,7 @@ public class EthernetConnection {
         if (type == 1) {
             if (req.asksIP()) {
                 //he is veeery demanding by the way... you just cant ask for address just like that, but anyway the client has always right
-                if (!req.getRequestIP().equals(lvl3RedNode.login.connection.MyIP)) {
+                if (!req.getRequestIP().equals(App.login.connection.MyIP)) {
                     //nak broadcast
                     genframe = DHCPGenerate.GenerateFrame(req, 2);
                     hadDHCPNak = true;
@@ -95,16 +90,16 @@ public class EthernetConnection {
             }
         } //request
         else {
-            if (!req.getRequestIP().equals(lvl3RedNode.login.connection.MyIP)) {
+            if (!req.getRequestIP().equals(App.login.connection.MyIP)) {
                 //nack
                 genframe = DHCPGenerate.GenerateFrame(req, 2);
                 hadDHCPNak = true;
             } else {
                 //ack
                 genframe = DHCPGenerate.GenerateFrame(req, 3);
-                lvl3RedNode.login.connection.IsDHCPset = true;
+                App.login.connection.IsDHCPset = true;
             }
         }
-        lvl3RedNode.login.connection.writeMan.offer(genframe);
+        App.login.connection.writeMan.offer(genframe);
     }
 }

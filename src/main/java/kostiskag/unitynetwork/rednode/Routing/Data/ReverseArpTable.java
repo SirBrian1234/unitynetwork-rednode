@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing.Data;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.net.InetAddress;
+import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
@@ -33,7 +29,7 @@ public class ReverseArpTable {
     }
 
     public void lease(InetAddress ip) {
-        if (ip.equals(lvl3RedNode.login.connection.MyIP)) {            
+        if (ip.equals(App.login.connection.MyIP)) {            
             return;
         }
 
@@ -63,15 +59,15 @@ public class ReverseArpTable {
         MacAddress mac = new MacAddress(addr);        
         table[count].setMac(mac);
         table[count].setIp(ip);
-        lvl3RedNode.login.monitor.writeToIntRead("new mac: " + table[count].getMac().toString()+" for "+table[count].getIp().getHostAddress());       
+        App.login.monitor.writeToIntRead("new mac: " + table[count].getMac().toString()+" for "+table[count].getIp().getHostAddress());       
         byte[] arp = ArpGenerate.ArpGenerate(table[count].getMac(), table[count].getIp());
         if (arp == null){
             System.out.println("arp generate failed");
-            lvl3RedNode.login.monitor.writeToIntRead(pre+"ARP FAILED");
+            App.login.monitor.writeToIntRead(pre+"ARP FAILED");
         } else {
-             lvl3RedNode.login.monitor.writeToIntWrite(pre+"GENERATING ARPS for "+table[count].getIp().getHostAddress());
+             App.login.monitor.writeToIntWrite(pre+"GENERATING ARPS for "+table[count].getIp().getHostAddress());
              for(int i=0; i<2; i++){
-                lvl3RedNode.login.connection.writeMan.offer(arp);
+                App.login.connection.writeMan.offer(arp);
              }
         }
         count++;

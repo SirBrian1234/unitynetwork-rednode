@@ -1,13 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing;
 
-import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import kostiskag.unitynetwork.rednode.App;
 import org.p2pvpn.tuntap.TunTap;
 
 /**
@@ -31,14 +24,14 @@ public class InterfaceRead extends Thread{
         byte[] buffer = new byte[2048];		    
         int i=0;
         while(!kill){
-            lvl3RedNode.login.monitor.writeToIntRead(pre+"READING");
-            int len = lvl3RedNode.login.connection.tuntap.read(buffer);
-            lvl3RedNode.login.monitor.jTextField13.setText(""+lvl3RedNode.login.connection.readMan.getlen());
+            App.login.monitor.writeToIntRead(pre+"READING");
+            int len = App.login.connection.tuntap.read(buffer);
+            App.login.monitor.jTextField13.setText(""+App.login.connection.readMan.getlen());
             if (len > 14) {
                 byte[] frame = new byte[len];
                 System.arraycopy(buffer, 0, frame, 0, len);                
-                lvl3RedNode.login.connection.readMan.offer(frame);                
-                lvl3RedNode.login.monitor.jTextField11.setText(""+i);                 
+                App.login.connection.readMan.offer(frame);                
+                App.login.monitor.jTextField11.setText(""+i);                 
                 i++;
             }
         }                            

@@ -4,13 +4,13 @@
  */
 package kostiskag.unitynetwork.rednode.GUI;
 
-import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
-import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
+import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
 
 /**
  *
@@ -341,7 +341,7 @@ public class LoginWindow extends javax.swing.JFrame {
             //does logout
         } else if (loggedin == 1) {
             jButton1.setEnabled(false);            
-            lvl3RedNode.login.connection.giveCommand("EXIT");
+            App.login.connection.giveCommand("EXIT");
         } //does retry
         else {
             jButton1.setText("Login");
@@ -372,7 +372,7 @@ public class LoginWindow extends javax.swing.JFrame {
     public void getInputData() {
         Hostname = jTextField1.getText();
         Username = jTextField2.getText();
-        Password = new String(lvl3RedNode.login.jPasswordField1.getPassword());
+        Password = new String(App.login.jPasswordField1.getPassword());
 
         String fulladdress = jTextField6.getText();
         String[] args = fulladdress.split(":");
@@ -391,29 +391,29 @@ public class LoginWindow extends javax.swing.JFrame {
     }
 
     public boolean getRecomendedBlueNode(String TrackerAddress, int TrackerPort) {
-        lvl3RedNode.login.writeInfo("Getting BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
+        App.login.writeInfo("Getting BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
         InetAddress addr = SocketFunctions.getAddress(TrackerAddress);
         Socket socket = SocketFunctions.absoluteConnect(addr, TrackerPort);
         if (socket == null) {
-            lvl3RedNode.login.writeInfo("Tracker connection failed");
+            App.login.writeInfo("Tracker connection failed");
             return false;
         }
 
         BufferedReader inputReader = SocketFunctions.makeReadWriter(socket);
         PrintWriter writer = SocketFunctions.makeWriteWriter(socket);
         String args[] = SocketFunctions.readData(inputReader);
-        args = SocketFunctions.sendData("REDNODE " + lvl3RedNode.login.Hostname, writer, inputReader);
+        args = SocketFunctions.sendData("REDNODE " + App.login.Hostname, writer, inputReader);
 
         if (args[0].equals("OK")) {
             args = SocketFunctions.sendData("GETRBN", writer, inputReader);
             if (!args[0].equals("NONE")) {
-                lvl3RedNode.login.writeInfo("Tracker Gave BN " + args[0] + " " + args[1] + " " + args[2] + " " + args[3]);
+                App.login.writeInfo("Tracker Gave BN " + args[0] + " " + args[1] + " " + args[2] + " " + args[3]);
                 BlueNodeAddress = args[1];
                 BlueNodePort = Integer.parseInt(args[2]);
                 return true;
             } else {
-                lvl3RedNode.login.writeInfo("Tracker does not have any associated BlueNodes that means that the network is down.\n  Please provide another Tracker or a static BlueNode from the Advanced Settings");
+                App.login.writeInfo("Tracker does not have any associated BlueNodes that means that the network is down.\n  Please provide another Tracker or a static BlueNode from the Advanced Settings");
                 return false;
             }
         }

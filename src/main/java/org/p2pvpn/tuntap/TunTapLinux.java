@@ -19,7 +19,6 @@
 
 package org.p2pvpn.tuntap;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

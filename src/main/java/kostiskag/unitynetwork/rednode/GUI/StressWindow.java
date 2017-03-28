@@ -1,16 +1,11 @@
 package kostiskag.unitynetwork.rednode.GUI;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 
 /**
  *
@@ -178,10 +173,10 @@ public class StressWindow extends javax.swing.JFrame {
             Logger.getLogger(StressWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        byte[] payload = (lvl3RedNode.login.connection.Vaddress+" [STRESS PACKET]           ").getBytes();                
-        byte[] data = Packet.MakePacket(payload, lvl3RedNode.login.connection.MyIP, dest, 2);
+        byte[] payload = (App.login.connection.Vaddress+" [STRESS PACKET]           ").getBytes();                
+        byte[] data = Packet.MakePacket(payload, App.login.connection.MyIP, dest, 2);
         
         for (i=0; i<max; i++)            
-            lvl3RedNode.login.connection.upMan.offer(data);
+            App.login.connection.upMan.offer(data);
     }
 }

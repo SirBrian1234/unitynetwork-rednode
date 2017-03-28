@@ -1,15 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing;
 
-import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
+import java.net.InetAddress;
+import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Routing.Data.Frame;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
-import java.net.InetAddress;
 
 /**
  *
@@ -32,7 +27,7 @@ public class VirtualRouter extends Thread {
             //tha pairnei paketa apo thn oura tha ta tropopoiei kai tha ta grafei sthn oura gia to meso, ama einai adeia tha koimatai gia ligo                        
 
             try {                
-                packet = lvl3RedNode.login.connection.downMan.poll();                
+                packet = App.login.connection.downMan.poll();                
             } catch (java.lang.NullPointerException ex1) {
                 continue;
             } catch (java.util.NoSuchElementException ex) {
@@ -58,27 +53,27 @@ public class VirtualRouter extends Thread {
             info = info + "Dest: " + dest.getHostAddress();
             info = info + "Len: " + len;
 
-            lvl3RedNode.login.monitor.writeToIntWrite(info);
+            App.login.monitor.writeToIntWrite(info);
 
             //now importing all the stupid low level stuff (making a frame)
             MacAddress sourceMac = null;
-            if (lvl3RedNode.login.connection.MyMac != null) {                
-                if (lvl3RedNode.login.connection.arpTable.isAssociated(source)) {
-                    sourceMac = lvl3RedNode.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
+            if (App.login.connection.MyMac != null) {                
+                if (App.login.connection.arpTable.isAssociated(source)) {
+                    sourceMac = App.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
                 } else {
-                    lvl3RedNode.login.connection.arpTable.lease(Packet.getSourceAddress(packet));
-                    sourceMac = lvl3RedNode.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
+                    App.login.connection.arpTable.lease(Packet.getSourceAddress(packet));
+                    sourceMac = App.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
                 }
-                byte[] frame = Frame.MakeFrame(packet, lvl3RedNode.login.connection.MyMac, sourceMac);
-                lvl3RedNode.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + lvl3RedNode.login.connection.MyMac.toString() + " Source: " + sourceMac);                                
-                lvl3RedNode.login.connection.writeMan.offer(frame);
+                byte[] frame = Frame.MakeFrame(packet, App.login.connection.MyMac, sourceMac);
+                App.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + App.login.connection.MyMac.toString() + " Source: " + sourceMac);                                
+                App.login.connection.writeMan.offer(frame);
             } else {
                 System.out.println("null mac");
             }
                 
         }
-        lvl3RedNode.login.connection.writeMan.clear();
-        lvl3RedNode.login.monitor.jTextField12.setText("");
+        App.login.connection.writeMan.clear();
+        App.login.monitor.jTextField12.setText("");
     }
 
     public void kill() {

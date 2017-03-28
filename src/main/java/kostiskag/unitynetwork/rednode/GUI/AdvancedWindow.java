@@ -4,13 +4,13 @@
  */
 package kostiskag.unitynetwork.rednode.GUI;
 
-import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import javax.swing.table.DefaultTableModel;
+import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
 
 /**
  *
@@ -219,8 +219,8 @@ public class AdvancedWindow extends javax.swing.JFrame {
         PrintWriter writer = SocketFunctions.makeWriteWriter(socket);
         String args[] = SocketFunctions.readData(inputReader);
         
-        lvl3RedNode.login.getInputData();
-        args = SocketFunctions.sendData("REDNODE "+lvl3RedNode.login.Hostname, writer, inputReader);
+        App.login.getInputData();
+        args = SocketFunctions.sendData("REDNODE "+App.login.Hostname, writer, inputReader);
 
         if (args[0].equals("OK")) {
 
@@ -239,8 +239,8 @@ public class AdvancedWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         BlueNodeAddress = jTextField3.getText();
         BlueNodePort = Integer.parseInt(jTextField4.getText());
-        lvl3RedNode.login.DirectBNConnect = true;
-        lvl3RedNode.login.toggleLogin();
+        App.login.DirectBNConnect = true;
+        App.login.toggleLogin();
         setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 

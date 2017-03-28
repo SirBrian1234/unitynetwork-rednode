@@ -1,12 +1,5 @@
 package kostiskag.unitynetwork.rednode.RedThreads;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
-import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -14,6 +7,9 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
+import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
 
 /**
  *
@@ -41,7 +37,7 @@ public class UpService extends Thread {
         try {
             clientSocket = new DatagramSocket();
         } catch (java.net.BindException ex1) {
-            lvl3RedNode.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");            
+            App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");            
         } catch (SocketException ex) {
             Logger.getLogger(UpService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,7 +45,7 @@ public class UpService extends Thread {
         while (!kill) {
             //tha pairnei paketa apo thn oura kai tha ta stelnei ama einai adeia tha koimatai gia ligo
             try {
-                data = lvl3RedNode.login.connection.upMan.poll();
+                data = App.login.connection.upMan.poll();
             } catch (java.lang.NullPointerException ex1){                
                 continue;
             } catch (java.util.NoSuchElementException ex) {
@@ -64,12 +60,12 @@ public class UpService extends Thread {
             DatagramPacket sendPacket = new DatagramPacket(data, len, address, port);                        
             try {
                 clientSocket.send(sendPacket); 
-                lvl3RedNode.login.monitor.jTextField15.setText(""+lvl3RedNode.login.connection.upMan.getlen());
+                App.login.monitor.jTextField15.setText(""+App.login.connection.upMan.getlen());
                 String version = Packet.getVersion(data);
                 if (version.equals("0") || version.equals("1")) {
-                    lvl3RedNode.login.monitor.writeToUp(version + " " + new String(Packet.getPayloadU(data)));
+                    App.login.monitor.writeToUp(version + " " + new String(Packet.getPayloadU(data)));
                 } else if (version.equals("45")){
-                    lvl3RedNode.login.monitor.writeToUp(version + " IPv4 Packet Len:" + data.length + " To: " + Packet.getDestAddress(data).getHostAddress());
+                    App.login.monitor.writeToUp(version + " IPv4 Packet Len:" + data.length + " To: " + Packet.getDestAddress(data).getHostAddress());
                 }
             } catch (java.net.SocketException ex1) {
                 break;
@@ -78,7 +74,7 @@ public class UpService extends Thread {
                 break;
             }                        
         }
-        lvl3RedNode.login.connection.upMan.clear();
+        App.login.connection.upMan.clear();
     }
 
     public void kill() {

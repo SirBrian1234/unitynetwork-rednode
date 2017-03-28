@@ -1,11 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package kostiskag.unitynetwork.rednode.Routing.Data;
 
-import kostiskag.unitynetwork.rednode.RedNode.lvl3RedNode;
 import java.net.InetAddress;
+import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
@@ -16,10 +12,10 @@ public class ArpGenerate {
 
     public static byte[] ArpGenerate(MacAddress senderMacAddress, InetAddress senderIp) {
         
-        if (lvl3RedNode.login.connection.MyMac==null){
+        if (App.login.connection.MyMac==null){
             System.out.println("null personal mac, arp exit");
             return null;
-        } else if (lvl3RedNode.login.connection.MyIP==null){
+        } else if (App.login.connection.MyIP==null){
             System.out.println("null ip, arp exit");
             return null;
         } else if (senderMacAddress==null){
@@ -45,7 +41,7 @@ public class ArpGenerate {
         //target mac
         //target ip               
         byte[] frame = new byte[
-                lvl3RedNode.login.connection.MyMac.getAddress().length + 
+                App.login.connection.MyMac.getAddress().length + 
                 senderMacAddress.getAddress().length + 
                 frameType.length +                 
                 HWType.length+
@@ -57,11 +53,11 @@ public class ArpGenerate {
                 
                 senderMacAddress.getAddress().length+
                 senderIp.getAddress().length+
-                lvl3RedNode.login.connection.MyMac.getAddress().length+
-                lvl3RedNode.login.connection.MyIP.getAddress().length
+                App.login.connection.MyMac.getAddress().length+
+                App.login.connection.MyIP.getAddress().length
         ];                       
         
-        System.arraycopy(lvl3RedNode.login.connection.MyMac.getAddress(),0,frame,0,lvl3RedNode.login.connection.MyMac.getAddress().length);       
+        System.arraycopy(App.login.connection.MyMac.getAddress(),0,frame,0,App.login.connection.MyMac.getAddress().length);       
         System.arraycopy(senderMacAddress.getAddress(),0,frame,6,senderMacAddress.getAddress().length);       
         System.arraycopy(frameType,0,frame,12,frameType.length);  
         System.arraycopy(HWType,0,frame,14,HWType.length);
@@ -72,8 +68,8 @@ public class ArpGenerate {
         System.arraycopy(OpCode,0,frame,20,OpCode.length);
         System.arraycopy(senderMacAddress.getAddress(),0,frame,22,senderMacAddress.getAddress().length);
         System.arraycopy(senderIp.getAddress(),0,frame,28,senderIp.getAddress().length);
-        System.arraycopy(lvl3RedNode.login.connection.MyMac.getAddress(),0,frame,32,lvl3RedNode.login.connection.MyMac.getAddress().length);
-        System.arraycopy(lvl3RedNode.login.connection.MyIP.getAddress(),0,frame,38,lvl3RedNode.login.connection.MyIP.getAddress().length);
+        System.arraycopy(App.login.connection.MyMac.getAddress(),0,frame,32,App.login.connection.MyMac.getAddress().length);
+        System.arraycopy(App.login.connection.MyIP.getAddress(),0,frame,38,App.login.connection.MyIP.getAddress().length);
             
         return frame;
         }     
