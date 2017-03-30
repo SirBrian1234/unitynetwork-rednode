@@ -36,7 +36,7 @@ UnityNetwork is composed by three software applications which may be found on th
 The rednode is the host-client application responsible to transfer a host to the network and exchange traffic towards the closest bluenode. RedNode may be used from a variety of systems which may support a TAN/TUP virtual network adapter. It is currently tested to work on windows and linux with Java Runtime Environment 7 or greater.
 
 ## Requirements
-In order to build this project, jdk 1.7 or greater and maven have to be installed on your system.
+In order to build this project, Java JDK 1.7 or greater and Apache Maven have to already be installed on your system.
 
 ## Build
 ```
@@ -51,6 +51,8 @@ mvn package
 cd target
 java -jar UnityNetwork_RedNode-1.0.jar 
 ```
- 
 
+## License
+The project's article and source code are licensed under Creative Commons Atribution 4.0 International: https://creativecommons.org/licenses/by/4.0/
 
+You may use the source code commercially. You should provide the appropriate attribution for all the authors involved in this project.
