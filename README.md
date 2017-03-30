@@ -49,7 +49,7 @@ mvn package
 ## Run
 ```
 cd target
-java -jar 
+java -jar UnityNetwork_RedNode-1.0.jar 
 ```
  
 

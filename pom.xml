@@ -4,7 +4,7 @@
 	<groupId>kostiskag.unitynetwork.rednode</groupId>
 	<artifactId>UnityNetwork_RedNode</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<name>UnityNetwork_RedNode</name>
 	<url>http://maven.apache.org</url>
 	<properties>
