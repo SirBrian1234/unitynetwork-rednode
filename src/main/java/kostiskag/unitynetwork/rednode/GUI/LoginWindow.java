@@ -340,7 +340,7 @@ public class LoginWindow extends javax.swing.JFrame {
 				return true;
 			} else {
 				writeInfo(
-						"Tracker does not have any associated BlueNodes. In other words, the network is down.\n  Please either select to connect to another Network or define a standalone BlueNode from the Advanced Settings tab.");
+						"The Tracker is up but does not have any associated BlueNodes.\nIn other words, the network is down as there are no BlueNodes to carry the traffic.\nPlease select either to connect to another Network or define a standalone BlueNode from the Advanced Settings tab.");
 				return false;
 			}
 		}
