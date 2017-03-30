@@ -32,5 +32,25 @@ UnityNetwork is composed by three software applications which may be found on th
 * unitynetwork-bluenode [https://github.com/kostiskag/unitynetwork-bluenode] : Bluenode hosts are responsible to forward the network traffic from rednode to bluenode and from bluenode to bluenode. All the bluenodes use a tracker to authenticate.
 * unitynetwork-rednode  [you are here] : The rednode is the host-client application which is able to transfer a host to the network and exchange traffic towards the closest bluenode.
 
-# unitynetwork-...
+# unitynetwork-rednode
+The rednode is the host-client application responsible to transfer a host to the network and exchange traffic towards the closest bluenode. RedNode may be used from a variety of systems which may support a TAN/TUP virtual network adapter. It is currently tested to work on windows and linux with Java Runtime Environment 7 or greater.
+
+# requirements
+In order to build this project, jdk 1.7 or greater and maven have to be installed on your system.
+
+# install
+```
+git clone
+https://github.com/kostiskag/unitynetwork-rednode.git
+cd unitynetwork-rednode
+mvn package
+```
+
+# run
+```
+cd target
+java -jar 
+```
+ 
+
 
