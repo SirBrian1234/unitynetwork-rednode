@@ -38,7 +38,7 @@ The rednode is the host-client application responsible to transfer a host to the
 ## Requirements
 In order to build this project, jdk 1.7 or greater and maven have to be installed on your system.
 
-## Install
+## Build
 ```
 git clone
 https://github.com/kostiskag/unitynetwork-rednode.git
