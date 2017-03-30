@@ -210,7 +210,13 @@ public class AdvancedWindow extends javax.swing.JFrame {
         }
 
         InetAddress addr = SocketFunctions.getAddress(jTextField1.getText());
-        Socket socket = SocketFunctions.absoluteConnect(addr, Integer.parseInt(jTextField2.getText()));
+        int port;
+        if (jTextField2.getText().isEmpty()) {
+        	port = App.defaultTrackerAuthPort;
+        } else {
+        	port = Integer.parseInt(jTextField2.getText());
+        }
+        Socket socket = SocketFunctions.absoluteConnect(addr, port);
         if (socket == null) {
             return;
         }
@@ -220,7 +226,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
         String args[] = SocketFunctions.readData(inputReader);
         
         App.login.getInputData();
-        args = SocketFunctions.sendData("REDNODE "+App.login.Hostname, writer, inputReader);
+        args = SocketFunctions.sendData("REDNODE "+App.login.hostname, writer, inputReader);
 
         if (args[0].equals("OK")) {
 
@@ -238,7 +244,11 @@ public class AdvancedWindow extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         BlueNodeAddress = jTextField3.getText();
-        BlueNodePort = Integer.parseInt(jTextField4.getText());
+        if (jTextField4.getText().isEmpty()) {
+        	BlueNodePort = App.defaultBlueNodeAuthPort;
+        } else {
+        	BlueNodePort = Integer.parseInt(jTextField4.getText());
+        }
         App.login.DirectBNConnect = true;
         App.login.toggleLogin();
         setVisible(false);

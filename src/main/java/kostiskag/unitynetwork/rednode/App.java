@@ -11,6 +11,8 @@ import kostiskag.unitynetwork.rednode.GUI.LoginWindow;
 public class App {
 
     public static LoginWindow login;
+    public static int defaultBlueNodeAuthPort = 7000; 
+    public static int defaultTrackerAuthPort = 8000;
 
     public static void main(String args[]) {
         System.out.println("@Started main at " + Thread.currentThread().getName());
