@@ -1,12 +1,22 @@
 package kostiskag.unitynetwork.rednode.GUI;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
 import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
+import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
 
 /**
  *
@@ -14,18 +24,25 @@ import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
  */
 public class LoginWindow extends javax.swing.JFrame {
 
+	// max sizes
+	int max_str_size = 128;
+	int max_str_port_size = 5; //as 65535
+	int max_port_size = 65535;
 	// login credentials
 	public String hostname;
 	private String username;
 	private String password;
+	// tracker
 	private String trackerAddress;
 	private int trackerPort;
-	// data
-	private int loggedin = 0;
-	private boolean validTracker = false;
-	public boolean DirectBNConnect = false;
+    // bluenode
 	public String blueNodeAddress = null;
 	public int blueNodePort = -1;
+	// data
+	public boolean useStandaloneBN = false;
+	public boolean useNetworkSelectedBN = false;
+	private int loggedin = 0;
+	private boolean validTracker = false;
 	// objects
 	private AdvancedWindow advanced;
 	public MonitorWindow monitor;
@@ -49,11 +66,8 @@ public class LoginWindow extends javax.swing.JFrame {
 		jLabel4 = new javax.swing.JLabel();
 		jLabel5 = new javax.swing.JLabel();
 		jTextField1 = new javax.swing.JTextField();
-		jTextField6 = new javax.swing.JTextField();
 		jSeparator1 = new javax.swing.JSeparator();
-		jLabel8 = new javax.swing.JLabel();
 		jPasswordField1 = new javax.swing.JPasswordField();
-		jButton2 = new javax.swing.JButton();
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jTextArea1 = new javax.swing.JTextArea();
 		jButton3 = new javax.swing.JButton();
@@ -95,68 +109,143 @@ public class LoginWindow extends javax.swing.JFrame {
 		jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		jLabel5.setForeground(new java.awt.Color(255, 255, 255));
 
-		jLabel8.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-		jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-		jLabel8.setText("Unity Tracker Address");
+		jTextField2.setText("kostis");
+		jTextField1.setText("kostis-laptop");
+		jPasswordField1.setText("123456");
+		
+	    tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBackground(new Color(0, 102, 153));
+		
+		lblHostname = new JLabel();
+		lblHostname.setText("Hostname");
+		lblHostname.setForeground(Color.WHITE);
+		lblHostname.setFont(new Font("Tahoma", Font.BOLD, 11));
 
-		jButton2.setBackground(new java.awt.Color(0, 0, 0));
-		jButton2.setText("Advanced");
+		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+		jPanel4Layout.setHorizontalGroup(
+			jPanel4Layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanel4Layout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
+						.addGroup(jPanel4Layout.createSequentialGroup()
+							.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
+								.addGroup(jPanel4Layout.createSequentialGroup()
+									.addGap(16)
+									.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING, false)
+										.addComponent(jLabel3)
+										.addComponent(jTextField2)
+										.addComponent(jLabel4)
+										.addComponent(jPasswordField1)
+										.addGroup(jPanel4Layout.createSequentialGroup()
+											.addComponent(jLabel5)
+											.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
+												.addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+												.addComponent(lblHostname, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)))))
+								.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap())
+						.addGroup(jPanel4Layout.createSequentialGroup()
+							.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+							.addGap(16))))
+		);
+		jPanel4Layout.setVerticalGroup(
+			jPanel4Layout.createParallelGroup(Alignment.LEADING)
+				.addGroup(jPanel4Layout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(jLabel3)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(jLabel4)
+					.addGap(3)
+					.addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGroup(jPanel4Layout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(jLabel5)
+							.addGap(26)
+							.addGap(18)
+							.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 7, GroupLayout.PREFERRED_SIZE))
+						.addGroup(jPanel4Layout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lblHostname)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+							.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
+		);
+		
+		panel = new JPanel();
+		panel.setBackground(new Color(0, 102, 153));
+		tabbedPane.addTab("Full Network", null, panel, null);
+		panel.setLayout(null);
+		
+		lblUnityTrackerAddress = new JLabel();
+		lblUnityTrackerAddress.setBounds(10, 8, 126, 14);
+		lblUnityTrackerAddress.setText("Unity Tracker address");
+		lblUnityTrackerAddress.setForeground(Color.WHITE);
+		lblUnityTrackerAddress.setFont(new Font("Tahoma", Font.BOLD, 11));
+		panel.add(lblUnityTrackerAddress);
+		
+		label_1 = new JLabel();
+		label_1.setBounds(156, 8, 24, 14);
+		label_1.setText("port");
+		label_1.setForeground(Color.WHITE);
+		label_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+		panel.add(label_1);
+		
+		jTextField3 = new JTextField();
+		jTextField3.setBounds(10, 31, 136, 20);
+		jTextField3.setText("localhost");
+		panel.add(jTextField3);
+		
+		jTextField4 = new JTextField();
+		jTextField4.setBounds(156, 31, 40, 20);
+		jTextField4.setText("8000");
+		jTextField4.setColumns(10);
+		panel.add(jTextField4);
+		
+		jButton2 = new JButton();
 		jButton2.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				jButton2ActionPerformed(evt);
 			}
 		});
-
-		jTextField2.setText("kostis");
-		jTextField1.setText("kostis-laptop");
-		jPasswordField1.setText("123456");
-		jTextField6.setText("127.0.0.1:8000");		
-
-		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+		jButton2.setBounds(201, 30, 81, 23);
+		jButton2.setText("Advanced");
+		jButton2.setBackground(Color.BLACK);
+		panel.add(jButton2);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(new Color(0, 102, 153));
+		tabbedPane.addTab("Standalone Blue Node", null, panel_1, null);
+		panel_1.setLayout(null);
+		
+		label_2 = new JLabel();
+		label_2.setText("port");
+		label_2.setForeground(Color.WHITE);
+		label_2.setFont(new Font("Tahoma", Font.BOLD, 11));
+		label_2.setBounds(156, 8, 24, 14);
+		panel_1.add(label_2);
+		
+		lblBlueNodeAddress = new JLabel();
+		lblBlueNodeAddress.setText("Blue Node address");
+		lblBlueNodeAddress.setForeground(Color.WHITE);
+		lblBlueNodeAddress.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblBlueNodeAddress.setBounds(10, 8, 126, 14);
+		panel_1.add(lblBlueNodeAddress);
+		
+		jTextField5 = new JTextField();
+		jTextField5.setText("localhost");
+		jTextField5.setBounds(10, 31, 136, 20);
+		panel_1.add(jTextField5);
+		
+		jTextField6 = new JTextField();
+		jTextField6.setText("8000");
+		jTextField6.setColumns(10);
+		jTextField6.setBounds(156, 31, 40, 20);
+		panel_1.add(jTextField6);
 		jPanel4.setLayout(jPanel4Layout);
-		jPanel4Layout
-				.setHorizontalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-						.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap()
-								.addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-										.addComponent(jSeparator1).addComponent(jLabel8)
-										.addGroup(jPanel4Layout.createSequentialGroup().addGap(16, 16, 16)
-												.addGroup(jPanel4Layout
-														.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING,
-																false)
-														.addComponent(jLabel3).addComponent(jTextField2)
-														.addComponent(jLabel5).addComponent(jLabel4)
-														.addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE,
-																156, Short.MAX_VALUE)
-														.addComponent(jPasswordField1)))
-										.addGroup(jPanel4Layout.createSequentialGroup()
-												.addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 215,
-														javax.swing.GroupLayout.PREFERRED_SIZE)
-												.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-												.addComponent(jButton2)))
-								.addContainerGap()));
-		jPanel4Layout.setVerticalGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-				.addGroup(jPanel4Layout.createSequentialGroup().addContainerGap().addComponent(jLabel3)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED).addComponent(jLabel4)
-						.addGap(3, 3, 3)
-						.addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jLabel5)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE,
-								javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-						.addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 7,
-								javax.swing.GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(jLabel8)
-						.addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-						.addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-								.addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE,
-										javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-								.addComponent(jButton2))
-						.addContainerGap(49, Short.MAX_VALUE)));
 
 		jPanel1.add(jPanel4);
 		jPanel4.setBounds(129, 94, 322, 266);
@@ -189,12 +278,11 @@ public class LoginWindow extends javax.swing.JFrame {
 		pack();
 	}
 	
-	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {	
-		DirectBNConnect = false;
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {			
 		toggleLogin();
 	}
-
-	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {	
+	
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {			
 		advanced.toggleVisible();
 	}
 
@@ -202,14 +290,13 @@ public class LoginWindow extends javax.swing.JFrame {
 		monitor.toggleVisible();
 	}
 
+	private javax.swing.JTabbedPane tabbedPane;
 	private javax.swing.JButton jButton1;
-	private javax.swing.JButton jButton2;
 	private javax.swing.JButton jButton3;
 	private javax.swing.JLabel jLabel1;
 	private javax.swing.JLabel jLabel3;
 	private javax.swing.JLabel jLabel4;
 	private javax.swing.JLabel jLabel5;
-	private javax.swing.JLabel jLabel8;
 	private javax.swing.JPanel jPanel1;
 	private javax.swing.JPanel jPanel4;
 	public javax.swing.JPasswordField jPasswordField1;
@@ -218,7 +305,17 @@ public class LoginWindow extends javax.swing.JFrame {
 	private javax.swing.JTextArea jTextArea1;
 	public javax.swing.JTextField jTextField1;
 	public javax.swing.JTextField jTextField2;
-	public javax.swing.JTextField jTextField6;
+	private JPanel panel;
+	private JLabel lblUnityTrackerAddress;
+	private JLabel label_1;
+	private JTextField jTextField3;
+	private JTextField jTextField4;
+	private JButton jButton2;
+	private JLabel label_2;
+	private JLabel lblBlueNodeAddress;
+	private JTextField jTextField5;
+	private JTextField jTextField6;
+	private JLabel lblHostname;
 
 	public void toggleLogin() {
 		// does login
@@ -233,7 +330,8 @@ public class LoginWindow extends javax.swing.JFrame {
 			writeInfo("Getting Data from input...");
 			// checks whether the given data are valid
 			if (getInputData()) {
-				if (!DirectBNConnect) {
+				if (!useStandaloneBN) {
+					if (!useNetworkSelectedBN) {
 					validTracker = getRecomendedBlueNode(trackerAddress, trackerPort);
 					if (validTracker) {
 						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
@@ -242,22 +340,26 @@ public class LoginWindow extends javax.swing.JFrame {
 						writeInfo("Terminating connection");
 						setLogedOut();
 					}
+						} else {
+							writeInfo("Connecting to Network Blue Node...");
+							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+							connection.start();
+						}					
 				} else {
-					writeInfo("Skipping Auto BlueNode find...");
-					connection = new ConnectionManager(username, password, hostname, advanced.getBlueNodeAddress(),
-							advanced.getBlueNodePort());
+					writeInfo("Connecting to Standalone Blue Node...");
+					connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
 					connection.start();
 				}
 			} else {
 				writeInfo("The given data were not valid.");
 				setLogedOut();
-			}
-			// does logout
+			}			
 		} else if (loggedin == 1) {
+			// does logout
 			jButton1.setEnabled(false);
 			App.login.connection.giveCommand("EXIT");
-		} // does retry
-		else {
+		} else {
+			// does retry
 			jButton1.setText("Login");
 			jPanel4.setVisible(true);
 			jScrollPane1.setVisible(false);
@@ -283,46 +385,112 @@ public class LoginWindow extends javax.swing.JFrame {
 		jTextArea1.append("* " + message + "\n");
 	}
 
-	public boolean getInputData() {		
-		password = new String(jPasswordField1.getPassword());
+	public boolean getInputData() {
+		//in all possible cases you need to have a valid hostname
+		if (jTextField1.getText().isEmpty() || jTextField1.getText().length() > max_str_size) {
+			writeInfo("Please provide a valid hostname.");
+			return false;			
+		}
 		
-		if (!jTextField1.getText().isEmpty() && !jTextField2.getText().isEmpty() && !password.isEmpty() && !jTextField6.getText().isEmpty()) {
-			username = jTextField2.getText();
-			hostname = jTextField1.getText();
-			String fulladdress = jTextField6.getText();
-			String[] args = fulladdress.split(":");
-			trackerAddress = args[0];
-			trackerPort = -1;
+		//for a full network username password hostname address are needed
+		//port may be default
+		if (tabbedPane.getSelectedIndex() == 0) {
+			useStandaloneBN = false;
+			password = new String(jPasswordField1.getPassword());
+			if (jTextField2.getText().isEmpty() || jTextField2.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid username.");
+				return false;
+			} else if (password.isEmpty() || password.length() > max_str_size) {
+				writeInfo("Please provide a valid password.");
+				return false;	
+			} else if (jTextField3.getText().isEmpty() || jTextField3.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid tracker address.");
+				return false;				    
+			} 
 			
-			if (args.length > 1) {
-				try {
-					trackerPort = Integer.parseInt(args[1]);
-				} catch (NumberFormatException e) {
-					return false;
-				}
-
-				if (!(trackerPort > 0 && trackerPort <= 65535)) {
+			if (!jTextField4.getText().isEmpty()) {
+				if (jTextField4.getText().length() <= max_str_port_size) {
+					try {
+						trackerPort = Integer.parseInt(jTextField4.getText());
+					} catch (NumberFormatException e) {
+						writeInfo("Please provide a valid port number.");
+						return false;
+					}
+					
+					if (trackerPort < 0 || trackerPort > max_port_size) {
+						writeInfo("Please provide a valid port number.");
+						return false;
+					}
+				} else {
+					writeInfo("Please provide a valid port number.");
 					return false;
 				}
 			} else {
 				trackerPort = App.defaultTrackerAuthPort;
 			}
-
+				
+			hostname = jTextField1.getText();	
+			username = jTextField2.getText();			
+			trackerAddress = jTextField3.getText();	
 			return true;
-
+															
 		} else {
-			writeInfo("Please fill in the empty fields.");
-			return false;
-		}
+			useStandaloneBN = true;
+			password = new String(jPasswordField1.getPassword());
+			if (jTextField2.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid username.");
+				return false;
+			} else if (password.length() > max_str_size) {
+				writeInfo("Please provide a valid password.");
+				return false;	
+			} else if (jTextField5.getText().isEmpty() || jTextField5.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid blue node address.");
+				return false;				    
+			} 
+			
+			if (!jTextField6.getText().isEmpty()) {
+				if (jTextField6.getText().length() <= max_str_port_size) {
+					try {
+						blueNodePort = Integer.parseInt(jTextField6.getText());
+					} catch (NumberFormatException e) {
+						writeInfo("Please provide a valid port number.");
+						return false;
+					}
+					
+					if (blueNodePort < 0 || blueNodePort > max_port_size) {
+						writeInfo("Please provide a valid port number.");
+						return false;
+					}
+				} else {
+					writeInfo("Please provide a valid port number.");
+					return false;
+				}
+			} else {
+				blueNodePort = App.defaultBlueNodeAuthPort;
+			}		
+			
+			hostname = jTextField1.getText();	
+			username = jTextField2.getText();			
+			blueNodeAddress = jTextField5.getText();	
+			return true;
+		}		
 	}
 
 	public boolean getRecomendedBlueNode(String TrackerAddress, int TrackerPort) {
 		writeInfo("Getting recomended BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
 		InetAddress addr = SocketFunctions.getAddress(TrackerAddress);
-		Socket socket = SocketFunctions.absoluteConnect(addr, TrackerPort);
+		
+		Socket socket;
+		if (addr != null) {
+			socket = SocketFunctions.absoluteConnect(addr, TrackerPort);
+		} else {
+			writeInfo("Tracker connection failed - host not found.");
+			return false;
+		}
+		
 		if (socket == null) {
-			writeInfo("Tracker connection failed");
+			writeInfo("Tracker connection failed.");
 			return false;
 		}
 

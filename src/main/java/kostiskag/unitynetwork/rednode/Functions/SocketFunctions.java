@@ -25,7 +25,7 @@ public class SocketFunctions {
 		InetAddress IPaddress = null;
 		try {
 			IPaddress = InetAddress.getByName(PhAddress);
-		} catch (UnknownHostException ex) {
+		} catch (Exception ex) {
 			return null;
 		}
 		return IPaddress;
@@ -40,13 +40,16 @@ public class SocketFunctions {
 			} catch (java.net.NoRouteToHostException ex) {
 				App.login.writeInfo(pre + "NO ROUTE");
 				return null;
-			} catch (java.net.ConnectException ex) {
+			} catch (java.net.UnknownHostException ex) {
+				App.login.writeInfo(pre + "UNKNOWN HOST");
+				return null;
+		    } catch (java.net.ConnectException ex) {
 				App.login.writeInfo(pre + "CONNECTION REFUSED");
 				return null;
 			} catch (java.net.SocketTimeoutException ex) {
 				App.login.writeInfo(pre + "CONNECTION TIMED OUT");
 				return null;
-			} catch (IOException ex) {
+			} catch (Exception ex) {
 				App.login.writeInfo(pre + "CONNECTION ERROR");
 				ex.printStackTrace();
 				return null;
