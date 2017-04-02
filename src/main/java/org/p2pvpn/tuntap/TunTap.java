@@ -44,7 +44,8 @@ public abstract class TunTap {
     static void loadLib(String... libs) {
         for (String lib : libs) {
             try {
-                System.load(new File(lib).getCanonicalPath());
+                System.out.println("loading... "+lib);
+            	System.load(new File(lib).getCanonicalPath());
                 break;
             } catch (IOException ex) {                
                 Logger.getLogger(TunTap.class.getName()).log(Level.SEVERE, null, ex);                

@@ -182,7 +182,7 @@ public class LoginWindow extends javax.swing.JFrame {
 		getContentPane().add(jPanel1);
 		jPanel1.setBounds(1, 1, 600, 500);
 
-		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("Worldwide-Network.jpg"))); // NOI18N
+		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("loginBg.jpg"))); // NOI18N
 		getContentPane().add(jLabel1);
 		jLabel1.setBounds(-95, -70, 800, 600);
 

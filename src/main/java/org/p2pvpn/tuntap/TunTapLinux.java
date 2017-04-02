@@ -22,16 +22,26 @@ package org.p2pvpn.tuntap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kostiskag.unitynetwork.rednode.App;
+
 /**
  * The TunTap class for linux.
  * @author Wolfgang  Ginolas
  */
 public class TunTapLinux extends TunTap {
     static {
+    	String osArch = System.getProperty("os.arch");
+    	System.out.println(osArch);
 		try {
-			loadLib("clib/libTunTapLinux.so", "clib/libTunTapLinux64.so", "clib/libTunTapLinuxMips.so");
+			if (osArch.equals("intel64") || osArch.equals("amd64")) {
+			    loadLib("clib/libTunTapLinux64.so");
+			} else {
+				loadLib("clib/libTunTapLinux.so");
+			}
+			App.login.connection.libError=false;
 		} catch (Throwable e) {
-			Logger.getLogger("").log(Level.SEVERE, "Could not load libTunTapLinux.so", e);
+			App.login.connection.libError=true;
+			Logger.getLogger("").log(Level.SEVERE, "Could not load libTunTapLinux.so", e);			
 		}
     }
 
