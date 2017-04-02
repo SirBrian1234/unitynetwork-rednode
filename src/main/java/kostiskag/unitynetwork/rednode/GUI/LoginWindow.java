@@ -201,7 +201,6 @@ public class LoginWindow extends javax.swing.JFrame {
 		
 		jTextField4 = new JTextField();
 		jTextField4.setBounds(156, 31, 40, 20);
-		jTextField4.setText("8000");
 		jTextField4.setColumns(10);
 		panel.add(jTextField4);
 		
@@ -241,7 +240,6 @@ public class LoginWindow extends javax.swing.JFrame {
 		panel_1.add(jTextField5);
 		
 		jTextField6 = new JTextField();
-		jTextField6.setText("8000");
 		jTextField6.setColumns(10);
 		jTextField6.setBounds(156, 31, 40, 20);
 		panel_1.add(jTextField6);
