@@ -169,7 +169,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jTextField15 = new javax.swing.JTextField();
 
-        setTitle("lvl3 Red Node / Monitor Window");
+        setTitle("Monitor Window");
 
         commandw.setBorder(javax.swing.BorderFactory.createTitledBorder("Command Window"));
 

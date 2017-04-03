@@ -16,10 +16,6 @@ import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.Data.ReverseArpTable;
 import org.p2pvpn.tuntap.TunTap;
 
-/*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
- */
 /**
  *
  * @author kostis
@@ -61,6 +57,7 @@ public class ConnectionManager extends Thread {
     public  DownService downlink;
     public  UpService uplink;           
     public  boolean isUpTCP = false;
+    public  String socketResponce;
     
     //ehternet & routing       
     public  int keepAliveTime = 5;                    
@@ -154,11 +151,14 @@ public class ConnectionManager extends Thread {
         App.login.writeInfo("Opening LINK...");
         openThreads();
         
+        App.login.writeInfo("Init socket event notification...");
+        authClient.start();        
+        
         App.login.writeInfo("Testing LINK...");
         if (!LinkDiagnostic()) {
             nolink = true;
             App.login.writeInfo("LINK Error");
-            App.login.writeInfo("Working On Commands, Switch to Monitor Mode to try to rescue your LINK");            
+            App.login.writeInfo("Working On Commands.");            
         }
         if (!startInterface()) {
             limited = true;
@@ -175,6 +175,7 @@ public class ConnectionManager extends Thread {
         App.login.writeInfo("Connection Set");
         App.login.writeInfo("Wellcome " + Hostname + " ~ " + Vaddress);
         LoggedIn();        
+        
         authCommands();
 
         App.login.writeInfo("Killing Tasks...");
@@ -213,7 +214,7 @@ public class ConnectionManager extends Thread {
         boolean uping = true;
         boolean dping = true;
         for (int i = 0; i < 3; i++) {
-            if (!authClient.ping()) {
+            if (!ping()) {
                 return false;
             } else if (!dPing()) {
                 App.login.writeInfo("THERE IS A PROBLEM WITH DOWNLINK TRYING TO FIX IT");
@@ -305,16 +306,21 @@ public class ConnectionManager extends Thread {
         App.login.setLoggedIn();
     }
 
-    public synchronized void authCommands() {
-        //1 while gia to auth        
-        while (!kill) {
-            //tha pairnei 1 string apo to window ama einai gemato tha to adeiazei kai nani meta                        
+    public synchronized void giveCommand(String command) {
+        notify();
+        this.command = command;
+    }
+    
+    public synchronized void authCommands() {        
+        while (!kill) {                                    
             try {
-                wait();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-            if (!command.equals("")) {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+            if (kill) {
+            	break;
+            } else if (!command.isEmpty()) {
                 if (command.equals("EXIT")) {
                     App.login.writeInfo("Logging Out...");
                     authClient.exit();
@@ -325,8 +331,6 @@ public class ConnectionManager extends Thread {
                     uPing();
                 } else if (command.equals("DPING")) {
                     dPing();
-                } else if (command.equals("UPISDOWN")) {
-                    UpIsDown();
                 } else if (command.equals("DREFRESH")) {
                     drefresh();
                 } else if (command.equals("UREFRESH")) {
@@ -340,14 +344,10 @@ public class ConnectionManager extends Thread {
             }            
         }
     }
-    
-    public synchronized void giveCommand(String command) {
-        notify();
-        this.command = command;
-    }        
 
-    public void killAuthCommands() {
+    public synchronized void killConnectionManager() {
         kill = true;
+        notify();
     }
 
     private void killTasks() {
@@ -381,11 +381,22 @@ public class ConnectionManager extends Thread {
         byte[] data = Packet.MakePacket(payload, MyIP, MyIP, 2);
         upMan.offer(data);
     }
+    
+    public boolean ping() {
+    	authClient.ping();
+    	String input = authClient.receiveAuthData();  
+    	System.out.println(input);
+    	if (input.equals("PING OK")) {
+    		return true;
+    	}
+    	return false;
+    }
 
     public void drefresh() {
         downlink.kill();
         App.login.monitor.clearDown();
-        String returnstr = authClient.sendAuthData("DREFRESH");
+        authClient.sendAuthData("DREFRESH");
+        String returnstr = authClient.receiveAuthData();
         String[] args = returnstr.split("\\s+");
 
         if (args.length < 3) {
@@ -408,7 +419,8 @@ public class ConnectionManager extends Thread {
     public void urefresh() {
         uplink.kill();
         App.login.monitor.clearUp();
-        String returnstr = authClient.sendAuthData("UREFRESH");
+        authClient.sendAuthData("UREFRESH");
+        String returnstr = authClient.receiveAuthData();
         String[] args = returnstr.split("\\s+");
 
         if (args.length < 3) {
@@ -446,7 +458,9 @@ public class ConnectionManager extends Thread {
         for (int i = 0; i < 2; i++) {
             upMan.offer(data);
         }
-        if (authClient.sendAuthData("UPING").equals("UPING OK")) {
+        authClient.sendAuthData("UPING");
+        String input = authClient.receiveAuthData();
+        if (input.equals("UPING OK")) {
             return true;
         } else {
             return false;
@@ -487,7 +501,7 @@ public class ConnectionManager extends Thread {
     private boolean checkDHCP() {
         App.login.writeInfo("Checking DHCP...");
         if (OSType == 2) {
-            App.login.writeInfo("QUIIIICK SET YOUR DHCP!!!!!, 30sec, type...\n dhclient " + tuntap.getDev());
+            App.login.writeInfo("QUICK SET YOUR DHCP!!! Open a terminal and type: \n dhclient " + tuntap.getDev()+" to start the interface. You have 30 sec!");
         }
         for (int i = 0; i < 60; i++) {
             if (IsDHCPset == true) {
