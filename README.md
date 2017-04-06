@@ -48,8 +48,7 @@ mvn package
 
 ## Run
 ```
-cd target
-java -jar UnityNetwork_RedNode-1.0.jar 
+cd target java -jar UnityNetwork_RedNode-1.0.jar 
 ```
 
 ## License
