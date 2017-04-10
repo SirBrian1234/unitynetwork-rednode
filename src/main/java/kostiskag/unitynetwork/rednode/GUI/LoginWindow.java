@@ -108,10 +108,6 @@ public class LoginWindow extends javax.swing.JFrame {
 
 		jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-
-		jTextField2.setText("kostis");
-		jTextField1.setText("kostis-laptop");
-		jPasswordField1.setText("123456");
 		
 	    tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBackground(new Color(0, 102, 153));
