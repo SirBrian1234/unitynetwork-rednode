@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.Functions;
+package kostiskag.unitynetwork.rednode.functions;
 
 import java.io.BufferedReader;
 import java.io.IOException;

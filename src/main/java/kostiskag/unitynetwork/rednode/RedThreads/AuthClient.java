@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Functions.MD5Functions;
+import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 
 /*
  * Auth client is responsible to connect to the blue node's TCP auth port
@@ -69,17 +69,10 @@ public class AuthClient extends Thread {
 			String received = inputReader.readLine();
 			String[] args = received.split("\\s+");
 
+			String data = null;
 			try {
-				password = MD5Functions.MD5(password);
-			} catch (NoSuchAlgorithmException ex) {
-				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-			} catch (UnsupportedEncodingException ex) {
-				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-			String data = username + "lol!_you_just_cant_copy_hashes_and_use_them_from_the_webpage" + password;
-			try {
-				data = MD5Functions.MD5(data);
+				data = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT) + HashFunctions.SHA256(password);
+				data = HashFunctions.SHA256(data);
 			} catch (NoSuchAlgorithmException ex) {
 				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
 			} catch (UnsupportedEncodingException ex) {

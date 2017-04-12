@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package kostiskag.unitynetwork.rednode.Functions;
+package kostiskag.unitynetwork.rednode.functions;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

@@ -6,7 +6,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import javax.swing.table.DefaultTableModel;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
+import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
+
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;

@@ -16,7 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
-import kostiskag.unitynetwork.rednode.Functions.SocketFunctions;
+import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 
 /**
  *
