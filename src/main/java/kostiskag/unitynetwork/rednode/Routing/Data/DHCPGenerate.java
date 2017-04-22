@@ -109,7 +109,7 @@ public class DHCPGenerate {
         byte[] dlen = new byte[]{0x04};
         byte[] dip = new byte[4];
         try {
-            dip = InetAddress.getByName("10.0.0.2").getAddress();
+            dip = InetAddress.getByName("10.0.0.1").getAddress();
         } catch (UnknownHostException ex) {
             Logger.getLogger(DHCPGenerate.class.getName()).log(Level.SEVERE, null, ex);
         }

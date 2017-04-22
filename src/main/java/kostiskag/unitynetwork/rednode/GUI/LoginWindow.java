@@ -192,7 +192,6 @@ public class LoginWindow extends javax.swing.JFrame {
 		
 		jTextField3 = new JTextField();
 		jTextField3.setBounds(10, 31, 136, 20);
-		jTextField3.setText("localhost");
 		panel.add(jTextField3);
 		
 		jTextField4 = new JTextField();
@@ -231,7 +230,6 @@ public class LoginWindow extends javax.swing.JFrame {
 		panel_1.add(lblBlueNodeAddress);
 		
 		jTextField5 = new JTextField();
-		jTextField5.setText("localhost");
 		jTextField5.setBounds(10, 31, 136, 20);
 		panel_1.add(jTextField5);
 		
