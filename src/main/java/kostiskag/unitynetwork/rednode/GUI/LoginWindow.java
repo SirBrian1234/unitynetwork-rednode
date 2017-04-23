@@ -4,8 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -16,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
+import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 
 /**
@@ -378,18 +383,17 @@ public class LoginWindow extends javax.swing.JFrame {
 	}
 
 	public boolean getInputData() {
-		//in all possible cases you need to have a valid hostname
-		if (jTextField1.getText().isEmpty() || jTextField1.getText().length() > max_str_size) {
-			writeInfo("Please provide a valid hostname.");
-			return false;			
-		}
 		
 		//for a full network username password hostname address are needed
 		//port may be default
 		if (tabbedPane.getSelectedIndex() == 0) {
 			useStandaloneBN = false;
 			password = new String(jPasswordField1.getPassword());
-			if (jTextField2.getText().isEmpty() || jTextField2.getText().length() > max_str_size) {
+
+			if (jTextField1.getText().isEmpty() || jTextField1.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid hostname.");
+				return false;			
+			} else if (jTextField2.getText().isEmpty() || jTextField2.getText().length() > max_str_size) {
 				writeInfo("Please provide a valid username.");
 				return false;
 			} else if (password.isEmpty() || password.length() > max_str_size) {
@@ -429,7 +433,10 @@ public class LoginWindow extends javax.swing.JFrame {
 		} else {
 			useStandaloneBN = true;
 			password = new String(jPasswordField1.getPassword());
-			if (jTextField2.getText().length() > max_str_size) {
+			if (jTextField1.getText().length() > max_str_size) {
+				writeInfo("Please provide a valid hostname.");
+				return false;
+			} else if (jTextField2.getText().length() > max_str_size) {
 				writeInfo("Please provide a valid username.");
 				return false;
 			} else if (password.length() > max_str_size) {
@@ -461,8 +468,33 @@ public class LoginWindow extends javax.swing.JFrame {
 				blueNodePort = App.defaultBlueNodeAuthPort;
 			}		
 			
-			hostname = jTextField1.getText();	
-			username = jTextField2.getText();			
+			if (jTextField1.getText().isEmpty()) {
+				//generate a pseudo-random hostname for the guy who just did not want to fill up a hostname!
+				byte[] salt = new byte[4];
+				SecureRandom ranGen = new SecureRandom();
+				ranGen.nextBytes(salt);
+				
+				try {
+					hostname = HashFunctions.MD5(new String(salt));
+				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+					e.printStackTrace();
+					hostname = "nohost";
+				}
+				
+			} else {
+				hostname = jTextField1.getText();
+			}
+			
+			if (password.isEmpty()) {
+				password = "nopass";
+			}
+			
+			if (jTextField2.getText().isEmpty()) {
+				username = "nousername";
+			} else {
+				username = jTextField2.getText();
+			}
+						
 			blueNodeAddress = jTextField5.getText();	
 			return true;
 		}		
