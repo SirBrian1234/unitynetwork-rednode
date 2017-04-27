@@ -11,8 +11,9 @@ import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 
-/*
+/**
  * Auth client is responsible to connect to the blue node's TCP auth port
+ * 
  */
 public class AuthClient extends Thread {
 
@@ -27,7 +28,6 @@ public class AuthClient extends Thread {
 	private String password;
 	private String hostname;
 	private String vaddress;
-	private String pre = "^AUTH ";
 	private String receivedMessage = "none";
 	String socketResponce;
 	private boolean kill = false;
@@ -79,36 +79,35 @@ public class AuthClient extends Thread {
 				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
 			}
 
-			messageToSend = "LEASE " + username + " " + data;
+			messageToSend = "LEASE "+username+" "+data;
 			sendAuthData(messageToSend);
 			received = inputReader.readLine();
 
-			if (received.startsWith("HOSTNAME FAILED 0")) {
-				App.login.writeInfo("Wrong command");
+			if (received.startsWith("FAILED")) {
+				
+				if (received.startsWith("FAILED BLUENODE")) {
+					App.login.writeInfo("BlueNode Error, try connecting from a different BN");
+				} else if (received.startsWith("FAILED USER")) {
+					App.login.writeInfo("Wrong hostname, username or password");
+				} else if (received.startsWith("FAILED HOSTNAME")) {
+					App.login.writeInfo("Hostname allready in use");
+					App.login.writeInfo(
+							"Check if you are not connected from another place, and if not contact BNs admin to inform him");
+				} else {
+					App.login.writeInfo("Failed to connect.");
+				}
+				
 				return false;
-			} else if (received.startsWith("BLUENODE FAILED")) {
-				App.login.writeInfo("BlueNode Error, try connecting from a different BN");
-				return false;
-			} else if (received.startsWith("USER FAILED 1")) {
-				App.login.writeInfo("Wrong username or password");
-				return false;
-			} else if (received.startsWith("HOSTNAME FAILED 1")) {
-				App.login.writeInfo("Wrong Hostname");
-				return false;
-			} else if (received.startsWith("HOSTNAME FAILED 2")) {
-				App.login.writeInfo("Hostname allready in use");
-				App.login.writeInfo(
-						"Check if you are not connected from another place, and if not contact BNs admin to inform him");
-				return false;
-			} else if (received.startsWith("HOSTNAME FAILED 3")) {
-				App.login.writeInfo("This hostname does not belong to this user");
-				return false;
+			
 			} else {
 				args = received.split("\\s+");
-				upport = Integer.parseInt(args[2]);
-				downPort = Integer.parseInt(args[3]);
-				vaddress = args[4];
-				return true;
+				if (args[0].equals("REG_OK")) {
+					upport = Integer.parseInt(args[1]);
+					downPort = Integer.parseInt(args[2]);
+					vaddress = args[3];
+					return true;
+				} 
+				return false;				
 			}
 		} catch (UnknownHostException ex) {
 			ex.printStackTrace();
