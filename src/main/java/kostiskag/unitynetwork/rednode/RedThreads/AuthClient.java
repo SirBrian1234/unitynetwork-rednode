@@ -71,7 +71,7 @@ public class AuthClient extends Thread {
 
 			String data = null;
 			try {
-				data = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT) + HashFunctions.SHA256(password);
+				data = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT + password);
 				data = HashFunctions.SHA256(data);
 			} catch (NoSuchAlgorithmException ex) {
 				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
