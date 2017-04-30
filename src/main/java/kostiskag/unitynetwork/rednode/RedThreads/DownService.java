@@ -54,7 +54,7 @@ public class DownService extends Thread {
                 clientSocket.send(sendPacket);
             }
         } catch (java.net.SocketException ex1) {
-            App.login.monitor.writeToDown("FISH PACKET SEND ERROR");
+            App.login.monitor.writeToConnectionDown("FISH PACKET SEND ERROR");
             return;
         } catch (IOException ex) {            
             Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,7 +86,7 @@ public class DownService extends Thread {
                         App.login.monitor.writeToCommands("DPING OK");
                         App.login.connection.isClientDPinged = true;
                     }
-                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
                 } 
                 //rn command packets
                 else if (version.equals("1")){
@@ -96,19 +96,19 @@ public class DownService extends Thread {
                         if (App.login.connection.arpTable.isAssociated(Packet.getUSourceAddress(packet)))
                             App.login.connection.arpTable.getByIP(Packet.getUSourceAddress(packet)).getTrafficMan().gotACK();
                     }
-                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
                 } 
                 //chat packets
                 else if (version.equals("2")) {
                     byte[] payload = new byte[Packet.getPayloadU(packet).length];
                     payload = Packet.getPayloadU(packet);
                     modifiedSentence = new String(payload) + '\0';
-                    App.login.monitor.writeToDown(version + " " + modifiedSentence);
+                    App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
                 } 
                 //ipv4 packets
                 else if (version.equals("45")) {
-                    App.login.monitor.writeToDown(version + " IPv4 Len: " + packet.length + " From " + Packet.getSourceAddress(packet).getHostAddress());
-                    App.login.monitor.jTextField3.setText(""+App.login.connection.downMan.getlen());
+                    App.login.monitor.writeToConnectionDown(version + " IPv4 Len: " + packet.length + " From " + Packet.getSourceAddress(packet).getHostAddress());
+                    App.login.monitor.updateConUpBufferQueue(App.login.connection.downMan.getlen());
                     App.login.connection.downMan.offer(packet);                    
                     ACK = Packet.MakePacket(("00004 [ACK]").getBytes(), App.login.connection.MyIP, Packet.getSourceAddress(packet), 1);
                     App.login.connection.upMan.offer(ACK);

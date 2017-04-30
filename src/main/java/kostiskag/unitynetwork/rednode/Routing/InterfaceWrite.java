@@ -35,8 +35,8 @@ public class InterfaceWrite extends Thread {
             
             App.login.monitor.writeToIntWrite(pre + "WRITTING TO MEDIUM");
             App.login.connection.tuntap.write(data, data.length);
-            App.login.monitor.jTextField14.setText(""+App.login.connection.writeMan.getlen());
-            App.login.monitor.jTextField12.setText("" + i);
+            App.login.monitor.updateIntWriteBufferNumber(App.login.connection.writeMan.getlen());
+            App.login.monitor.updateIntWriteNumber(i);
             i++;
         }
     }

@@ -26,12 +26,12 @@ public class InterfaceRead extends Thread{
         while(!kill){
             App.login.monitor.writeToIntRead(pre+"READING");
             int len = App.login.connection.tuntap.read(buffer);
-            App.login.monitor.jTextField13.setText(""+App.login.connection.readMan.getlen());
+            App.login.monitor.updateIntReadBufferNumber(App.login.connection.readMan.getlen());
             if (len > 14) {
                 byte[] frame = new byte[len];
                 System.arraycopy(buffer, 0, frame, 0, len);                
                 App.login.connection.readMan.offer(frame);                
-                App.login.monitor.jTextField11.setText(""+i);                 
+                App.login.monitor.updateIntReadNumber(i);                 
                 i++;
             }
         }                            

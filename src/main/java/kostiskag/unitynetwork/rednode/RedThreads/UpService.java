@@ -60,12 +60,12 @@ public class UpService extends Thread {
             DatagramPacket sendPacket = new DatagramPacket(data, len, address, port);                        
             try {
                 clientSocket.send(sendPacket); 
-                App.login.monitor.jTextField15.setText(""+App.login.connection.upMan.getlen());
+                App.login.monitor.updateConDownBufferQueue(App.login.connection.upMan.getlen());
                 String version = Packet.getVersion(data);
                 if (version.equals("0") || version.equals("1")) {
-                    App.login.monitor.writeToUp(version + " " + new String(Packet.getPayloadU(data)));
+                    App.login.monitor.writeToConnectionUp(version + " " + new String(Packet.getPayloadU(data)));
                 } else if (version.equals("45")){
-                    App.login.monitor.writeToUp(version + " IPv4 Packet Len:" + data.length + " To: " + Packet.getDestAddress(data).getHostAddress());
+                    App.login.monitor.writeToConnectionUp(version + " IPv4 Packet Len:" + data.length + " To: " + Packet.getDestAddress(data).getHostAddress());
                 }
             } catch (java.net.SocketException ex1) {
                 break;

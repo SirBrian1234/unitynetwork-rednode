@@ -111,7 +111,7 @@ public class EthernetRouter extends Thread {
             }
         }
         App.login.connection.readMan.clear();
-        App.login.monitor.jTextField11.setText("");
+        App.login.monitor.clearIntReadNumber();
     }
 
     public void kill() {

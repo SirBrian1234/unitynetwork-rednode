@@ -73,7 +73,7 @@ public class VirtualRouter extends Thread {
                 
         }
         App.login.connection.writeMan.clear();
-        App.login.monitor.jTextField12.setText("");
+        App.login.monitor.clearIntReadNumber();
     }
 
     public void kill() {
