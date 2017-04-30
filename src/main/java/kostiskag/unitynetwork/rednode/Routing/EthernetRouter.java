@@ -1,11 +1,10 @@
 package kostiskag.unitynetwork.rednode.Routing;
 
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.EthernetFrame;
+import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
-import kostiskag.unitynetwork.rednode.Routing.Data.FrameType;
-import kostiskag.unitynetwork.rednode.Routing.Data.Frame;
 
 import java.net.InetAddress;
 
@@ -19,7 +18,7 @@ import java.net.InetAddress;
  */
 public class EthernetRouter extends Thread {
 
-    private String pre = "^ETHOUTER ";
+    private String pre = "^EthernetRouter ";
     private boolean kill = false;
     private String pver;
     private int len;
@@ -31,7 +30,8 @@ public class EthernetRouter extends Thread {
         MacAddress destmac;
         InetAddress source;
         InetAddress dest;
-        FrameType type;
+        byte[] frameType;
+        String frameTypeStr;
         byte[] ippacket;
         EthernetConnection connection = new EthernetConnection();
 
@@ -45,17 +45,18 @@ public class EthernetRouter extends Thread {
                 continue;
             }
 
-            sourcemac = Frame.GetSourceMacAddress(frame);
-            destmac = Frame.GetDestMacAddress(frame);
-            type = Frame.getFrameType(frame);
+            sourcemac = EthernetFrame.getSourceMacAddress(frame);
+            destmac = EthernetFrame.getDestMacAddress(frame);
+            frameType = EthernetFrame.getFrameTypeInBytes(frame);
+            frameTypeStr = EthernetFrame.getFrameTypeInString(frame);
 
-            if (sourcemac == null || destmac == null || type == null) {
+            if (sourcemac == null || destmac == null || frameType == null) {
                 continue;
             }
 
             String info;
             info = pre + "READING ";
-            info = info + type.toString() + " ";
+            info = info + frameTypeStr + " ";
             info = info + "Length: " + frame.length + " ";
             info = info + "Dest: " + destmac.toString() + " ";
             info = info + "Source: " + sourcemac.toString();
@@ -65,12 +66,12 @@ public class EthernetRouter extends Thread {
             //unicast packets
             if (!destmac.isBroadcast()) {
                 App.login.monitor.writeToIntRead(pre + "Unicast");
-                if (type.toString().equals("IP")) {
-                    ippacket = Packet.GetPacket(frame);
+                if (frameTypeStr.equals("IP")) {
+                    ippacket = IPv4Packet.getPayload(frame);
 
-                    source = Packet.getSourceAddress(ippacket);
-                    dest = Packet.getDestAddress(ippacket);
-                    pver = Packet.getVersion(ippacket);
+                    source = IPv4Packet.getSourceAddress(ippacket);
+                    dest = IPv4Packet.getDestAddress(ippacket);
+                    pver = IPv4Packet.getVersion(ippacket);
                     len = ippacket.length;
 
                     if (source == null || dest == null || !pver.equals("45")) {
@@ -96,10 +97,10 @@ public class EthernetRouter extends Thread {
             } else {
                 //broadcast packets
                 App.login.monitor.writeToIntRead(pre + "Broadcast");
-                if (type.toString().equals("ARP")) {
+                if (frameTypeStr.equals("ARP")) {
                     App.login.monitor.writeToIntRead(pre + "ARP");
                     connection.giveARP(frame);
-                } else if (type.toString().equals("IP")) {
+                } else if (frameTypeStr.equals("IP")) {
                     //make sure its bootstrap                        
                     if (DHCPrequest.isBootstrap(frame)) {
                         App.login.monitor.writeToIntRead(pre + "BOOTSTRAP");

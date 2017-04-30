@@ -10,19 +10,19 @@ import kostiskag.unitynetwork.rednode.App;
  * thiiiis is a reverse arp table firstly if an arp is detected the arp table
  * registers it
  */
-public class ReverseArpTable {
+public class ReverseARPTable {
     String pre = "^ReverseArpTable ";
-    ReverseArp[] table;
-    ReverseArp temp;
+    ReverseARPInstance[] table;
+    ReverseARPInstance temp;
     int count;
     int size;
     int nextMac;
 
-    public ReverseArpTable(int size) {
+    public ReverseARPTable(int size) {
         this.size = size;
-        table = new ReverseArp[size];
+        table = new ReverseARPInstance[size];
         for (int i = 0; i < size; i++) {
-            table[i] = new ReverseArp();
+            table[i] = new ReverseARPInstance();
         }
         count = 0;
         nextMac = 1;
@@ -60,7 +60,7 @@ public class ReverseArpTable {
         table[count].setMac(mac);
         table[count].setIp(ip);
         App.login.monitor.writeToIntRead("new mac: " + table[count].getMac().toString()+" for "+table[count].getIp().getHostAddress());       
-        byte[] arp = ArpGenerate.ArpGenerate(table[count].getMac(), table[count].getIp());
+        byte[] arp = ARPGenerate.ArpGenerate(table[count].getMac(), table[count].getIp());
         if (arp == null){
             System.out.println("arp generate failed");
             App.login.monitor.writeToIntRead(pre+"ARP FAILED");
@@ -73,7 +73,7 @@ public class ReverseArpTable {
         count++;
     }
 
-    private void release(int id) {
+    public void release(int id) {
         for (int i = 0; i < count; i++) {
             if (i == id) {
                 if (count != 0) {
@@ -106,7 +106,7 @@ public class ReverseArpTable {
         return false;
     }
 
-    public ReverseArp getByIP(InetAddress ip) {
+    public ReverseARPInstance getByIP(InetAddress ip) {
         for (int i = 0; i < count; i++) {
             if (ip.equals(table[i].getIp())) {
                 return table[i];

@@ -2,9 +2,9 @@ package kostiskag.unitynetwork.rednode.Routing;
 
 import java.net.InetAddress;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.Frame;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.EthernetFrame;
+import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
 
 /**
  *
@@ -34,9 +34,9 @@ public class VirtualRouter extends Thread {
                 continue;
             }
 
-            String version = Packet.getVersion(packet);
-            InetAddress source = Packet.getSourceAddress(packet);
-            InetAddress dest = Packet.getDestAddress(packet);
+            String version = IPv4Packet.getVersion(packet);
+            InetAddress source = IPv4Packet.getSourceAddress(packet);
+            InetAddress dest = IPv4Packet.getDestAddress(packet);
             len = packet.length;
 
             if (!version.equals("45") || source == null || dest == null) {
@@ -59,12 +59,12 @@ public class VirtualRouter extends Thread {
             MacAddress sourceMac = null;
             if (App.login.connection.MyMac != null) {                
                 if (App.login.connection.arpTable.isAssociated(source)) {
-                    sourceMac = App.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
+                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
                 } else {
-                    App.login.connection.arpTable.lease(Packet.getSourceAddress(packet));
-                    sourceMac = App.login.connection.arpTable.getByIP(Packet.getSourceAddress(packet)).getMac();
+                    App.login.connection.arpTable.lease(IPv4Packet.getSourceAddress(packet));
+                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
                 }
-                byte[] frame = Frame.MakeFrame(packet, App.login.connection.MyMac, sourceMac);
+                byte[] frame = EthernetFrame.buildFrame(packet, App.login.connection.MyMac, sourceMac);
                 App.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + App.login.connection.MyMac.toString() + " Source: " + sourceMac);                                
                 App.login.connection.writeMan.offer(frame);
             } else {

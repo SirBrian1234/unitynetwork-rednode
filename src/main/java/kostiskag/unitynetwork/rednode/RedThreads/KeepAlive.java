@@ -5,13 +5,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
-
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
 
 /**
  *
@@ -19,7 +13,7 @@ import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
  */
 public class KeepAlive extends Thread{
 
-    private static String pre = "^KA ";
+    private static String pre = "^KeepAlive ";
     boolean kill=false;        
     
     public KeepAlive() {                
@@ -36,7 +30,7 @@ public class KeepAlive extends Thread{
         } catch (UnknownHostException ex) {
             Logger.getLogger(KeepAlive.class.getName()).log(Level.SEVERE, null, ex);
         }
-        byte[] data = Packet.MakePacket(payload,address,address,0);
+        byte[] data = UnityPacket.buildPacket(payload,address,address,0);
         
         while(!kill){
             for (int i=0; i<3; i++){

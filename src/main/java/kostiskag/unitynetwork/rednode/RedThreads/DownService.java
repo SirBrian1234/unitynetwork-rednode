@@ -5,15 +5,14 @@ import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
 
 /**
- *
- * @author kostis
- *
  * here we will listen for incoming traffic a fish packet is needed to start
  *
- *
+ * @author kostis
+ * 
  */
 public class DownService extends Thread {
 
@@ -77,40 +76,40 @@ public class DownService extends Thread {
                 byte[] packet = new byte[len];
                 System.arraycopy(receivePacket.getData(), 0, packet, 0, len);
 
-                String version = Packet.getVersion(packet);
-                //bn command packets
+                String version = IPv4Packet.getVersion(packet);
                 if (version.equals("0")) {
-                    byte[] payload = Packet.getPayloadU(packet);
+                	//bn command packets
+                    byte[] payload = UnityPacket.getPayload(packet);
                     modifiedSentence = new String(payload) + '\0';
                     if (modifiedSentence.startsWith("00001")) {
                         App.login.monitor.writeToCommands("DPING OK");
                         App.login.connection.isClientDPinged = true;
                     }
                     App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
-                } 
-                //rn command packets
-                else if (version.equals("1")){
-                    byte[] payload = Packet.getPayloadU(packet);
+                    
+                } else if (version.equals("1")){
+                	//rn command packets
+                    byte[] payload = UnityPacket.getPayload(packet);
                     modifiedSentence = new String(payload) + '\0';
                     if (modifiedSentence.startsWith("00004")) {                        
-                        if (App.login.connection.arpTable.isAssociated(Packet.getUSourceAddress(packet)))
-                            App.login.connection.arpTable.getByIP(Packet.getUSourceAddress(packet)).getTrafficMan().gotACK();
+                        if (App.login.connection.arpTable.isAssociated(UnityPacket.getSourceAddress(packet)))
+                            App.login.connection.arpTable.getByIP(UnityPacket.getSourceAddress(packet)).getTrafficMan().gotACK();
                     }
                     App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
-                } 
-                //chat packets
-                else if (version.equals("2")) {
-                    byte[] payload = new byte[Packet.getPayloadU(packet).length];
-                    payload = Packet.getPayloadU(packet);
+                    
+                } else if (version.equals("2")) {
+                	//chat packets
+                    byte[] payload = new byte[UnityPacket.getPayload(packet).length];
+                    payload = UnityPacket.getPayload(packet);
                     modifiedSentence = new String(payload) + '\0';
                     App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
-                } 
-                //ipv4 packets
-                else if (version.equals("45")) {
-                    App.login.monitor.writeToConnectionDown(version + " IPv4 Len: " + packet.length + " From " + Packet.getSourceAddress(packet).getHostAddress());
+                    
+                } else if (version.equals("45")) {
+                	//ipv4 packets
+                    App.login.monitor.writeToConnectionDown(version + " IPv4 Len: " + packet.length + " From " + IPv4Packet.getSourceAddress(packet).getHostAddress());
                     App.login.monitor.updateConUpBufferQueue(App.login.connection.downMan.getlen());
                     App.login.connection.downMan.offer(packet);                    
-                    ACK = Packet.MakePacket(("00004 [ACK]").getBytes(), App.login.connection.MyIP, Packet.getSourceAddress(packet), 1);
+                    ACK = UnityPacket.buildPacket(("00004 [ACK]").getBytes(), App.login.connection.MyIP, IPv4Packet.getSourceAddress(packet), 1);
                     App.login.connection.upMan.offer(ACK);
                 }
             } else {

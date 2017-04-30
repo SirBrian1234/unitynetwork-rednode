@@ -9,14 +9,14 @@ import java.util.logging.Logger;
  *
  * @author kostis
  */
-public class ArpPacketRequest {
+public class ARPPacketRequest {
     byte[] packet;    
     InetAddress source;
     InetAddress target;
     MacAddress sourcemac;
     MacAddress destmac;
     
-    public ArpPacketRequest(byte[] frame) {                                
+    public ARPPacketRequest(byte[] frame) {                                
         packet = new byte[frame.length];
         int j=14;
         for (int i=0; i<frame.length-14; i++){
@@ -33,7 +33,7 @@ public class ArpPacketRequest {
         try {
             target = InetAddress.getByAddress(addr);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(ArpPacketRequest.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ARPPacketRequest.class.getName()).log(Level.SEVERE, null, ex);
         }
         return target;
     }        

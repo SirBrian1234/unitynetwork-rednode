@@ -7,12 +7,12 @@ import kostiskag.unitynetwork.rednode.Routing.UploadManager;
  *
  * @author kostis
  */
-public class ReverseArp {
+public class ReverseARPInstance {
     MacAddress mac;
     InetAddress ip;
     UploadManager trafficMan;
 
-    public ReverseArp() { 
+    public ReverseARPInstance() { 
         trafficMan = new UploadManager();
     }
     

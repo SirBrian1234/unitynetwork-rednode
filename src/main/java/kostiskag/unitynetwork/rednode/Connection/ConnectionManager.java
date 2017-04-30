@@ -10,10 +10,11 @@ import kostiskag.unitynetwork.rednode.RedThreads.DownService;
 import kostiskag.unitynetwork.rednode.RedThreads.KeepAlive;
 import kostiskag.unitynetwork.rednode.RedThreads.UpService;
 import kostiskag.unitynetwork.rednode.Routing.*;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
-import kostiskag.unitynetwork.rednode.Routing.Data.DetectOS;
 import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
-import kostiskag.unitynetwork.rednode.Routing.Data.ReverseArpTable;
+import kostiskag.unitynetwork.rednode.Routing.Data.ReverseARPTable;
+import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
+import kostiskag.unitynetwork.rednode.functions.DetectOS;
+
 import org.p2pvpn.tuntap.TunTap;
 
 /**
@@ -62,7 +63,7 @@ public class ConnectionManager extends Thread {
     //ehternet & routing       
     public  int keepAliveTime = 5;                    
     public  int OSType=-1;
-    public  ReverseArpTable arpTable;
+    public  ReverseARPTable arpTable;
     public  MacAddress MyMac;    
     public  boolean IsDHCPset;    
     public  boolean isClientDPinged;
@@ -104,7 +105,7 @@ public class ConnectionManager extends Thread {
         this.BlueNodeAddress = BlueNodeAddress;
         this.BlueNodePort = BlueNodePort;                
         
-        arpTable = new ReverseArpTable(100);
+        arpTable = new ReverseARPTable(100);
         writeMan = new QueueManager(20);
         readMan = new QueueManager(20);
         upMan = new QueueManager(20);
@@ -300,7 +301,7 @@ public class ConnectionManager extends Thread {
 
     public void LoggedIn() {
         byte[] payload = ("[HELLO PACKET]").getBytes();
-        byte[] data = Packet.MakePacket(payload, MyIP, MyIP, 0);
+        byte[] data = UnityPacket.buildPacket(payload, MyIP, MyIP, 0);
         upMan.offer(data);
         App.login.monitor.setLogedIn();
         App.login.setLoggedIn();
@@ -378,7 +379,7 @@ public class ConnectionManager extends Thread {
 
     private void UpIsDown() {                
         byte[] payload = (Vaddress+" [U-TURN]").getBytes();
-        byte[] data = Packet.MakePacket(payload, MyIP, MyIP, 2);
+        byte[] data = UnityPacket.buildPacket(payload, MyIP, MyIP, 2);
         upMan.offer(data);
     }
     
@@ -454,7 +455,7 @@ public class ConnectionManager extends Thread {
             Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         payload = ("00001 [UPING PACKET]").getBytes();
-        byte[] data = Packet.MakePacket(payload, MyIP, addr, 0);
+        byte[] data = UnityPacket.buildPacket(payload, MyIP, addr, 0);
         for (int i = 0; i < 2; i++) {
             upMan.offer(data);
         }
@@ -494,7 +495,7 @@ public class ConnectionManager extends Thread {
         }
         payload = new byte[message.getBytes().length];
         payload = (address + " " + message + "                               ").getBytes();
-        byte[] data = Packet.MakePacket(payload, MyIP, destvaddr, 2);
+        byte[] data = UnityPacket.buildPacket(payload, MyIP, destvaddr, 2);
         upMan.offer(data);
     }
 

@@ -9,7 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.GUI.MonitorWindow;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
+import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
 
 /**
  *
@@ -61,11 +62,11 @@ public class UpService extends Thread {
             try {
                 clientSocket.send(sendPacket); 
                 App.login.monitor.updateConDownBufferQueue(App.login.connection.upMan.getlen());
-                String version = Packet.getVersion(data);
+                String version = IPv4Packet.getVersion(data);
                 if (version.equals("0") || version.equals("1")) {
-                    App.login.monitor.writeToConnectionUp(version + " " + new String(Packet.getPayloadU(data)));
+                    App.login.monitor.writeToConnectionUp(version + " " + new String(UnityPacket.getPayload(data)));
                 } else if (version.equals("45")){
-                    App.login.monitor.writeToConnectionUp(version + " IPv4 Packet Len:" + data.length + " To: " + Packet.getDestAddress(data).getHostAddress());
+                    App.login.monitor.writeToConnectionUp(version + " IPv4 Packet Len:" + data.length + " To: " + IPv4Packet.getDestAddress(data).getHostAddress());
                 }
             } catch (java.net.SocketException ex1) {
                 break;

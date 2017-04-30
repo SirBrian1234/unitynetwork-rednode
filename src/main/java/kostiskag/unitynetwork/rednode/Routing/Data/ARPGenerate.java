@@ -7,7 +7,7 @@ import kostiskag.unitynetwork.rednode.App;
  *
  * @author kostis
  */
-public class ArpGenerate {
+public class ARPGenerate {
     String pre="^ARP ";
 
     public static byte[] ArpGenerate(MacAddress senderMacAddress, InetAddress senderIp) {

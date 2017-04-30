@@ -1,9 +1,9 @@
 package kostiskag.unitynetwork.rednode.Routing;
 
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.Packet;
-import kostiskag.unitynetwork.rednode.Routing.Data.ArpPacketRequest;
-import kostiskag.unitynetwork.rednode.Routing.Data.ArpGenerate;
+import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
+import kostiskag.unitynetwork.rednode.Routing.Data.ARPPacketRequest;
+import kostiskag.unitynetwork.rednode.Routing.Data.ARPGenerate;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPGenerate;
 
@@ -17,7 +17,7 @@ public class EthernetConnection {
 
     private String pre = "^ETHCONN ";
     boolean ack;
-    private ArpPacketRequest arppacket;
+    private ARPPacketRequest arppacket;
     private byte[] answer;
     private boolean HadFirstDHCP = false;
     private boolean hadDHCPNak = false;
@@ -28,7 +28,7 @@ public class EthernetConnection {
     boolean clearToSendIP(byte[] ippacket) {
         //it means we had dhcp association
         if (App.login.connection.IsDHCPset == true) {
-            if (App.login.connection.MyIP.equals(Packet.getSourceAddress(ippacket))) {
+            if (App.login.connection.MyIP.equals(IPv4Packet.getSourceAddress(ippacket))) {
                 App.login.monitor.writeToIntRead(pre + "THE SOURCE IS ME");
                 //frame unicast, ip unicast, source is me, cant do much more, we have to send it
                 return true;
@@ -43,12 +43,12 @@ public class EthernetConnection {
     void giveARP(byte[] frame) {
         //if we had an association we can use arps
         if (App.login.connection.IsDHCPset == true) {
-            arppacket = new ArpPacketRequest(frame);
+            arppacket = new ARPPacketRequest(frame);
             if (arppacket.getTarget().equals(App.login.connection.MyIP)) {
                 App.login.monitor.writeToIntRead(pre + "Checking on me :P");
             } else if (App.login.connection.arpTable.isAssociated(arppacket.getTarget())) {
                 App.login.monitor.writeToIntRead(pre + "REGISTERED HOST");
-                answer = ArpGenerate.ArpGenerate(App.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
+                answer = ARPGenerate.ArpGenerate(App.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
                 for (int i = 0; i < 2; i++) {
                     App.login.connection.writeMan.offer(answer);
                 }

@@ -22,7 +22,8 @@ package kostiskag.unitynetwork.rednode.Routing.Data;
 import java.util.StringTokenizer;
 
 /**
- * This class represents an Mac-Address.
+ * This class represents a Mac-Address.
+ * 
  * @author wolfgang
  */
 public class MacAddress {

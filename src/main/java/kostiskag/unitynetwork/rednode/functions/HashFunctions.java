@@ -34,11 +34,11 @@ public class HashFunctions {
     
     public static String SHA256(String text) 
     	    throws NoSuchAlgorithmException, UnsupportedEncodingException  { 
-    	        MessageDigest md;
-    	        md = MessageDigest.getInstance("SHA-256");
-    	        byte[] md5hash = new byte[32];
-    	        md.update(text.getBytes("iso-8859-1"), 0, text.length());
-    	        md5hash = md.digest();
-    	        return convertToHex(md5hash);
+        MessageDigest md;
+        md = MessageDigest.getInstance("SHA-256");
+        byte[] md5hash = new byte[32];
+        md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        md5hash = md.digest();
+        return convertToHex(md5hash);
     } 
 } 
