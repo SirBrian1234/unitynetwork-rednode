@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.GUI;
+package kostiskag.unitynetwork.rednode.gui;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -19,7 +19,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Connection.ConnectionManager;
+import kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 

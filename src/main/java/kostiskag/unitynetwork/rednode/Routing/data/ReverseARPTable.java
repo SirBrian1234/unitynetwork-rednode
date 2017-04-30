@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.Routing.Data;
+package kostiskag.unitynetwork.rednode.Routing.data;
 
 import java.net.InetAddress;
 import java.util.Iterator;

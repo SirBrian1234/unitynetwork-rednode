@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.RedThreads;
+package kostiskag.unitynetwork.rednode.redThreads;
 
 import java.io.*;
 import java.net.InetAddress;

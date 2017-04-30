@@ -1,12 +1,12 @@
-package kostiskag.unitynetwork.rednode.RedThreads;
+package kostiskag.unitynetwork.rednode.redThreads;
 
 import java.io.IOException;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
-import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
+import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
+import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 
 /**
  * here we will listen for incoming traffic a fish packet is needed to start

@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.GUI;
+package kostiskag.unitynetwork.rednode.gui;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;

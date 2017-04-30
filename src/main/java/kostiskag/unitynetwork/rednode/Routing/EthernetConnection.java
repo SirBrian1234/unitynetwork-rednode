@@ -1,11 +1,11 @@
 package kostiskag.unitynetwork.rednode.Routing;
 
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
-import kostiskag.unitynetwork.rednode.Routing.Data.ARPPacketRequest;
-import kostiskag.unitynetwork.rednode.Routing.Data.ARPGenerate;
-import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
-import kostiskag.unitynetwork.rednode.Routing.Data.DHCPGenerate;
+import kostiskag.unitynetwork.rednode.Routing.data.ARPGenerate;
+import kostiskag.unitynetwork.rednode.Routing.data.ARPPacketRequest;
+import kostiskag.unitynetwork.rednode.Routing.data.DHCPGenerate;
+import kostiskag.unitynetwork.rednode.Routing.data.DHCPrequest;
+import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
 /**
  * This linear progress code will help up organize ethernet

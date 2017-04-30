@@ -1,19 +1,19 @@
-package kostiskag.unitynetwork.rednode.Connection;
+package kostiskag.unitynetwork.rednode.connection;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.RedThreads.AuthClient;
-import kostiskag.unitynetwork.rednode.RedThreads.DownService;
-import kostiskag.unitynetwork.rednode.RedThreads.KeepAlive;
-import kostiskag.unitynetwork.rednode.RedThreads.UpService;
 import kostiskag.unitynetwork.rednode.Routing.*;
-import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
-import kostiskag.unitynetwork.rednode.Routing.Data.ReverseARPTable;
-import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
+import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
+import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
+import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 import kostiskag.unitynetwork.rednode.functions.DetectOS;
+import kostiskag.unitynetwork.rednode.redThreads.AuthClient;
+import kostiskag.unitynetwork.rednode.redThreads.DownService;
+import kostiskag.unitynetwork.rednode.redThreads.KeepAlive;
+import kostiskag.unitynetwork.rednode.redThreads.UpService;
 
 import org.p2pvpn.tuntap.TunTap;
 

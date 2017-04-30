@@ -4,9 +4,9 @@ import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
-import kostiskag.unitynetwork.rednode.Routing.Packets.EthernetFrame;
-import kostiskag.unitynetwork.rednode.Routing.Packets.IPv4Packet;
+import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
+import kostiskag.unitynetwork.rednode.Routing.packets.EthernetFrame;
+import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
 /**
  * Gets packets from the incoming queue and writes them to the medium.

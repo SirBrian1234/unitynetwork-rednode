@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.Routing.Packets;
+package kostiskag.unitynetwork.rednode.Routing.packets;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

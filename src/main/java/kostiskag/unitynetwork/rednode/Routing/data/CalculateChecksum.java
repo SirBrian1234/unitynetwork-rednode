@@ -1,4 +1,4 @@
-package kostiskag.unitynetwork.rednode.Routing.Data;
+package kostiskag.unitynetwork.rednode.Routing.data;
 
 public class CalculateChecksum {
 

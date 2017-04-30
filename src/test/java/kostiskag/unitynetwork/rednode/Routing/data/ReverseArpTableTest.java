@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 import org.junit.Test;
 
-import kostiskag.unitynetwork.rednode.Routing.Data.ReverseARPTable;
+import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
 
 public class ReverseArpTableTest {
 

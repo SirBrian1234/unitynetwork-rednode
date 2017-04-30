@@ -1,11 +1,11 @@
-package kostiskag.unitynetwork.rednode.RedThreads;
+package kostiskag.unitynetwork.rednode.redThreads;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.Packets.UnityPacket;
+import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 
 /**
  *

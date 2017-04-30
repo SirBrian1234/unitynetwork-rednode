@@ -1,7 +1,8 @@
 package kostiskag.unitynetwork.rednode;
 
 import javax.swing.UIManager;
-import kostiskag.unitynetwork.rednode.GUI.LoginWindow;
+
+import kostiskag.unitynetwork.rednode.gui.LoginWindow;
 
 /**
  *

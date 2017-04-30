@@ -1,6 +1,6 @@
-package kostiskag.unitynetwork.rednode.Routing.Packets;
+package kostiskag.unitynetwork.rednode.Routing.packets;
 
-import kostiskag.unitynetwork.rednode.Routing.Data.MacAddress;
+import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 
 /**
  *
