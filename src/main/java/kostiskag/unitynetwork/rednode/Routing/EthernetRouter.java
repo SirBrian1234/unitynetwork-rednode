@@ -88,8 +88,12 @@ public class EthernetRouter extends Thread {
                     App.login.monitor.writeToIntRead(info2);
 
                     if (connection.clearToSendIP(ippacket)) {                          
-                        App.login.connection.arpTable.getByIP(dest).getTrafficMan().clearToSend();
-                        App.login.connection.upMan.offer(ippacket);                        
+                        try {
+							App.login.connection.arpTable.getByIP(dest).getTrafficMan().clearToSend();
+							 App.login.connection.upMan.offer(ippacket);   
+						} catch (Exception e) {
+							e.printStackTrace();
+						}                                            
                     }
                 } else {
                     App.login.monitor.writeToIntRead(pre + "NOT INTRESTING FRAME");

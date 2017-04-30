@@ -105,7 +105,7 @@ public class ConnectionManager extends Thread {
         this.BlueNodeAddress = BlueNodeAddress;
         this.BlueNodePort = BlueNodePort;                
         
-        arpTable = new ReverseARPTable(100);
+        arpTable = new ReverseARPTable(App.login.connection.MyIP, true);
         writeMan = new QueueManager(20);
         readMan = new QueueManager(20);
         upMan = new QueueManager(20);

@@ -93,7 +93,11 @@ public class DownService extends Thread {
                     modifiedSentence = new String(payload) + '\0';
                     if (modifiedSentence.startsWith("00004")) {                        
                         if (App.login.connection.arpTable.isAssociated(UnityPacket.getSourceAddress(packet)))
-                            App.login.connection.arpTable.getByIP(UnityPacket.getSourceAddress(packet)).getTrafficMan().gotACK();
+							try {
+								App.login.connection.arpTable.getByIP(UnityPacket.getSourceAddress(packet)).getTrafficMan().gotACK();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
                     }
                     App.login.monitor.writeToConnectionDown(version + " " + modifiedSentence);
                     

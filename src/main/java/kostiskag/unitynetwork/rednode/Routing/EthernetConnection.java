@@ -8,14 +8,14 @@ import kostiskag.unitynetwork.rednode.Routing.Data.DHCPrequest;
 import kostiskag.unitynetwork.rednode.Routing.Data.DHCPGenerate;
 
 /**
- *
- * @author kostis this linear progress code will help up organize ethernet
- * connection and issues like doing arps after dhcp anthat kind of stuff
- *
+ * This linear progress code will help up organize ethernet
+ * connection and issues like doing arps after dhcp and that kind of stuff.
+ * 
+ * @author kostis 
  */
 public class EthernetConnection {
 
-    private String pre = "^ETHCONN ";
+    private String pre = "^EthernetConnection ";
     boolean ack;
     private ARPPacketRequest arppacket;
     private byte[] answer;
@@ -48,14 +48,22 @@ public class EthernetConnection {
                 App.login.monitor.writeToIntRead(pre + "Checking on me :P");
             } else if (App.login.connection.arpTable.isAssociated(arppacket.getTarget())) {
                 App.login.monitor.writeToIntRead(pre + "REGISTERED HOST");
-                answer = ARPGenerate.ArpGenerate(App.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
-                for (int i = 0; i < 2; i++) {
-                    App.login.connection.writeMan.offer(answer);
-                }
+                try {
+					answer = ARPGenerate.ArpGenerate(App.login.connection.arpTable.getByIP(arppacket.getTarget()).getMac(), arppacket.getTarget());
+					for (int i = 0; i < 2; i++) {
+	                    App.login.connection.writeMan.offer(answer);
+	                }
+                } catch (Exception e) {
+					e.printStackTrace();
+				}                
             } else {
                 App.login.monitor.writeToIntRead(pre + "NEW HOST");
                 App.login.monitor.writeToIntRead("leasing: " + arppacket.getTarget().getHostAddress());
-                App.login.connection.arpTable.lease(arppacket.getTarget());
+                try {
+					App.login.connection.arpTable.lease(arppacket.getTarget());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
             }
         }
     }

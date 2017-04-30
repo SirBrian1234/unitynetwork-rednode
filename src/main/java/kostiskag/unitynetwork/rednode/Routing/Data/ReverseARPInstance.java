@@ -5,14 +5,16 @@ import kostiskag.unitynetwork.rednode.Routing.UploadManager;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class ReverseARPInstance {
-    MacAddress mac;
-    InetAddress ip;
-    UploadManager trafficMan;
+    private final MacAddress mac;
+    private final InetAddress ip;
+    private final UploadManager trafficMan;
 
-    public ReverseARPInstance() { 
+    public ReverseARPInstance(InetAddress ip, MacAddress mac) { 
+    	this.ip = ip;
+    	this.mac = mac;
         trafficMan = new UploadManager();
     }
     
@@ -26,14 +28,5 @@ public class ReverseARPInstance {
 
     public UploadManager getTrafficMan() {
         return trafficMan;
-    }
-    
-    public void setIp(InetAddress ip) {
-        this.ip = ip;
-    }
-
-    public void setMac(MacAddress mac) {
-        this.mac = mac;
-    }
-
+    }   
 }
