@@ -15,7 +15,7 @@ public class ReverseArpTableTest {
 	public void testLease() {
 		ReverseARPTable table = null;
 		try {
-			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"),false);
+			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"));
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}
@@ -48,7 +48,7 @@ public class ReverseArpTableTest {
 	public void testRelease() {
 		ReverseARPTable table = null;
 		try {
-			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"),false);
+			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"));
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}
@@ -95,7 +95,7 @@ public class ReverseArpTableTest {
 	public void testGetByIP() {
 		ReverseARPTable table = null;
 		try {
-			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"),false);
+			table = new ReverseARPTable(InetAddress.getByName("10.0.0.1"));
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
 		}

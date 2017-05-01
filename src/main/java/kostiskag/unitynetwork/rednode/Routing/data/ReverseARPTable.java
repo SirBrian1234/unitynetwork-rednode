@@ -4,13 +4,12 @@ import java.net.InetAddress;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import kostiskag.unitynetwork.rednode.App;
-
 /**
  * This is a reverse ARP table. Why it is called reverse?
  * A normal table lies in a host which keeps a record of IP addresses associated with MAC addressed
- * in order to properly route the data. This table does the same thing, it keeps tuples of IP to MAX
- * addressed but it is used to feed the host with a mac when an IP's host is not known to him.  
+ * in order to properly route the data. This table does the same thing, it keeps tuples of IP to MAC
+ * addressed but it is used to feed the host with a mac when an IP's host is not known to him. The table
+ * generates new macs for new ips in an increment style starting from number one.  
  *
  * @author Konstantinos Kagiampakis
  */
@@ -18,12 +17,10 @@ public class ReverseARPTable {
     private final String pre = "^ReverseArpTable ";
     private final LinkedList<ReverseARPInstance> list;
     private final InetAddress myIp;
-    private final boolean generateARPS;
     private int nextMac;
 
-    public ReverseARPTable(InetAddress myIp, boolean generateARPS) {
+    public ReverseARPTable(InetAddress myIp) {
     	this.myIp = myIp;
-    	this.generateARPS = generateARPS;
     	list = new LinkedList<ReverseARPInstance>();
         nextMac = 1;               
     }
@@ -74,24 +71,8 @@ public class ReverseARPTable {
 
         nextMac++;
         MacAddress mac = new MacAddress(addr);  
-        
-        
         ReverseARPInstance newEntry = new ReverseARPInstance(ip, mac);
-        list.add(newEntry);
-        
-        if (generateARPS) {
-	        App.login.monitor.writeToIntRead("new mac: " + newEntry.getMac().toString()+" for "+newEntry.getIp().getHostAddress());       
-	        byte[] arp = ARPGenerate.ArpGenerate(newEntry.getMac(), newEntry.getIp());
-	        if (arp == null){
-	            System.out.println("arp generate failed");
-	            App.login.monitor.writeToIntRead(pre+"ARP FAILED");
-	        } else {
-	             App.login.monitor.writeToIntWrite(pre+"GENERATING ARPS for "+newEntry.getIp().getHostAddress());
-	             for(int i=0; i<2; i++){
-	                App.login.connection.writeMan.offer(arp);
-	             }
-	        }
-        }
+        list.add(newEntry);        
     }
     
     public synchronized int getLength() {

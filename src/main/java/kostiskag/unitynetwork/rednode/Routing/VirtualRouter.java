@@ -4,7 +4,9 @@ import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Routing.data.ARPGenerate;
 import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
+import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPInstance;
 import kostiskag.unitynetwork.rednode.Routing.packets.EthernetFrame;
 import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
@@ -64,7 +66,20 @@ public class VirtualRouter extends Thread {
 	            	if (App.login.connection.arpTable.isAssociated(source)) {
 	                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
 					} else {
-	                    App.login.connection.arpTable.lease(IPv4Packet.getSourceAddress(packet));
+						InetAddress sourceIp = IPv4Packet.getSourceAddress(packet);
+	                    App.login.connection.arpTable.lease(sourceIp);
+	                    ReverseARPInstance entry = App.login.connection.arpTable.getByIP(sourceIp);
+	                    App.login.monitor.writeToIntRead("new mac: " +  entry.getMac().toString()+" for "+entry.getIp().getHostAddress());       
+	        	        byte[] arp = ARPGenerate.ArpGenerate(entry.getMac(), entry.getIp());
+	        	        if (arp == null){
+	        	            System.out.println("arp generate failed");
+	        	            App.login.monitor.writeToIntRead(pre+"ARP FAILED");
+	        	        } else {
+	        	             App.login.monitor.writeToIntWrite(pre+"GENERATING ARPS for "+entry.getIp().getHostAddress());
+	        	             for(int i=0; i<2; i++){
+	        	                App.login.connection.writeMan.offer(arp);
+	        	             }
+	        	        }
 	                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
 	                }
 	                byte[] frame = EthernetFrame.buildFrame(packet, App.login.connection.MyMac, sourceMac);
