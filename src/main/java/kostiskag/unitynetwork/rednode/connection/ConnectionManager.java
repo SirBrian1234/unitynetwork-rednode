@@ -194,10 +194,10 @@ public class ConnectionManager extends Thread {
         upMan = new QueueManager(4);
         downMan = new QueueManager(500);
         //open downlink
-        downlink = new RedReceive(Vaddress, FullBlueNodeAddress, DownPort);
+        downlink = new RedReceive(FullBlueNodeAddress, DownPort);
         downlink.start();
         //open uplink
-        uplink = new RedSend(Vaddress, FullBlueNodeAddress, UpPort);
+        uplink = new RedSend(FullBlueNodeAddress, UpPort);
         uplink.start();
         //open keep alive
         ka = new KeepAlive();
@@ -407,7 +407,7 @@ public class ConnectionManager extends Thread {
         if (downPort == -1) {
             return;
         }
-        downlink = new RedReceive(App.login.connection.Vaddress, FullBlueNodeAddress, downPort);
+        downlink = new RedReceive(FullBlueNodeAddress, downPort);
         downlink.start();
         try {
             sleep(4000);
@@ -436,7 +436,7 @@ public class ConnectionManager extends Thread {
         if (upPort == -1) {
             return;
         }
-        uplink = new RedSend(App.login.connection.Vaddress, FullBlueNodeAddress, upPort);
+        uplink = new RedSend(FullBlueNodeAddress, upPort);
         uplink.start();
         try {
             sleep(4000);

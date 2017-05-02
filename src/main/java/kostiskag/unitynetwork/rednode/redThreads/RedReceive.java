@@ -2,6 +2,7 @@ package kostiskag.unitynetwork.rednode.redThreads;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
@@ -16,18 +17,15 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
  */
 public class RedReceive extends Thread {
 
-    private static String pre = "^RedReceive ";
-    private boolean kill = false;
-    private static InetAddress address;
-    private static int port;
-    private static DatagramSocket clientSocket;
-    private String vaddress;
-    private String modifiedSentence;
-
-    public RedReceive(String vaddres, InetAddress address, int port) {
+    private final String pre = "^RedReceive ";
+    private final InetAddress address;
+    private final int port;
+    private DatagramSocket socket;
+    private AtomicBoolean kill = new AtomicBoolean(true);
+    
+    public RedReceive(InetAddress address, int port) {
         this.address = address;
         this.port = port;
-        this.vaddress = vaddres;
     }
 
     @Override
@@ -37,9 +35,9 @@ public class RedReceive extends Thread {
         byte[] buffer = new byte[2048];
         byte[] ACK = ("00004 [ACK]").getBytes();
         
-        clientSocket = null;
+        socket = null;
         try {
-            clientSocket = new DatagramSocket();
+            socket = new DatagramSocket();
         } catch (java.net.BindException ex1) {
             App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");
         } catch (SocketException ex) {
@@ -50,7 +48,7 @@ public class RedReceive extends Thread {
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
         try {
             for (int i = 0; i < 3; i++) {
-                clientSocket.send(sendPacket);
+                socket.send(sendPacket);
             }
         } catch (java.net.SocketException ex1) {
             App.login.monitor.writeToConnectionDown("FISH PACKET SEND ERROR");
@@ -61,9 +59,9 @@ public class RedReceive extends Thread {
         }
 
         DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
-        while (!kill) {
+        while (!kill.get()) {
             try {
-                clientSocket.receive(receivePacket);
+                socket.receive(receivePacket);
             } catch (java.net.SocketException ex) {
                 return;
             } catch (IOException ex) {
@@ -71,6 +69,7 @@ public class RedReceive extends Thread {
                 return;
             }
             
+            String modifiedSentence;
             int len = receivePacket.getLength();
             if (len > 0 && len <= 1500) {
                 byte[] packet = new byte[len];
@@ -124,7 +123,7 @@ public class RedReceive extends Thread {
     }
 
     public void kill() {
-        kill = true;
-        clientSocket.close();
+        kill.set(true);
+        socket.close();
     }
 }
