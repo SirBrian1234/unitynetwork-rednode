@@ -15,8 +15,6 @@ public class DetectOS {
             type=1;
         } else if (isUnix()) {
             type=2;
-        } else if (isSolaris()) {
-            type=3;
         } else {
             type=-1;
         }
@@ -50,14 +48,6 @@ public class DetectOS {
 
     }
 
-    public static boolean isSolaris() {
-
-        String os = System.getProperty("os.name").toLowerCase();
-        // Solaris
-        return (os.indexOf("sunos") >= 0);
-
-    }
-    
     public static  String getString() {
         if (isWindows()) {
             return "Windows";
@@ -65,10 +55,8 @@ public class DetectOS {
             return "Macintosh";
         } else if (isUnix()) {
             return "Linux";
-        } else if (isSolaris()) {
-            return "Solaris";
         } else {
-            return "unknown";
+            return "not known";
         }
     }        
 }

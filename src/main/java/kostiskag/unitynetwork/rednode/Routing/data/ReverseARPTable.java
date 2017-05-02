@@ -24,6 +24,10 @@ public class ReverseARPTable {
     	list = new LinkedList<ReverseARPInstance>();
         nextMac = 1;               
     }
+    
+    public synchronized int getLength() {
+    	return list.size();
+    }
 
     public synchronized void lease(InetAddress ip) throws Exception {
     	//validate IP address
@@ -75,10 +79,6 @@ public class ReverseARPTable {
         list.add(newEntry);        
     }
     
-    public synchronized int getLength() {
-    	return list.size();
-    }
-
     public synchronized void release(InetAddress ip) throws Exception {
     	Iterator<ReverseARPInstance> it = list.listIterator();
         while(it.hasNext()) {

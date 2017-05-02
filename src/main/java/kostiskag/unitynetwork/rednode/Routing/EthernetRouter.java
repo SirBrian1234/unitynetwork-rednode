@@ -7,22 +7,28 @@ import kostiskag.unitynetwork.rednode.Routing.packets.EthernetFrame;
 import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
 import java.net.InetAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * This class is responsible to examine all the received frames from read and send
+ * them to the rednode's send queue.
  *
  * @author kostis
- *
- * This class is responsible for examining all frames we get from read and send
- * them to rednodes queue for exporting to the network
- *
  */
 public class EthernetRouter extends Thread {
 
-    private String pre = "^EthernetRouter ";
-    private boolean kill = false;
-    private String pver;
-    private int len;
-
+    private final String pre = "^EthernetRouter ";
+    private final QueueManager interfaceReadQueue;
+    private final QueueManager sendQueue;
+    private final UploadManager trafficMan;
+    private final AtomicBoolean kill = new AtomicBoolean(false);
+    
+    public EthernetRouter(QueueManager interfaceReadQueue, QueueManager sendQueue, UploadManager trafficMan) {
+		this.interfaceReadQueue = interfaceReadQueue; //App.login.connection.readMan
+		this.sendQueue = sendQueue; //App.login.connection.upMan
+		this.trafficMan = trafficMan; //App.login.connection.arpTable.getByIP(dest).getTrafficMan()
+	}
+    
     @Override
     public void run() {
         byte[] frame;
@@ -30,15 +36,13 @@ public class EthernetRouter extends Thread {
         MacAddress destmac;
         InetAddress source;
         InetAddress dest;
-        byte[] frameType;
         String frameTypeStr;
         byte[] ippacket;
         EthernetConnection connection = new EthernetConnection();
 
-        while (!kill) {
-            //tha pairnei paketa apo thn oura kai tha ta grafei sto meso, ama einai adeia tha koimatai gia ligo                        
+        while (!kill.get()) {
             try {
-                frame = App.login.connection.readMan.poll();
+            	frame = interfaceReadQueue.poll();
             } catch (java.lang.NullPointerException ex1) {
                 continue;
             } catch (java.util.NoSuchElementException ex) {
@@ -47,10 +51,9 @@ public class EthernetRouter extends Thread {
 
             sourcemac = EthernetFrame.getSourceMacAddress(frame);
             destmac = EthernetFrame.getDestMacAddress(frame);
-            frameType = EthernetFrame.getFrameTypeInBytes(frame);
             frameTypeStr = EthernetFrame.getFrameTypeInString(frame);
 
-            if (sourcemac == null || destmac == null || frameType == null) {
+            if (sourcemac == null || destmac == null) {
                 continue;
             }
 
@@ -66,13 +69,13 @@ public class EthernetRouter extends Thread {
             //unicast packets
             if (!destmac.isBroadcast()) {
                 App.login.monitor.writeToIntRead(pre + "Unicast");
-                if (frameTypeStr.equals("IP")) {
+                if (EthernetFrame.isIPv4(frame)) {
                     ippacket = IPv4Packet.getPayload(frame);
 
                     source = IPv4Packet.getSourceAddress(ippacket);
                     dest = IPv4Packet.getDestAddress(ippacket);
-                    pver = IPv4Packet.getVersion(ippacket);
-                    len = ippacket.length;
+                    String pver = IPv4Packet.getVersion(ippacket);
+                    int len = ippacket.length;
 
                     if (source == null || dest == null || !pver.equals("45")) {
                         continue;
@@ -87,10 +90,11 @@ public class EthernetRouter extends Thread {
                     info2 = info2 + "Dest: " + dest.getHostAddress();
                     App.login.monitor.writeToIntRead(info2);
 
+                    //nai alla etsi kathusterei olo to interface gia ena destination einai atopo
                     if (connection.clearToSendIP(ippacket)) {                          
                         try {
-							App.login.connection.arpTable.getByIP(dest).getTrafficMan().clearToSend();
-							 App.login.connection.upMan.offer(ippacket);   
+							trafficMan.waitToSend();
+							sendQueue.offer(ippacket);   
 						} catch (Exception e) {
 							e.printStackTrace();
 						}                                            
@@ -101,10 +105,10 @@ public class EthernetRouter extends Thread {
             } else {
                 //broadcast packets
                 App.login.monitor.writeToIntRead(pre + "Broadcast");
-                if (frameTypeStr.equals("ARP")) {
+                if (EthernetFrame.isARP(frame)) {
                     App.login.monitor.writeToIntRead(pre + "ARP");
                     connection.giveARP(frame);
-                } else if (frameTypeStr.equals("IP")) {
+                } else if (EthernetFrame.isIPv4(frame)) {
                     //make sure its bootstrap                        
                     if (DHCPrequest.isBootstrap(frame)) {
                         App.login.monitor.writeToIntRead(pre + "BOOTSTRAP");
@@ -114,12 +118,13 @@ public class EthernetRouter extends Thread {
                     }
                 }
             }
-        }
-        App.login.connection.readMan.clear();
+        }        
         App.login.monitor.clearIntReadNumber();
+        App.login.monitor.writeToCommands(pre + "ENDED");
     }
 
     public void kill() {
-        kill = true;
+        kill.set(true);
+        interfaceReadQueue.exit();
     }
 }

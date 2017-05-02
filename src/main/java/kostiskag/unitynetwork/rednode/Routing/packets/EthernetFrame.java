@@ -8,12 +8,18 @@ import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
  */
 public class EthernetFrame {         
     
-    public static byte[] getFrameTypeInBytes(byte[] frame) {            
-        return new byte[] { frame[12] , frame[13] };
+    public static boolean isIPv4(byte[] frame) {
+    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("80")){
+    		return true;
+    	}
+    	return false;
     }
     
-    public static String getFrameTypeInHex(byte[] frame) {            
-    	return (Integer.toHexString(frame[12])+Integer.toHexString(frame[13]));
+    public static boolean isARP(byte[] frame) {
+    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("86")){
+    		return true;
+    	}
+    	return false;
     }
     
     public static String getFrameTypeInString(byte[] frame) {            
@@ -36,20 +42,20 @@ public class EthernetFrame {
         return addr;
     }
     
-    public static byte[] getPayload(byte[] frame) {        
+    public static byte[] getFramePayload(byte[] frame) {        
         byte[] packet = new byte[frame.length-14];        
         System.arraycopy(frame, 14, packet, 0, packet.length);
         return packet;
     }
     
-    public static byte[] buildFrame(byte[] IPdatagramm, MacAddress dest, MacAddress source) {
+    public static byte[] buildFrame(byte[] payload, MacAddress dest, MacAddress source) {
         byte[]  type = new byte[] { 0x08 , 0x00};
-        byte[] frame = new byte[dest.getAddress().length+source.getAddress().length+type.length+IPdatagramm.length];                                
+        byte[] frame = new byte[dest.getAddress().length+source.getAddress().length+type.length+payload.length];                                
         
         System.arraycopy(dest.getAddress(),0,frame,0,dest.getAddress().length);
         System.arraycopy(source.getAddress(),0,frame,6,source.getAddress().length);
         System.arraycopy(type,0,frame,12,type.length);
-        System.arraycopy(IPdatagramm,0,frame,14,IPdatagramm.length);
+        System.arraycopy(payload,0,frame,14,payload.length);
         
         return frame;
     }    

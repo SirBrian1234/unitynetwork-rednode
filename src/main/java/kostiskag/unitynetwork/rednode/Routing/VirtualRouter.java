@@ -18,10 +18,13 @@ import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 public class VirtualRouter extends Thread {
 
 	private final String pre = "^VirtualRouter ";
-	private AtomicBoolean kill = new AtomicBoolean(false);
+	private final QueueManager interfaceWriteQueue;
+	private final QueueManager receiveQueue;
+	private final AtomicBoolean kill = new AtomicBoolean(false);
     
-    public VirtualRouter() {
-    	
+    public VirtualRouter(QueueManager interfaceWriteQueue, QueueManager receiveQueue) {
+    	this.interfaceWriteQueue = interfaceWriteQueue; //App.login.connection.writeMan
+    	this.receiveQueue = receiveQueue; //App.login.connection.downMan
     }
 
     @Override
@@ -31,7 +34,7 @@ public class VirtualRouter extends Thread {
         	//getting a packet
         	byte[] packet = null;
             try {                
-                packet = App.login.connection.downMan.poll();                
+                packet = receiveQueue.poll();                
             } catch (java.lang.NullPointerException ex1) {
                 continue;
             } catch (java.util.NoSuchElementException ex) {
@@ -77,14 +80,14 @@ public class VirtualRouter extends Thread {
 	        	        } else {
 	        	             App.login.monitor.writeToIntWrite(pre+"GENERATING ARPS for "+entry.getIp().getHostAddress());
 	        	             for(int i=0; i<2; i++){
-	        	                App.login.connection.writeMan.offer(arp);
+	        	            	 interfaceWriteQueue.offer(arp);
 	        	             }
 	        	        }
 	                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
 	                }
 	                byte[] frame = EthernetFrame.buildFrame(packet, App.login.connection.MyMac, sourceMac);
 	                App.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + App.login.connection.MyMac.toString() + " Source: " + sourceMac);                                
-	                App.login.connection.writeMan.offer(frame);
+	                interfaceWriteQueue.offer(frame);
             	} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -93,11 +96,12 @@ public class VirtualRouter extends Thread {
             }
                 
         }
-        App.login.connection.writeMan.clear();
         App.login.monitor.clearIntReadNumber();
+        App.login.monitor.writeToIntWrite(pre+"ended");
     }
 
     public void kill() {
         kill.set(true);
+        interfaceWriteQueue.exit();
     }
 }

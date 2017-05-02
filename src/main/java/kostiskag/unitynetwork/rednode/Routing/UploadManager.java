@@ -15,6 +15,7 @@ public class UploadManager {
     private long averageTime=250;
 
     public UploadManager() {
+    	
     }
 
     public synchronized void gotACK() {
@@ -35,7 +36,7 @@ public class UploadManager {
     }
 
     //clearToSend
-    public synchronized void clearToSend() {        
+    public synchronized void waitToSend() {        
         System.out.println("len "+len+ " average time "+averageTime);
         if (len <= -20){
             try {                

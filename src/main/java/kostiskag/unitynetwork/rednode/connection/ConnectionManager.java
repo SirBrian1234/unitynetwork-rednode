@@ -8,6 +8,8 @@ import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Routing.*;
 import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
+import kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceRead;
+import kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceWrite;
 import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 import kostiskag.unitynetwork.rednode.functions.DetectOS;
 import kostiskag.unitynetwork.rednode.redThreads.AuthClient;
@@ -123,6 +125,10 @@ public class ConnectionManager extends Thread {
             App.login.writeInfo("WRONG ADDRESS SYNTAX GIVEN");            
         }                        
     }
+    
+    public UploadManager getTrafficMan() {
+		return trafficMan;
+	}
 
     /*
      * thats the life of a connection from birth to usage and death
@@ -282,16 +288,16 @@ public class ConnectionManager extends Thread {
             readMan = new QueueManager(20);
             writeMan = new QueueManager(1000);
 
-            read = new InterfaceRead(App.login.connection.tuntap);
+            read = new InterfaceRead(tuntap, readMan);
             read.start();
 
-            write = new InterfaceWrite(App.login.connection.tuntap);
+            write = new InterfaceWrite(tuntap, writeMan);
             write.start();
 
-            router = new EthernetRouter();
+            router = new EthernetRouter(readMan, upMan, trafficMan);
             router.start();
 
-            vrouter = new VirtualRouter();
+            vrouter = new VirtualRouter(writeMan, downMan);
             vrouter.start();
             return true;
         } else {
@@ -377,12 +383,6 @@ public class ConnectionManager extends Thread {
         }
     }
 
-    private void UpIsDown() {                
-        byte[] payload = (Vaddress+" [U-TURN]").getBytes();
-        byte[] data = UnityPacket.buildPacket(payload, MyIP, MyIP, 2);
-        upMan.offer(data);
-    }
-    
     public boolean ping() {
     	authClient.ping();
     	String input = authClient.receiveAuthData();  

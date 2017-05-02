@@ -93,7 +93,7 @@ public class RedReceive extends Thread {
                     if (modifiedSentence.startsWith("00004")) {                        
                         if (App.login.connection.arpTable.isAssociated(UnityPacket.getSourceAddress(packet)))
 							try {
-								App.login.connection.arpTable.getByIP(UnityPacket.getSourceAddress(packet)).getTrafficMan().gotACK();
+								App.login.connection.getTrafficMan().gotACK();
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

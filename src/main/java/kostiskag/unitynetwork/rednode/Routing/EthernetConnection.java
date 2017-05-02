@@ -23,6 +23,7 @@ public class EthernetConnection {
     private boolean hadDHCPNak = false;
 
     public EthernetConnection() {
+    	
     }
 
     boolean clearToSendIP(byte[] ippacket) {
