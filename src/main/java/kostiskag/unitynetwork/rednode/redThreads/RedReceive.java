@@ -14,9 +14,9 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
  * @author kostis
  * 
  */
-public class DownService extends Thread {
+public class RedReceive extends Thread {
 
-    private static String pre = "^DOWN ";
+    private static String pre = "^RedReceive ";
     private boolean kill = false;
     private static InetAddress address;
     private static int port;
@@ -24,7 +24,7 @@ public class DownService extends Thread {
     private String vaddress;
     private String modifiedSentence;
 
-    public DownService(String vaddres, InetAddress address, int port) {
+    public RedReceive(String vaddres, InetAddress address, int port) {
         this.address = address;
         this.port = port;
         this.vaddress = vaddres;
@@ -43,7 +43,7 @@ public class DownService extends Thread {
         } catch (java.net.BindException ex1) {
             App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");
         } catch (SocketException ex) {
-            Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         sendData = "FISH PACKET".getBytes();
@@ -56,7 +56,7 @@ public class DownService extends Thread {
             App.login.monitor.writeToConnectionDown("FISH PACKET SEND ERROR");
             return;
         } catch (IOException ex) {            
-            Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
 
@@ -67,7 +67,7 @@ public class DownService extends Thread {
             } catch (java.net.SocketException ex) {
                 return;
             } catch (IOException ex) {
-                Logger.getLogger(DownService.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
             

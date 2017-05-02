@@ -16,9 +16,9 @@ import kostiskag.unitynetwork.rednode.gui.MonitorWindow;
  *
  * @author kostis
  */
-public class UpService extends Thread {
+public class RedSend extends Thread {
 
-    private static String pre = "^UP ";
+    private static String pre = "^RedSend ";
     private boolean kill = false;
     private String vaddress;
     private static DatagramSocket clientSocket;
@@ -26,7 +26,7 @@ public class UpService extends Thread {
     private int port;
     private byte[] data;
 
-    public UpService(String vaddress, InetAddress address, int port) {
+    public RedSend(String vaddress, InetAddress address, int port) {
         this.address = address;
         this.vaddress = vaddress;
         this.port = port;
@@ -40,7 +40,7 @@ public class UpService extends Thread {
         } catch (java.net.BindException ex1) {
             App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");            
         } catch (SocketException ex) {
-            Logger.getLogger(UpService.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RedSend.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         while (!kill) {
@@ -71,7 +71,7 @@ public class UpService extends Thread {
             } catch (java.net.SocketException ex1) {
                 break;
             } catch (IOException ex) {
-                Logger.getLogger(UpService.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(RedSend.class.getName()).log(Level.SEVERE, null, ex);
                 break;
             }                        
         }

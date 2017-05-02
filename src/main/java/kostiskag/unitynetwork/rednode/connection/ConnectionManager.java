@@ -11,9 +11,9 @@ import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
 import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 import kostiskag.unitynetwork.rednode.functions.DetectOS;
 import kostiskag.unitynetwork.rednode.redThreads.AuthClient;
-import kostiskag.unitynetwork.rednode.redThreads.DownService;
+import kostiskag.unitynetwork.rednode.redThreads.RedReceive;
 import kostiskag.unitynetwork.rednode.redThreads.KeepAlive;
-import kostiskag.unitynetwork.rednode.redThreads.UpService;
+import kostiskag.unitynetwork.rednode.redThreads.RedSend;
 
 import org.p2pvpn.tuntap.TunTap;
 
@@ -55,8 +55,8 @@ public class ConnectionManager extends Thread {
     
      //services & sockets    
     public  AuthClient authClient;
-    public  DownService downlink;
-    public  UpService uplink;           
+    public  RedReceive downlink;
+    public  RedSend uplink;           
     public  boolean isUpTCP = false;
     public  String socketResponce;
     
@@ -194,10 +194,10 @@ public class ConnectionManager extends Thread {
         upMan = new QueueManager(4);
         downMan = new QueueManager(500);
         //open downlink
-        downlink = new DownService(Vaddress, FullBlueNodeAddress, DownPort);
+        downlink = new RedReceive(Vaddress, FullBlueNodeAddress, DownPort);
         downlink.start();
         //open uplink
-        uplink = new UpService(Vaddress, FullBlueNodeAddress, UpPort);
+        uplink = new RedSend(Vaddress, FullBlueNodeAddress, UpPort);
         uplink.start();
         //open keep alive
         ka = new KeepAlive();
@@ -407,7 +407,7 @@ public class ConnectionManager extends Thread {
         if (downPort == -1) {
             return;
         }
-        downlink = new DownService(App.login.connection.Vaddress, FullBlueNodeAddress, downPort);
+        downlink = new RedReceive(App.login.connection.Vaddress, FullBlueNodeAddress, downPort);
         downlink.start();
         try {
             sleep(4000);
@@ -436,7 +436,7 @@ public class ConnectionManager extends Thread {
         if (upPort == -1) {
             return;
         }
-        uplink = new UpService(App.login.connection.Vaddress, FullBlueNodeAddress, upPort);
+        uplink = new RedSend(App.login.connection.Vaddress, FullBlueNodeAddress, upPort);
         uplink.start();
         try {
             sleep(4000);
