@@ -1,5 +1,7 @@
 package kostiskag.unitynetwork.rednode.Routing;
 
+import java.net.InetAddress;
+
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.Routing.data.ARPGenerate;
 import kostiskag.unitynetwork.rednode.Routing.data.ARPPacketRequest;
@@ -29,7 +31,13 @@ public class EthernetConnection {
     boolean clearToSendIP(byte[] ippacket) {
         //it means we had dhcp association
         if (App.login.connection.IsDHCPset == true) {
-            if (App.login.connection.MyIP.equals(IPv4Packet.getSourceAddress(ippacket))) {
+        	InetAddress source = null;
+			try {
+				source = IPv4Packet.getSourceAddress(ippacket);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+            if (App.login.connection.MyIP.equals(source)) {
                 App.login.monitor.writeToIntRead(pre + "THE SOURCE IS ME");
                 //frame unicast, ip unicast, source is me, cant do much more, we have to send it
                 return true;

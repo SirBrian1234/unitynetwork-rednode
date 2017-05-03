@@ -199,14 +199,14 @@ public class ConnectionManager extends Thread {
         //open manager
         upMan = new QueueManager(4);
         downMan = new QueueManager(500);
-        //open downlink
-        downlink = new RedReceive(FullBlueNodeAddress, DownPort);
+        //open receive
+        downlink = new RedReceive(FullBlueNodeAddress, DownPort, downMan);
         downlink.start();
-        //open uplink
-        uplink = new RedSend(FullBlueNodeAddress, UpPort);
+        //open send
+        uplink = new RedSend(FullBlueNodeAddress, UpPort, upMan);
         uplink.start();
         //open keep alive
-        ka = new KeepAlive();
+        ka = new KeepAlive(upMan, keepAliveTime);
         ka.start();
         //just a time to make sure all the services started and running properly before testing
         try {
@@ -306,9 +306,8 @@ public class ConnectionManager extends Thread {
     }
 
     public void LoggedIn() {
-        byte[] payload = ("[HELLO PACKET]").getBytes();
-        byte[] data = UnityPacket.buildPacket(payload, MyIP, MyIP, 0);
-        upMan.offer(data);
+        byte[] packet = UnityPacket.buildMessagePacket(MyIP, MyIP, "[HELLO PACKET]");
+        upMan.offer(packet);
         App.login.monitor.setLogedIn();
         App.login.setLoggedIn();
     }
@@ -407,7 +406,7 @@ public class ConnectionManager extends Thread {
         if (downPort == -1) {
             return;
         }
-        downlink = new RedReceive(FullBlueNodeAddress, downPort);
+        downlink = new RedReceive(FullBlueNodeAddress, downPort, downMan);
         downlink.start();
         try {
             sleep(4000);
@@ -436,7 +435,7 @@ public class ConnectionManager extends Thread {
         if (upPort == -1) {
             return;
         }
-        uplink = new RedSend(FullBlueNodeAddress, upPort);
+        uplink = new RedSend(FullBlueNodeAddress, upPort, upMan);
         uplink.start();
         try {
             sleep(4000);
@@ -454,10 +453,9 @@ public class ConnectionManager extends Thread {
         } catch (UnknownHostException ex) {
             Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        payload = ("00001 [UPING PACKET]").getBytes();
-        byte[] data = UnityPacket.buildPacket(payload, MyIP, addr, 0);
+        byte[] packet = UnityPacket.buildUpingPacket();
         for (int i = 0; i < 2; i++) {
-            upMan.offer(data);
+            upMan.offer(packet);
         }
         authClient.sendAuthData("UPING");
         String input = authClient.receiveAuthData();
@@ -485,7 +483,7 @@ public class ConnectionManager extends Thread {
     }
 
     public void sendStringData(String address, String message) {
-        //converting into unity packet <3        
+        //converting into unity packet        
         byte[] payload;
         InetAddress destvaddr = null;
         try {
@@ -493,10 +491,8 @@ public class ConnectionManager extends Thread {
         } catch (UnknownHostException ex) {
             Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        payload = new byte[message.getBytes().length];
-        payload = (address + " " + message + "                               ").getBytes();
-        byte[] data = UnityPacket.buildPacket(payload, MyIP, destvaddr, 2);
-        upMan.offer(data);
+        byte[] packet = UnityPacket.buildMessagePacket(MyIP, destvaddr, message);
+        upMan.offer(packet);
     }
 
     private boolean checkDHCP() {

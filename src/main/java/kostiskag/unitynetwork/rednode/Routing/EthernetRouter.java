@@ -63,34 +63,38 @@ public class EthernetRouter extends Thread {
             info = info + "Length: " + frame.length + " ";
             info = info + "Dest: " + destmac.toString() + " ";
             info = info + "Source: " + sourcemac.toString();
-
             App.login.monitor.writeToIntRead(info);
 
-            //unicast packets
             if (!destmac.isBroadcast()) {
+            	//unicast packets
                 App.login.monitor.writeToIntRead(pre + "Unicast");
                 if (EthernetFrame.isIPv4(frame)) {
-                    ippacket = IPv4Packet.getPayload(frame);
-
-                    source = IPv4Packet.getSourceAddress(ippacket);
-                    dest = IPv4Packet.getDestAddress(ippacket);
-                    String pver = IPv4Packet.getVersion(ippacket);
+                    ippacket = EthernetFrame.getFramePayload(frame);
+                    if (!IPv4Packet.isIPv4(ippacket)) {
+                    	App.login.monitor.writeToIntRead(pre +"discarded, frame payload was not IPv4");
+                    	continue;
+                    }
+                    
+                    try {
+						source = IPv4Packet.getSourceAddress(ippacket);
+						dest = IPv4Packet.getDestAddress(ippacket);
+                    } catch (Exception e1) {
+						e1.printStackTrace();
+						App.login.monitor.writeToIntRead(pre +"discarded, mallformed source or dest");
+                    	continue;
+					}
+                    
                     int len = ippacket.length;
-
-                    if (source == null || dest == null || !pver.equals("45")) {
-                        continue;
-                    }
                     if (len <= 0 || len > 1500) {
-                        System.out.println("Discarded, wrong size");
+                    	App.login.monitor.writeToIntRead(pre +"discarded, wrong size");
                         continue;
                     }
 
-                    String info2 = pre + "IP Frame Version: " + pver + " ";
+                    String info2 = pre + "IP Frame ";
                     info2 = info2 + "Source: " + source.getHostAddress() + " ";
                     info2 = info2 + "Dest: " + dest.getHostAddress();
                     App.login.monitor.writeToIntRead(info2);
 
-                    //nai alla etsi kathusterei olo to interface gia ena destination einai atopo
                     if (connection.clearToSendIP(ippacket)) {                          
                         try {
 							trafficMan.waitToSend();

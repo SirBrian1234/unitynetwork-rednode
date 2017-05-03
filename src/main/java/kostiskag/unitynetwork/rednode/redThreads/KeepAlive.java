@@ -1,10 +1,9 @@
 package kostiskag.unitynetwork.rednode.redThreads;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.Routing.QueueManager;
 import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 
 /**
@@ -13,39 +12,36 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
  */
 public class KeepAlive extends Thread{
 
-    private static String pre = "^KeepAlive ";
-    boolean kill=false;        
+    private final String pre = "^KeepAlive ";
+    private final QueueManager sendQueue;
+    private final int keepAliveTime;
+    private AtomicBoolean kill= new AtomicBoolean(false);        
     
-    public KeepAlive() {                
-        
+    public KeepAlive(QueueManager sendQueue, int keepAliveTime) {                
+        this.sendQueue = sendQueue; //App.login.connection.upMan
+        this.keepAliveTime = keepAliveTime*1000; //App.login.connection.keepAliveTime
     }
 
     @Override
     public void run() {                
         
-        byte[] payload = ("00000 "+App.login.connection.Vaddress+" [KEEP ALIVE]").getBytes();
-        InetAddress address = null;
-        try {
-            address = InetAddress.getByName("0.0.0.0");
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(KeepAlive.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        byte[] data = UnityPacket.buildPacket(payload,address,address,0);
+    	byte[] packet = UnityPacket.buildKeepAlivePacket();
         
-        while(!kill){
+    	while(!kill.get()){
             for (int i=0; i<3; i++){
-                App.login.connection.upMan.offer(data);
+                sendQueue.offer(packet);
             }
             
             try {
-                sleep(1000* App.login.connection.keepAliveTime);
+                sleep(keepAliveTime);
             } catch (InterruptedException ex) {
-                Logger.getLogger(KeepAlive.class.getName()).log(Level.SEVERE, null, ex);
+                ex.printStackTrace();
             }
         }
+    	App.login.monitor.writeToCommands(pre+"ended");
     }  
     
     public void kill(){        
-        this.kill = true;
+        kill.set(true);
     }    
 }
