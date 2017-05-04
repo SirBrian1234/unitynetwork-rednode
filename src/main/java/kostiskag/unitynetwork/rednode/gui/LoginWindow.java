@@ -380,6 +380,7 @@ public class LoginWindow extends javax.swing.JFrame {
 
 	public void writeInfo(String message) {
 		jTextArea1.append("* " + message + "\n");
+		System.out.println("* " + message);
 	}
 
 	public boolean getInputData() {

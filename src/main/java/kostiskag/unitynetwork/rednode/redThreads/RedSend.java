@@ -44,6 +44,7 @@ public class RedSend extends Thread {
             return;
         } catch (SocketException ex) {
             Logger.getLogger(RedSend.class.getName()).log(Level.SEVERE, null, ex);
+            App.login.writeInfo(pre + "SOCKET EXCEPTION");
             return;
         }
 
@@ -51,22 +52,24 @@ public class RedSend extends Thread {
         while (!kill.get()) {
             try {
                 packet = sendQueue.poll();
-            } catch (java.lang.NullPointerException ex1){                
+            } catch (java.lang.NullPointerException ex1){       
+            	App.login.writeInfo(pre + "QUEUE NULL EXCEPTION");
                 continue;
             } catch (java.util.NoSuchElementException ex) {
+            	App.login.writeInfo(pre + "QUEUE NO SUCH ELEMENT EXCEPTION");
                 continue;
             }
             
             int len = packet.length;
             if (len <= 0 || len > 1500) {
-                System.out.println("wrong length");
+            	App.login.writeInfo(pre +"wrong length");
                 continue;
             }
             
             DatagramPacket sendPacket = new DatagramPacket(packet, len, address, port);                        
             try {
                 socket.send(sendPacket); 
-                App.login.monitor.updateConDownBufferQueue(App.login.connection.upMan.getlen());
+                App.login.monitor.updateConDownBufferQueue(sendQueue.getlen());
                 if (UnityPacket.isUnity(packet)) {
                 	if (UnityPacket.isKeepAlive(packet)) {
                 		App.login.monitor.writeToConnectionUp(pre+"KEEP ALIVE SENT");

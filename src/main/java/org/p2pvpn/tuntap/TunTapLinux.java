@@ -38,9 +38,9 @@ public class TunTapLinux extends TunTap {
 			} else {
 				loadLib("clib/libTunTapLinux.so");
 			}
-			App.login.connection.libError=false;
+			App.login.connection.setLibError(false);
 		} catch (Throwable e) {
-			App.login.connection.libError=true;
+			App.login.connection.setLibError(true);
 			Logger.getLogger("").log(Level.SEVERE, "Could not load libTunTapLinux.so", e);			
 		}
     }

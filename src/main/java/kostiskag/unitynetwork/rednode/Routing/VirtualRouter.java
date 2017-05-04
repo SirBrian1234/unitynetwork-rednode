@@ -70,20 +70,20 @@ public class VirtualRouter extends Thread {
              * in a frame and offered to the interface's target queue
              */
             MacAddress sourceMac = null;
-            if (App.login.connection.MyMac == null) {                
+            if (App.login.connection.getMyMac() == null) {                
             	App.login.monitor.writeToIntWrite(pre+"no mac set for this host.");
                 continue;
             }
             
         	try {
-            	if (App.login.connection.arpTable.isAssociated(source)) {
-                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
+            	if (App.login.connection.getArpTable().isAssociated(source)) {
+                    sourceMac = App.login.connection.getArpTable().getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
 				} else {
 					InetAddress sourceIp = IPv4Packet.getSourceAddress(packet);
-                    App.login.connection.arpTable.lease(sourceIp);
-                    ReverseARPInstance entry = App.login.connection.arpTable.getByIP(sourceIp);
+                    App.login.connection.getArpTable().lease(sourceIp);
+                    ReverseARPInstance entry = App.login.connection.getArpTable().getByIP(sourceIp);
                     App.login.monitor.writeToIntRead("new mac: " +  entry.getMac().toString()+" for "+entry.getIp().getHostAddress());       
-        	        byte[] arp = ARPGenerate.ArpGenerate(entry.getMac(), entry.getIp());
+        	        byte[] arp = ARPGenerate.ArpGenerate(App.login.connection.getMyMac(), App.login.connection.getMyIP(), entry.getMac(), entry.getIp());
         	        if (arp == null){
         	            System.out.println("arp generate failed");
         	            App.login.monitor.writeToIntRead(pre+"ARP FAILED");
@@ -93,10 +93,10 @@ public class VirtualRouter extends Thread {
         	            	 interfaceWriteQueue.offer(arp);
         	             }
         	        }
-                    sourceMac = App.login.connection.arpTable.getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
+                    sourceMac = App.login.connection.getArpTable().getByIP(IPv4Packet.getSourceAddress(packet)).getMac();
                 }
-                byte[] frame = EthernetFrame.buildFrame(packet, App.login.connection.MyMac, sourceMac);
-                App.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + App.login.connection.MyMac.toString() + " Source: " + sourceMac);                                
+                byte[] frame = EthernetFrame.buildFrame(packet, App.login.connection.getMyMac(), sourceMac);
+                App.login.monitor.writeToIntWrite(pre + "FRAMED IP Dest: " + App.login.connection.getMyMac().toString() + " Source: " + sourceMac);                                
                 interfaceWriteQueue.offer(frame);
         	} catch (Exception e) {
 				e.printStackTrace();

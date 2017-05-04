@@ -44,11 +44,11 @@ public class TunTapWindows extends TunTap {
             } else {
                 loadLib("clib\\libTunTapWindows.dll");
             }
-            App.login.connection.libError=false;
+            App.login.connection.setLibError(false);
         } catch (Throwable e) {
             App.login.writeInfo("library error, check if clib folder exists in your application directory and if it has valid files");
             erg = -1;
-            App.login.connection.libError=true;
+            App.login.connection.setLibError(true);
             e.printStackTrace();
             return;
         }

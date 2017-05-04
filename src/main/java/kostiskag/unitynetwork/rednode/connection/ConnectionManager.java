@@ -2,6 +2,7 @@ package kostiskag.unitynetwork.rednode.connection;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
@@ -26,153 +27,183 @@ import org.p2pvpn.tuntap.TunTap;
 public class ConnectionManager extends Thread {
 
     //login credentials
-    public  String Username = null;
-    public  String Password = null;
-    public  String Hostname = null;    
-    public  String TrackerAddress = null;
-    public  int TrackerPort = -1;
-    public  String BlueNodeAddress = null;
-    public InetAddress FullBlueNodeAddress = null;
-    public  int BlueNodePort = -1;
-                    
-    private int DownPort;
-    private int UpPort;
-    public String Vaddress;
-    public  InetAddress MyIP;
+    private final  String username;
+    private final  String password;
+    private final  String hostname;    
+    private final  String blueNodeAddress;
+    private final  int blueNodePort;
+    private InetAddress fullBlueNodeAddress;
+                 
+    private String vaddress;
+    private InetAddress myIP;
     
-    private boolean kill = false;
-    private boolean limited = true;
-    private boolean nolink = true;
+    private  TunTap tuntap;
+    private  InterfaceRead read;
+    private  InterfaceWrite write;
+    private  EthernetRouter router;
+    private  VirtualRouter vrouter;
     
-    public  TunTap tuntap;
-    public  InterfaceRead read;
-    public  InterfaceWrite write;
-    public  EthernetRouter router;
-    public  VirtualRouter vrouter;
-    
-    public  QueueManager upMan;
-    public  QueueManager downMan;
-    public  QueueManager readMan;
-    public  QueueManager writeMan;
+    private  QueueManager upMan;
+    private  QueueManager downMan;
+    private  QueueManager readMan;
+    private  QueueManager writeMan;
+    private  KeepAlive ka;
+    private  UploadManager trafficMan;   
     
      //services & sockets    
-    public  AuthClient authClient;
-    public  RedReceive downlink;
-    public  RedSend uplink;           
-    public  boolean isUpTCP = false;
-    public  String socketResponce;
+    private  AuthClient authClient;
+    private  RedReceive receive;
+    private  RedSend send;           
     
     //ehternet & routing       
-    public  int keepAliveTime = 5;                    
-    public  int OSType=-1;
-    public  ReverseARPTable arpTable;
-    public  MacAddress MyMac;    
-    public  boolean IsDHCPset;    
-    public  boolean isClientDPinged;
-    public  boolean libError=false;    
-    
-    public  KeepAlive ka;
-    public  UploadManager trafficMan;    
-    public  boolean DirectBNConnect;       
+    private  final int keepAliveTime = 20;                    
+    private  int osType;
+    private  ReverseARPTable arpTable;
+    private  MacAddress myMac;    
+    private  boolean isDHCPset;    
+    private  boolean isClientDPinged;
+    private  boolean libError=false;    
     private String command;
+    private AtomicBoolean kill = new AtomicBoolean(false);
     
     public ConnectionManager(String Username, String Password, String Hostname, String BlueNodeAddress, int BlueNodePort) {        
-        //initializing and reseting everything                                
-        this.Hostname = null;
-        this.Username = null;
-        this.Password = null;
-        this.Hostname = null;
-        this.BlueNodeAddress = null;
-        this.FullBlueNodeAddress = null;
-        this.BlueNodePort = -1;
-        this.DownPort = -1;
-        this.UpPort = -1;                
+    	this.username = Username;        
+        this.password = Password;
+        this.hostname = Hostname;                        
+        this.blueNodeAddress = BlueNodeAddress;
+        this.blueNodePort = BlueNodePort;      
         
-        this.OSType = -1;
-        this.authClient = null;
-        
-        this.Vaddress = null;
-        this.MyIP = null;
-        this.MyMac = null;
-        this.Vaddress = null;
-        this.isClientDPinged = false;
-        this.IsDHCPset = false;
-        this.libError = false;
-        this.kill = false;
-        
-        //setting the right values
-        this.Username = Username;        
-        this.Password = Password;
-        this.Hostname = Hostname;                        
-        this.BlueNodeAddress = BlueNodeAddress;
-        this.BlueNodePort = BlueNodePort;                
-        
-        arpTable = new ReverseARPTable(App.login.connection.MyIP);
-        writeMan = new QueueManager(20);
-        readMan = new QueueManager(20);
-        upMan = new QueueManager(20);
-        downMan = new QueueManager(20);
-        trafficMan = new UploadManager();
-
         if (!(BlueNodePort > 0 && BlueNodePort <= 65535)) {
             App.login.writeInfo("WRONG PORT GIVEN");
-            BlueNodePort = -1;            
+            return;          
         }
 
         try {
-            FullBlueNodeAddress = InetAddress.getByName(BlueNodeAddress);
+            fullBlueNodeAddress = InetAddress.getByName(BlueNodeAddress);
         } catch (UnknownHostException ex) {
-            App.login.writeInfo("WRONG ADDRESS SYNTAX GIVEN");            
-        }                        
+            App.login.writeInfo("WRONG ADDRESS SYNTAX GIVEN"); 
+            return;
+        }
+        
+        this.isClientDPinged = false;
+        this.isDHCPset = false;
+        this.libError = false;
+        
+        upMan = new QueueManager(20);
+        downMan = new QueueManager(20);
+        readMan = new QueueManager(20);
+        writeMan = new QueueManager(20);        
+        trafficMan = new UploadManager();
     }
+    
+    public String getHostname() {
+		return hostname;
+	}
+    
+    public MacAddress getMyMac() {
+		return myMac;
+	}
+    
+    public InetAddress getMyIP() {
+		return myIP;
+	}
+    
+    public ReverseARPTable getArpTable() {
+		return arpTable;
+	}
     
     public UploadManager getTrafficMan() {
 		return trafficMan;
 	}
-
+    
+    public QueueManager getUpMan() {
+		return upMan;
+	}
+    
+    public QueueManager getDownMan() {
+		return downMan;
+	}
+    
+    public QueueManager getReadMan() {
+		return readMan;
+	}
+    
+    public QueueManager getWriteMan() {
+		return writeMan;
+	}
+    
+    public boolean isIsDHCPset() {
+		return isDHCPset;
+	}
+    
+    public boolean isClientDPinged() {
+		return isClientDPinged;
+	}
+    
+    public void setMyMac(MacAddress myMac) {
+		this.myMac = myMac;
+	}
+    
+    public void setIsDHCPset(boolean isDHCPset) {
+		this.isDHCPset = isDHCPset;
+	}
+    
+    public void setClientDPinged(boolean isClientDPinged) {
+		this.isClientDPinged = isClientDPinged;
+	}
+    
+    public void setLibError(boolean libError) {
+		this.libError = libError;
+	}
+    
     /*
      * thats the life of a connection from birth to usage and death
      */
     @Override
     public void run() {        
-        OSType = new DetectOS().getType();
+        osType = new DetectOS().getType();
         App.login.writeInfo("Running On " + DetectOS.getString());                                                
+        
         App.login.writeInfo("Starting Connection...");
-        App.login.writeInfo("Loging in Blue Node " + BlueNodeAddress + ":" + BlueNodePort + " ...");
-        authClient = new AuthClient(Username, Password, Hostname, FullBlueNodeAddress, BlueNodePort);
+        App.login.writeInfo("Loging in Blue Node " + blueNodeAddress + ":" + blueNodePort + " ...");
+        authClient = new AuthClient(username, password, hostname, fullBlueNodeAddress, blueNodePort);
         if (!authClient.auth()) {
             App.login.monitor.setLogedOut();
             App.login.setLogedOut();
             return;
         }
-        App.login.writeInfo("Login OK");            
-        Vaddress = authClient.getVaddress();
-        DownPort = authClient.getDownPort();
-        UpPort = authClient.getUpport();        
+        
+        vaddress = authClient.getVaddress();
         try {
-            MyIP = InetAddress.getByName(Vaddress);
+            myIP = InetAddress.getByName(vaddress);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+        	App.login.writeInfo("Collected mallformed IP address :"+vaddress);   
+        	Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+            App.login.monitor.setLogedOut();
+            App.login.setLogedOut();
+            return;
         }
+        App.login.writeInfo("Login OK");   
+        
+        
+        App.login.writeInfo("Initializing Reverse ARP table...");
+        arpTable = new ReverseARPTable(myIP);
         
         App.login.writeInfo("Opening LINK...");
-        openThreads();
+        openThreads(authClient.getServerReceivePort(), authClient.getServerSendPort());
         
         App.login.writeInfo("Init socket event notification...");
         authClient.start();        
         
         App.login.writeInfo("Testing LINK...");
         if (!LinkDiagnostic()) {
-            nolink = true;
             App.login.writeInfo("LINK Error");
             App.login.writeInfo("Working On Commands.");            
         }
         if (!startInterface()) {
-            limited = true;
             App.login.writeInfo("INTERFACE ERROR");
             App.login.writeInfo("You may not send real data but you can send text and commands");
         } else if (!checkDHCP()) {
-            limited = true;
             App.login.writeInfo("DHCP ERROR");
             App.login.writeInfo("Your interface failed to set the primal settings");
             App.login.writeInfo("You may not send real data but you can send text and commands");            
@@ -180,7 +211,7 @@ public class ConnectionManager extends Thread {
             App.login.writeInfo("Interface OK");
         }
         App.login.writeInfo("Connection Set");
-        App.login.writeInfo("Wellcome " + Hostname + " ~ " + Vaddress);
+        App.login.writeInfo("Wellcome " + hostname + " ~ " + vaddress);
         LoggedIn();        
         
         authCommands();
@@ -195,18 +226,14 @@ public class ConnectionManager extends Thread {
         App.login.setLogedOut();
     }
    
-    public void openThreads() {
-        //open manager
-        upMan = new QueueManager(4);
-        downMan = new QueueManager(500);
-        //open receive
-        downlink = new RedReceive(FullBlueNodeAddress, DownPort, downMan);
-        downlink.start();
-        //open send
-        uplink = new RedSend(FullBlueNodeAddress, UpPort, upMan);
-        uplink.start();
-        //open keep alive
+    public void openThreads(int serverReceive, int serverSend) {
+        //set
+    	receive = new RedReceive(fullBlueNodeAddress, serverSend, downMan);
+        send = new RedSend(fullBlueNodeAddress, serverReceive, upMan);
         ka = new KeepAlive(upMan, keepAliveTime);
+        //start
+        send.start();
+        receive.start();
         ka.start();
         //just a time to make sure all the services started and running properly before testing
         try {
@@ -223,14 +250,14 @@ public class ConnectionManager extends Thread {
         for (int i = 0; i < 3; i++) {
             if (!ping()) {
                 return false;
-            } else if (!dPing()) {
-                App.login.writeInfo("THERE IS A PROBLEM WITH DOWNLINK TRYING TO FIX IT");
-                dping = false;
-                drefresh();
             } else if (!uPing()) {
                 App.login.writeInfo("THERE IS A PROBLEM WITH UPLINK TRYING TO FIX IT");
                 uping = false;
                 urefresh();
+            } else if (!dPing()) {
+                App.login.writeInfo("THERE IS A PROBLEM WITH DOWNLINK TRYING TO FIX IT");
+                dping = false;
+                drefresh();
             } else {
                 uping = true;
                 dping = true;
@@ -306,7 +333,7 @@ public class ConnectionManager extends Thread {
     }
 
     public void LoggedIn() {
-        byte[] packet = UnityPacket.buildMessagePacket(MyIP, MyIP, "[HELLO PACKET]");
+        byte[] packet = UnityPacket.buildMessagePacket(myIP, myIP, "[HELLO PACKET]");
         upMan.offer(packet);
         App.login.monitor.setLogedIn();
         App.login.setLoggedIn();
@@ -318,13 +345,13 @@ public class ConnectionManager extends Thread {
     }
     
     public synchronized void authCommands() {        
-        while (!kill) {                                    
+        while (!kill.get()) {                                    
             try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-            if (kill) {
+            if (kill.get()) {
             	break;
             } else if (!command.isEmpty()) {
                 if (command.equals("EXIT")) {
@@ -352,13 +379,13 @@ public class ConnectionManager extends Thread {
     }
 
     public synchronized void killConnectionManager() {
-        kill = true;
+        kill.set(true);
         notify();
     }
 
     private void killTasks() {
-        uplink.kill();
-        downlink.kill();
+        send.kill();
+        receive.kill();
         ka.kill();
     }
 
@@ -393,7 +420,7 @@ public class ConnectionManager extends Thread {
     }
 
     public void drefresh() {
-        downlink.kill();
+        receive.kill();
         App.login.monitor.clearDown();
         authClient.sendAuthData("DREFRESH");
         String returnstr = authClient.receiveAuthData();
@@ -406,8 +433,8 @@ public class ConnectionManager extends Thread {
         if (downPort == -1) {
             return;
         }
-        downlink = new RedReceive(FullBlueNodeAddress, downPort, downMan);
-        downlink.start();
+        receive = new RedReceive(fullBlueNodeAddress, downPort, downMan);
+        receive.start();
         try {
             sleep(4000);
         } catch (InterruptedException ex) {
@@ -417,7 +444,7 @@ public class ConnectionManager extends Thread {
     }
 
     public void urefresh() {
-        uplink.kill();
+        send.kill();
         App.login.monitor.clearUp();
         authClient.sendAuthData("UREFRESH");
         String returnstr = authClient.receiveAuthData();
@@ -435,8 +462,8 @@ public class ConnectionManager extends Thread {
         if (upPort == -1) {
             return;
         }
-        uplink = new RedSend(FullBlueNodeAddress, upPort, upMan);
-        uplink.start();
+        send = new RedSend(fullBlueNodeAddress, upPort, upMan);
+        send.start();
         try {
             sleep(4000);
         } catch (InterruptedException ex) {
@@ -446,18 +473,17 @@ public class ConnectionManager extends Thread {
     }
 
     public boolean uPing() {
-        byte[] payload;
-        InetAddress addr = null;
-        try {
-            addr = InetAddress.getByName("0.0.0.0");
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
         byte[] packet = UnityPacket.buildUpingPacket();
-        for (int i = 0; i < 2; i++) {
-            upMan.offer(packet);
-        }
         authClient.sendAuthData("UPING");
+        authClient.receiveAuthData(); //SET
+        for (int i = 0; i < 10; i++) {
+            upMan.offer(packet);
+            try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        }
         String input = authClient.receiveAuthData();
         if (input.equals("UPING OK")) {
             return true;
@@ -484,24 +510,23 @@ public class ConnectionManager extends Thread {
 
     public void sendStringData(String address, String message) {
         //converting into unity packet        
-        byte[] payload;
         InetAddress destvaddr = null;
         try {
             destvaddr = InetAddress.getByName(address);
+            byte[] packet = UnityPacket.buildMessagePacket(myIP, destvaddr, message);
+            upMan.offer(packet);
         } catch (UnknownHostException ex) {
-            Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        byte[] packet = UnityPacket.buildMessagePacket(MyIP, destvaddr, message);
-        upMan.offer(packet);
+            Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);           
+        }       
     }
 
     private boolean checkDHCP() {
         App.login.writeInfo("Checking DHCP...");
-        if (OSType == 2) {
+        if (osType == 2) {
             App.login.writeInfo("QUICK SET YOUR DHCP!!! Open a terminal and type: \n dhclient " + tuntap.getDev()+" to start the interface. You have 30 sec!");
         }
         for (int i = 0; i < 60; i++) {
-            if (IsDHCPset == true) {
+            if (isDHCPset == true) {
                 return true;
             } else {
                 try {

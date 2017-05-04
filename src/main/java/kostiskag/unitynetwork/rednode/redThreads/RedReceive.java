@@ -23,7 +23,7 @@ public class RedReceive extends Thread {
     private final int port;
     private final QueueManager receiveQueue;
     private DatagramSocket socket;
-    private AtomicBoolean kill = new AtomicBoolean(true);
+    private AtomicBoolean kill = new AtomicBoolean(false);
     
     public RedReceive(InetAddress address, int port, QueueManager receiveQueue) {
         this.address = address;
@@ -41,35 +41,45 @@ public class RedReceive extends Thread {
         try {
             socket = new DatagramSocket();
         } catch (java.net.BindException ex1) {
-            App.login.writeInfo(pre + "SOCKET ALLREADY BINED EXCEPTION");
+            App.login.writeInfo(pre + "SOCKET ALLREADY BIND EXCEPTION");
             return;
         } catch (SocketException ex) {
+        	App.login.writeInfo(pre + "SOCKET EXCEPTION");
             Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
 
-        sendData = "FISH PACKET".getBytes();
+        sendData = "FISH_PACKET".getBytes();
         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, address, port);
         try {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 10; i++) {
                 socket.send(sendPacket);
+                System.out.println(pre+"fish packet sent to "+address.getHostAddress()+port);
+                try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
             }
         } catch (java.net.SocketException ex1) {
-            App.login.monitor.writeToConnectionDown("FISH PACKET SEND ERROR");
+            App.login.monitor.writeToConnectionDown(pre+"FISH PACKET SEND ERROR");
             return;
         } catch (IOException ex) {            
             Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
+            App.login.monitor.writeToConnectionDown(pre+"IO ERROR");
             return;
         }
 
         DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
         while (!kill.get()) {
             try {
-                socket.receive(receivePacket);
+            	socket.receive(receivePacket);
             } catch (java.net.SocketException ex) {
+            	App.login.monitor.writeToConnectionDown(pre+"socket exception.");
                 return;
             } catch (IOException ex) {
-                Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
+            	App.login.monitor.writeToConnectionDown(pre+"IO exception.");
+            	Logger.getLogger(RedReceive.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
             
@@ -92,7 +102,7 @@ public class RedReceive extends Thread {
                 } else if(UnityPacket.isDping(packet)) {
                 	App.login.monitor.writeToConnectionDown(pre+"DPING RECEIVED");
                 	App.login.monitor.writeToCommands("DPING OK");
-                    App.login.connection.isClientDPinged = true;
+                    App.login.connection.setClientDPinged(true);
                     
                 } else if (UnityPacket.isShortRoutedAck(packet)) {
                 	App.login.monitor.writeToConnectionDown(pre+"SHORT ROUTED ACK RECEIVED");
@@ -117,16 +127,16 @@ public class RedReceive extends Thread {
                 } else if (UnityPacket.isMessage(packet)) {
                 	String message;
 					try {
-						message = UnityPacket.getMessageMessage(packet) + "from:"+ UnityPacket.getSourceAddress(packet).getHostAddress()+ '\0';
+						message = pre+UnityPacket.getSourceAddress(packet).getHostAddress()+": "+UnityPacket.getMessageMessage(packet) + '\0';
 						App.login.monitor.writeToConnectionDown(message);
 	                    
 	                    //this is the place to build short routed acks
 	                    byte[] ACKS = UnityPacket.buildShortRoutedAckPacket(0);
-	                    App.login.connection.upMan.offer(ACKS);
+	                    App.login.connection.getUpMan().offer(ACKS);
 	                    
 	                    //this is the place to build end to end acks
-	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.MyIP, IPv4Packet.getSourceAddress(packet), 0);
-	                    App.login.connection.upMan.offer(ACKL);
+	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), UnityPacket.getSourceAddress(packet), 0);
+	                    App.login.connection.getUpMan().offer(ACKL);
 	                    
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -134,18 +144,18 @@ public class RedReceive extends Thread {
                     
                 } else if (IPv4Packet.isIPv4(packet)) {
                 	try {
-						App.login.monitor.writeToConnectionDown(pre+"IPv4 RECEIVED Len: " + packet.length + " From " + IPv4Packet.getSourceAddress(packet).getHostAddress());
+						App.login.monitor.writeToConnectionDown(pre+"IPv4 RECEIVED " + packet.length + " Bytes from: " + IPv4Packet.getSourceAddress(packet).getHostAddress());
 					
-						App.login.monitor.updateConUpBufferQueue(App.login.connection.downMan.getlen());
-	                    App.login.connection.downMan.offer(packet);                    
+						App.login.monitor.updateConUpBufferQueue(receiveQueue.getlen());
+						receiveQueue.offer(packet);                    
 	                    
 	                    //this is the place to build short routed acks
 	                    byte[] ACKS = UnityPacket.buildShortRoutedAckPacket(0);
-	                    App.login.connection.upMan.offer(ACKS);
+	                    App.login.connection.getUpMan().offer(ACKS);
 	                    
 	                    //this is the place to build end to end acks
-	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.MyIP, IPv4Packet.getSourceAddress(packet), 0);
-	                    App.login.connection.upMan.offer(ACKL);
+	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), IPv4Packet.getSourceAddress(packet), 0);
+	                    App.login.connection.getUpMan().offer(ACKL);
                     
                     } catch (Exception e) {
 						e.printStackTrace();
@@ -153,7 +163,7 @@ public class RedReceive extends Thread {
                 }
 	        }
         }
-        App.login.connection.downMan.exit();
+        receiveQueue.exit();
     }
 
     public void kill() {

@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kostiskag.unitynetwork.rednode.App;
@@ -17,20 +18,23 @@ import kostiskag.unitynetwork.rednode.functions.HashFunctions;
  */
 public class AuthClient extends Thread {
 
+	private final String username;
+	private final String password;
+	private final String hostname;
+	private final InetAddress serverIPAddress;
+	private final int serverPort;
+	
 	private Socket socket;
-	private BufferedReader inputReader;
-	private PrintWriter outputWriter;
-	private InetAddress serverIPAddress;
-	private int serverPort;
-	private int downPort;
-	private int upport;
-	private String username;
-	private String password;
-	private String hostname;
+	private BufferedReader socketReader;
+	private PrintWriter socketWriter;
+	
+	private int serverReceivePort; // I use this port to receive data
+	private int serverSendPort; // I use this port to send data
+	
 	private String vaddress;
 	private String receivedMessage = "none";
-	String socketResponce;
-	private boolean kill = false;
+	private String socketResponce;
+	private AtomicBoolean kill = new AtomicBoolean(false);
 
 	public AuthClient(String username, String password, String hostname, InetAddress serverIPAddress, int serverPort) {
 		this.username = username;
@@ -50,14 +54,14 @@ public class AuthClient extends Thread {
 			socket = new Socket(serverIPAddress, serverPort);
 			socket.setSoTimeout(10000);
 			try {
-				inputReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				outputWriter = new PrintWriter(socket.getOutputStream(), true);
+				socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				socketWriter = new PrintWriter(socket.getOutputStream(), true);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 			try {
-				receivedMessage = inputReader.readLine();
+				receivedMessage = socketReader.readLine();
 			} catch (IOException ex) {
 				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
 				return false;
@@ -66,7 +70,7 @@ public class AuthClient extends Thread {
 
 			String messageToSend = "REDNODE " + hostname;
 			sendAuthData(messageToSend);
-			String received = inputReader.readLine();
+			String received = socketReader.readLine();
 			String[] args = received.split("\\s+");
 
 			String data = null;
@@ -81,7 +85,7 @@ public class AuthClient extends Thread {
 
 			messageToSend = "LEASE "+username+" "+data;
 			sendAuthData(messageToSend);
-			received = inputReader.readLine();
+			received = socketReader.readLine();
 
 			if (received.startsWith("FAILED")) {
 				
@@ -101,10 +105,11 @@ public class AuthClient extends Thread {
 			
 			} else {
 				args = received.split("\\s+");
-				if (args[0].equals("REG_OK")) {
-					upport = Integer.parseInt(args[1]);
-					downPort = Integer.parseInt(args[2]);
-					vaddress = args[3];
+				if (args.length == 4 && args[0].equals("REG_OK")) {
+					vaddress = args[1];
+					serverReceivePort = Integer.parseInt(args[2]); //the port where the server receives
+					serverSendPort = Integer.parseInt(args[3]); //the port where the server sends
+					System.out.println("collected resp: "+received);
 					return true;
 				} 
 				return false;				
@@ -126,7 +131,7 @@ public class AuthClient extends Thread {
 	}
 
 	public void sendAuthData(String messageToSend) {
-		outputWriter.println(messageToSend);
+		socketWriter.println(messageToSend);
 		App.login.monitor.writeToCommands(messageToSend);
 	}
 
@@ -152,12 +157,12 @@ public class AuthClient extends Thread {
 		sendAuthData("EXIT");
 	}
 
-	public int getDownPort() {
-		return downPort;
+	public int getServerReceivePort() {
+		return serverReceivePort;
 	}
 
-	public int getUpport() {
-		return upport;
+	public int getServerSendPort() {
+		return serverSendPort;
 	}
 
 	public String getVaddress() {
@@ -173,9 +178,9 @@ public class AuthClient extends Thread {
 			e.printStackTrace();
 		}
 		String receivedMessage = null;
-		while (!kill) {
+		while (!kill.get()) {
 			try {
-				receivedMessage = inputReader.readLine();
+				receivedMessage = socketReader.readLine();
 			} catch (Exception ex) {
 				ex.printStackTrace();				
 				sendKill("Auth connection closed.");				
@@ -197,7 +202,7 @@ public class AuthClient extends Thread {
 	
 	private void sendKill (String reason) {
 		App.login.writeInfo(reason);
-		kill = true;
+		kill.set(true);
 		App.login.connection.killConnectionManager();
 		try {
 			socket.close();

@@ -20,12 +20,12 @@ public class DHCPGenerate {
     private static byte[] TransactionId;
     private static String pre= "^DHCPGEN ";
 
-    public static byte[] GenerateFrame(DHCPrequest req, int DHCPType) {
+    public static byte[] GenerateFrame(MacAddress myMac, InetAddress myIp, DHCPrequest req, int DHCPType) {
         String info = pre + "Generating a DHCP frame - ";
         //intializing globals
         DhcpMacAddr = new MacAddress("02:00:00:00:00:00");
-        DestMac = App.login.connection.MyMac;
-        DestIp = App.login.connection.MyIP;
+        DestMac = App.login.connection.getMyMac();
+        DestIp = App.login.connection.getMyIP();
         yclIp = new byte[]{0x00, 0x00, 0x00, 0x00};
         TransactionId = new byte[]{0x00, 0x00, 0x00, 0x00};
         try {
@@ -69,8 +69,8 @@ public class DHCPGenerate {
 
         //12 Host name
         byte[] hostype = new byte[]{0x0c};
-        byte[] hostlen = new byte[]{(byte) App.login.connection.Hostname.getBytes().length};
-        byte[] hostname = App.login.connection.Hostname.getBytes();
+        byte[] hostlen = new byte[]{(byte) App.login.connection.getHostname().getBytes().length};
+        byte[] hostname = App.login.connection.getHostname().getBytes();
         opt[3] = new byte[hostype.length + hostlen.length + hostname.length];
         System.arraycopy(hostype, 0, opt[3], 0, hostype.length);
         System.arraycopy(hostlen, 0, opt[3], 1, hostlen.length);
@@ -126,22 +126,22 @@ public class DHCPGenerate {
             //dhcp offer (broadcast)
             opt[0] = new byte[]{0x35, 0x01, 0x02};
             DestMac = new MacAddress("ff:ff:ff:ff:ff:ff");
-            DestIp = App.login.connection.MyIP;
-            yclIp = App.login.connection.MyIP.getAddress();            
+            DestIp = myIp;
+            yclIp = myIp.getAddress();            
             lstime = new byte[]{(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
             info = info + "offer (broadcast)";
         } else if (DHCPType == 1) {
             //dhcp offer (unicast)
             opt[0] = new byte[]{0x35, 0x01, 0x02};
-            DestMac = App.login.connection.MyMac;
-            DestIp = App.login.connection.MyIP;
-            yclIp = App.login.connection.MyIP.getAddress();
+            DestMac = myMac;
+            DestIp = myIp;
+            yclIp = myIp.getAddress();
             lstime = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             info = info + "offer (unicast)";
         } else if (DHCPType == 2) {
             //6 DHCPNak 
             opt[0] = new byte[]{0x35, 0x01, 0x06};
-            DestMac = App.login.connection.MyMac;
+            DestMac = myMac;
             try {
                 DestIp = InetAddress.getByName("255.255.255.255");
             } catch (UnknownHostException ex) {
@@ -155,9 +155,9 @@ public class DHCPGenerate {
         } else if (DHCPType == 3) {
             //dhcp ack
             opt[0] = new byte[]{0x35, 0x01, 0x05};
-            DestMac = App.login.connection.MyMac;
-            DestIp = App.login.connection.MyIP;
-            yclIp = App.login.connection.MyIP.getAddress();
+            DestMac = myMac;
+            DestIp = myIp;
+            yclIp = myIp.getAddress();
             lstime = new byte[]{(byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
             System.arraycopy(lstime, 0, opt[2], 2, lstime.length);                                 
             info = info + "ack";
@@ -201,7 +201,7 @@ public class DHCPGenerate {
         return frame;
     }
 
-    public static byte[] GenerateBootPHeader(DHCPrequest req) {
+    private static byte[] GenerateBootPHeader(DHCPrequest req) {
         //bootstrap prot        
         //reply 0x02
         byte[] opcode = new byte[]{0x02};
@@ -224,7 +224,7 @@ public class DHCPGenerate {
         byte[] nextserv = new byte[]{0x00, 0x00, 0x00, 0x00};
         byte[] relag = new byte[]{0x00, 0x00, 0x00, 0x00};
         //client mac
-        byte[] clmac = App.login.connection.MyMac.getAddress();
+        byte[] clmac = App.login.connection.getMyMac().getAddress();
         //padding
         byte[] padding = new byte[10];
         //server host name
@@ -257,7 +257,7 @@ public class DHCPGenerate {
         return bstrapHead;
     }
 
-    public static byte[] GenerateUDPHead(int bootpLen) {
+    private static byte[] GenerateUDPHead(int bootpLen) {
         //udp        
         //sourcep 0x00 0x43
         byte[] sourcePort = new byte[]{0x00, 0x43};
@@ -282,7 +282,7 @@ public class DHCPGenerate {
         return udpHead;
     }
 
-    public static byte[] GenerateIPHead(int payloadlength) {
+    private static byte[] GenerateIPHead(int payloadlength) {
         //ip
         //version 0x45 0x40
         byte[] version = new byte[]{0x45, 0x40};
@@ -334,7 +334,7 @@ public class DHCPGenerate {
         return ipHead;
     }
 
-    public static byte[] GenerateFrameHead() {
+    private static byte[] GenerateFrameHead() {
         //frame
         //dest mac in basic logic        
         //dhcp mac in start        
@@ -350,7 +350,7 @@ public class DHCPGenerate {
         return framehead;
     }
 
-    public static byte[] GenerateFrame(byte[] bstrapOptions, byte[] bstrapHead, byte[] udpHead, byte[] ipHead, byte[] framehead) {
+    private static byte[] GenerateFrame(byte[] bstrapOptions, byte[] bstrapHead, byte[] udpHead, byte[] ipHead, byte[] framehead) {
         byte[] frame = new byte[framehead.length + ipHead.length + udpHead.length + bstrapHead.length + bstrapOptions.length];
         System.arraycopy(framehead, 0, frame, 0, framehead.length);
         System.arraycopy(ipHead, 0, frame, 14, ipHead.length);
