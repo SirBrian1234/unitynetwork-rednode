@@ -56,7 +56,6 @@ public class ConnectionManager extends Thread {
     private  RedSend send;           
     
     //ehternet & routing       
-    private  final int keepAliveTime = 20;                    
     private  int osType;
     private  ReverseARPTable arpTable;
     private  MacAddress myMac;    
@@ -230,7 +229,7 @@ public class ConnectionManager extends Thread {
         //set
     	receive = new RedReceive(fullBlueNodeAddress, serverSend, downMan);
         send = new RedSend(fullBlueNodeAddress, serverReceive, upMan);
-        ka = new KeepAlive(upMan, keepAliveTime);
+        ka = new KeepAlive(upMan, App.keepAliveTimeSec);
         //start
         send.start();
         receive.start();
