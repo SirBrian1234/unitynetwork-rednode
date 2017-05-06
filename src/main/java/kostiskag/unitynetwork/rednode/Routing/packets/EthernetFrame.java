@@ -11,57 +11,69 @@ public class EthernetFrame {
 	public static int MIN_LENGTH = 14;
 	
     public static boolean isIPv4(byte[] frame) {
-    	if (frame.length >= MIN_LENGTH) {
-	    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("80")){
-	    		return true;
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("80")){
+		    		return true;
+		    	}
 	    	}
     	}
     	return false;
     }
     
     public static boolean isARP(byte[] frame) {
-    	if (frame.length >= MIN_LENGTH) {
-	    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("86")){
-	    		return true;
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("86")){
+		    		return true;
+		    	}
 	    	}
     	}
     	return false;
     }
     
     public static String getFrameTypeInString(byte[] frame) {
-    	if (frame.length >= MIN_LENGTH) {
-	    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("80")){
-	            return "IP";
-	        } else if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("86")){
-	            return "ARP";
-	        } else {
-	            return "NOT KNOWN";
-	        }
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		    	if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("80")){
+		            return "IP";
+		        } else if ((Integer.toHexString(frame[12])+Integer.toHexString(frame[13])).equals("86")){
+		            return "ARP";
+		        } else {
+		            return "NOT KNOWN";
+		        }
+	    	}
     	}
     	return "NOT KNOWN";
     }
     
     public static MacAddress getDestMacAddress(byte[] frame){
-    	if (frame.length >= MIN_LENGTH) {
-	        MacAddress addr = new MacAddress(frame, 0);
-	        return addr;
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		        MacAddress addr = new MacAddress(frame, 0);
+		        return addr;
+	    	}
     	}
     	return null;
     }
     
     public static MacAddress getSourceMacAddress(byte[] frame){
-    	if (frame.length >= MIN_LENGTH) {
-	    	MacAddress addr = new MacAddress(frame, 6);
-	        return addr;
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		    	MacAddress addr = new MacAddress(frame, 6);
+		        return addr;
+	    	}
     	}
     	return null;
     }
     
     public static byte[] getFramePayload(byte[] frame) {    
-    	if (frame.length >= MIN_LENGTH) {
-	        byte[] packet = new byte[frame.length-14];        
-	        System.arraycopy(frame, 14, packet, 0, packet.length);
-	        return packet;
+    	if (frame != null) {
+	    	if (frame.length >= MIN_LENGTH) {
+		        byte[] packet = new byte[frame.length-14];        
+		        System.arraycopy(frame, 14, packet, 0, packet.length);
+		        return packet;
+	    	}
     	}
     	return null;
     }
