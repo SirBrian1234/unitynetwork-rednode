@@ -54,10 +54,10 @@
 								<goal>copy-resources</goal>
 							</goals>
 							<configuration>
-								<outputDirectory>${basedir}/target/classes/kostiskag/unitynetwork/rednode/GUI</outputDirectory>
+								<outputDirectory>${basedir}/target/classes/kostiskag/unitynetwork/rednode/gui</outputDirectory>
 								<resources>
 									<resource>
-										<directory>${basedir}/src/main/java/kostiskag/unitynetwork/rednode/GUI</directory>
+										<directory>${basedir}/src/main/java/kostiskag/unitynetwork/rednode/gui</directory>
 										<include>loginBg.jpg</include>
 									</resource>
 								</resources>
