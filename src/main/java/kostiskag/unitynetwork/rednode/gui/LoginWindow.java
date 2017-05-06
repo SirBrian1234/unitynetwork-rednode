@@ -371,15 +371,19 @@ public class LoginWindow extends javax.swing.JFrame {
 
 	public void setLogedOut() {
 		//if the interface was used the app has to close
-		if (!connection.isInterfaceSet()) {
+		if (connection != null) {
+			if (!connection.isInterfaceSet()) {
+				loggedin = 3;
+				jButton1.setText("Exit");
+			} else {
+				loggedin = 2;
+				jButton1.setText("Retry");
+			}
+		} else {
 			loggedin = 2;
 			jButton1.setText("Retry");
-			jButton1.setEnabled(true);
-		} else {
-			loggedin = 3;
-			jButton1.setText("Exit");
-			jButton1.setEnabled(true);
 		}
+		jButton1.setEnabled(true);
 	}
 
 	public void setLoggedIn() {
