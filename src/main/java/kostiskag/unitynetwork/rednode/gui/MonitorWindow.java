@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBox;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import javax.swing.JPanel;
 
 /**
  *
@@ -31,19 +32,56 @@ public class MonitorWindow extends javax.swing.JFrame {
     public String command;
     public boolean loggedin = false;
     private boolean autoScrollDownCommands;
+    private boolean autoScrollDownSocketSend;
+    private boolean autoScrollDownSocketReceive;
+    private boolean autoScrollDownIntRead;
+    private boolean autoScrollDownIntWrite;
 
     public MonitorWindow() {
         System.out.println("@Started MainWindow at " + Thread.currentThread().getName());
         initComponents();        
 
         jButton2.setEnabled(false);
+        jButton9.setEnabled(false);
+        jButton9 = new javax.swing.JButton();
+        jButton9.setEnabled(false);
+        jButton9.setBounds(0, 71, 103, 25);
+        panel_1.add(jButton9);
+        
+                jButton9.setText("UPING");
+                jButton8.setEnabled(false);
+                jButton8 = new javax.swing.JButton();
+                jButton8.setEnabled(false);
+                jButton8.setBounds(110, 71, 117, 25);
+                panel_1.add(jButton8);
+                
+                        jButton8.setText("UREFRESH");
+                        jButton7.setEnabled(false);
+                        jButton7 = new javax.swing.JButton();
+                        jButton7.setEnabled(false);
+                        jButton7.setBounds(234, 71, 97, 25);
+                        panel_1.add(jButton7);
+                        
+                                jButton7.setText("CLEAN");
+                                jButton7.addActionListener(new java.awt.event.ActionListener() {
+                                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                        jButton7ActionPerformed(evt);
+                                    }
+                                });
+                        jButton8.addActionListener(new java.awt.event.ActionListener() {
+                            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton8ActionPerformed(evt);
+                            }
+                        });
+                jButton9.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        jButton9ActionPerformed(evt);
+                    }
+                });
         jButton3.setEnabled(false);
         jButton4.setEnabled(false);
         jButton5.setEnabled(false);
         jButton6.setEnabled(false);
-        jButton7.setEnabled(false);
-        jButton8.setEnabled(false);
-        jButton9.setEnabled(false);
         jButton10.setEnabled(false);
         jButton11.setEnabled(false);
     }
@@ -51,6 +89,9 @@ public class MonitorWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         commandw = new javax.swing.JPanel();
+        jButton9 = new JButton();
+        jButton8 =  new JButton();
+        jButton7 = new JButton();
         jButton11 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
@@ -61,42 +102,19 @@ public class MonitorWindow extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         jTextArea5 = new javax.swing.JTextArea();
         jLabel10 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField12 = new javax.swing.JTextField();
-        jLabel15 = new javax.swing.JLabel();
-        jTextField14 = new javax.swing.JTextField();
-        jButton14 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea4 = new javax.swing.JTextArea();
-        jLabel13 = new javax.swing.JLabel();
-        jTextField11 = new javax.swing.JTextField();
-        jLabel14 = new javax.swing.JLabel();
-        jTextField13 = new javax.swing.JTextField();
-        jButton15 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        jTextField10 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jButton9 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel16 = new javax.swing.JLabel();
-        jTextField15 = new javax.swing.JTextField();
 
         setTitle("Monitor Window");
 
@@ -191,60 +209,76 @@ public class MonitorWindow extends javax.swing.JFrame {
         jScrollPane5.setViewportView(jTextArea5);
 
         jLabel10.setText("Write");
-
-        jLabel12.setText("Number of packets written");
-
-        jLabel15.setText("Buffer Queue");
-
-        jButton14.setText("Clean");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
-            }
-        });
+        
+        panel_3 = new JPanel();
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5)
-                    .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel15)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel10))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+        	jPanel7Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel7Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(jPanel7Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(jScrollPane5, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+        				.addGroup(Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+        					.addComponent(jLabel10)
+        					.addGap(0, 7, Short.MAX_VALUE))
+        				.addComponent(panel_3, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
+        			.addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel15)
-                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton14)
-                .addContainerGap())
+        	jPanel7Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel7Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jLabel10)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jScrollPane5, GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(panel_3, GroupLayout.PREFERRED_SIZE, 73, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
         );
+        panel_3.setLayout(null);
+        jLabel12 = new javax.swing.JLabel();
+        jLabel12.setBounds(0, 16, 151, 16);
+        panel_3.add(jLabel12);
+        
+                jLabel12.setText("Number of packets written");
+                jTextField12 = new javax.swing.JTextField();
+                jTextField12.setBounds(156, 13, 65, 22);
+                panel_3.add(jTextField12);
+                jLabel15 = new javax.swing.JLabel();
+                jLabel15.setBounds(239, 16, 75, 16);
+                panel_3.add(jLabel15);
+                
+                        jLabel15.setText("Buffer Queue");
+                        jTextField14 = new javax.swing.JTextField();
+                        jTextField14.setBounds(319, 13, 97, 22);
+                        panel_3.add(jTextField14);
+                        jButton14 = new javax.swing.JButton();
+                        jButton14.setBounds(281, 48, 135, 25);
+                        panel_3.add(jButton14);
+                        jButton14.setEnabled(false);
+                        
+                                jButton14.setText("Clean");
+                                
+                                checkBox_2 = new JCheckBox("keep scrolled down");
+                                checkBox_2.addPropertyChangeListener(new PropertyChangeListener() {
+                                	public void propertyChange(PropertyChangeEvent evt) {
+                                		if (checkBox_2.isSelected()) {
+                                			autoScrollDownIntWrite = true;
+                                		} else {
+                                			autoScrollDownIntWrite = false;
+                                		}
+                                	}
+                                });
+                                checkBox_2.setSelected(true);
+                                checkBox_2.setBounds(0, 41, 139, 25);
+                                panel_3.add(checkBox_2);
+                                jButton14.addActionListener(new java.awt.event.ActionListener() {
+                                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                        jButton14ActionPerformed(evt);
+                                    }
+                                });
+        jPanel7.setLayout(jPanel7Layout);
 
         jLabel11.setText("Read");
 
@@ -252,60 +286,75 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea4.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         jTextArea4.setRows(5);
         jScrollPane4.setViewportView(jTextArea4);
-
-        jLabel13.setText("Number packets read");
-
-        jLabel14.setText("Buffer Queue");
-
-        jButton15.setText("Clean");
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
-            }
-        });
+        
+        panel_2 = new JPanel();
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel11)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(jLabel13)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel14)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton15, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+        	jPanel8Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel8Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(jPanel8Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(jScrollPane4, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+        				.addGroup(Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+        					.addComponent(jLabel11)
+        					.addGap(0, 34, Short.MAX_VALUE))
+        				.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE))
+        			.addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel11)
-                .addGap(7, 7, 7)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13)
-                    .addComponent(jLabel14)
-                    .addComponent(jTextField13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton15)
-                .addContainerGap())
+        	jPanel8Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel8Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jLabel11)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jScrollPane4, GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
         );
+        panel_2.setLayout(null);
+        jLabel13 = new javax.swing.JLabel();
+        jLabel13.setBounds(12, 16, 122, 16);
+        panel_2.add(jLabel13);
+        
+                jLabel13.setText("Number packets read");
+                jTextField11 = new javax.swing.JTextField();
+                jTextField11.setBounds(139, 13, 65, 22);
+                panel_2.add(jTextField11);
+                jLabel14 = new javax.swing.JLabel();
+                jLabel14.setBounds(232, 13, 75, 16);
+                panel_2.add(jLabel14);
+                
+                        jLabel14.setText("Buffer Queue");
+                        jTextField13 = new javax.swing.JTextField();
+                        jTextField13.setBounds(312, 10, 99, 22);
+                        panel_2.add(jTextField13);
+                        jButton15 = new javax.swing.JButton();
+                        jButton15.setBounds(290, 44, 121, 25);
+                        panel_2.add(jButton15);
+                        jButton15.setEnabled(false);
+                        
+                                jButton15.setText("Clean");
+                                
+                                checkBox_3 = new JCheckBox("keep scrolled down");
+                                checkBox_3.addPropertyChangeListener(new PropertyChangeListener() {
+                                	public void propertyChange(PropertyChangeEvent evt) {
+                                		if (checkBox_3.isSelected()) {
+                                			autoScrollDownIntRead = true;
+                                		} else {
+                                			autoScrollDownIntRead = false;
+                                		}
+                                	}
+                                });
+                                checkBox_3.setSelected(true);
+                                checkBox_3.setBounds(12, 44, 139, 25);
+                                panel_2.add(checkBox_3);
+                                jButton15.addActionListener(new java.awt.event.ActionListener() {
+                                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                        jButton15ActionPerformed(evt);
+                                    }
+                                });
+        jPanel8.setLayout(jPanel8Layout);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5Layout.setHorizontalGroup(
@@ -326,7 +375,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         );
         jPanel5.setLayout(jPanel5Layout);
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Socket"));
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Data"));
 
         jLabel1.setText("Receive");
 
@@ -334,75 +383,89 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
-
-        jButton5.setText("DPING");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButton6.setText("DREFRESH");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton4.setText("CLEAN");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jLabel9.setText("Buffer Queue");
+        
+        JPanel panel = new JPanel();
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        	jPanel2Layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(jPanel2Layout.createSequentialGroup()
+        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(jPanel2Layout.createSequentialGroup()
+        					.addGap(23)
+        					.addComponent(jLabel1))
+        				.addGroup(jPanel2Layout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
+        				.addGroup(jPanel2Layout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)))
+        			.addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6))
-                .addContainerGap())
+        	jPanel2Layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(jPanel2Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jLabel1)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 237, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 79, GroupLayout.PREFERRED_SIZE))
         );
+        panel.setLayout(null);
+        jLabel9 = new javax.swing.JLabel();
+        jLabel9.setBounds(0, 13, 75, 16);
+        panel.add(jLabel9);
+        
+                jLabel9.setText("Buffer Queue");
+                jTextField3 = new javax.swing.JTextField();
+                jTextField3.setBounds(80, 10, 65, 22);
+                panel.add(jTextField3);
+                
+                checkBox = new JCheckBox("keep scrolled down");
+                checkBox.addPropertyChangeListener(new PropertyChangeListener() {
+                	public void propertyChange(PropertyChangeEvent evt) {
+                		if (checkBox.isSelected()) {
+                			autoScrollDownSocketReceive = true;
+                		} else {
+                			autoScrollDownSocketReceive = false;
+                		}
+                	}
+                });
+                checkBox.setBounds(178, 9, 139, 25);
+                panel.add(checkBox);
+                checkBox.setSelected(true);
+                jButton5 = new javax.swing.JButton();
+                jButton5.setBounds(0, 39, 98, 25);
+                panel.add(jButton5);
+                
+                        jButton5.setText("DPING");
+                        jButton6 = new javax.swing.JButton();
+                        jButton6.setBounds(110, 39, 93, 25);
+                        panel.add(jButton6);
+                        
+                                jButton6.setText("DREFRESH");
+                                jButton4 = new javax.swing.JButton();
+                                jButton4.setBounds(218, 39, 99, 25);
+                                panel.add(jButton4);
+                                
+                                        jButton4.setText("CLEAN");
+                                        jButton4.addActionListener(new java.awt.event.ActionListener() {
+                                            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                                jButton4ActionPerformed(evt);
+                                            }
+                                        });
+                                jButton6.addActionListener(new java.awt.event.ActionListener() {
+                                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                        jButton6ActionPerformed(evt);
+                                    }
+                                });
+                        jButton5.addActionListener(new java.awt.event.ActionListener() {
+                            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton5ActionPerformed(evt);
+                            }
+                        });
+        jPanel2.setLayout(jPanel2Layout);
 
         jTextArea2.setColumns(20);
         jTextArea2.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
@@ -410,97 +473,78 @@ public class MonitorWindow extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         jLabel2.setText("Send");
-
-        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                SendText(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                SendText(evt);
-            }
-        });
-
-        jButton9.setText("UPING");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
-        jButton8.setText("UREFRESH");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
-        jButton7.setText("CLEAN");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("SEND");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jLabel16.setText("Buffer Queue");
+        
+        panel_1 = new JPanel();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
         				.addComponent(jScrollPane2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        						.addGroup(jPanel1Layout.createSequentialGroup()
-        							.addComponent(jTextField10, 80, 80, 80)
-        							.addPreferredGap(ComponentPlacement.RELATED)
-        							.addComponent(jTextField4, GroupLayout.PREFERRED_SIZE, 174, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.RELATED)
-        							.addComponent(jButton2, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE))
-        						.addGroup(jPanel1Layout.createSequentialGroup()
-        							.addComponent(jButton9, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.RELATED)
-        							.addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.RELATED)
-        							.addComponent(jButton7, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)))
-        					.addGroup(jPanel1Layout.createSequentialGroup()
-        						.addComponent(jLabel16)
-        						.addPreferredGap(ComponentPlacement.RELATED)
-        						.addComponent(jTextField15, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)))
+        				.addComponent(panel_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
         				.addComponent(jLabel2, Alignment.LEADING))
         			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
+        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(jLabel2)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(jLabel16)
-        				.addComponent(jTextField15, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(jTextField10, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jTextField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jButton2))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(jButton8)
-        				.addComponent(jButton9)
-        				.addComponent(jButton7))
-        			.addContainerGap())
+        			.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE))
         );
+        panel_1.setLayout(null);
+        jLabel16 = new javax.swing.JLabel();
+        jLabel16.setBounds(0, 13, 75, 16);
+        panel_1.add(jLabel16);
+        
+                jLabel16.setText("Buffer Queue");
+                jTextField15 = new javax.swing.JTextField();
+                jTextField15.setBounds(87, 10, 74, 22);
+                panel_1.add(jTextField15);
+                
+                checkBox_1 = new JCheckBox("keep scrolled down");
+                checkBox_1.addPropertyChangeListener(new PropertyChangeListener() {
+                	public void propertyChange(PropertyChangeEvent evt) {
+                		if (checkBox_1.isSelected()) {
+                			autoScrollDownSocketSend = true;
+                		} else {
+                			autoScrollDownSocketSend = false;
+                		}
+                	}
+                });
+                checkBox_1.setBounds(192, 9, 139, 25);
+                panel_1.add(checkBox_1);
+                checkBox_1.setSelected(true);
+                jTextField10 = new javax.swing.JTextField();
+                jTextField10.setBounds(0, 40, 80, 22);
+                panel_1.add(jTextField10);
+                jTextField4 = new javax.swing.JTextField();
+                jTextField4.setBounds(87, 40, 174, 22);
+                panel_1.add(jTextField4);
+                jButton2 = new javax.swing.JButton();
+                jButton2.setBounds(268, 39, 63, 25);
+                panel_1.add(jButton2);
+                
+                        jButton2.setText("SEND");
+                        jButton2.addActionListener(new java.awt.event.ActionListener() {
+                            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                                jButton2ActionPerformed(evt);
+                            }
+                        });
+                
+                        jTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
+                            public void keyPressed(java.awt.event.KeyEvent evt) {
+                                SendText(evt);
+                            }
+                            public void keyTyped(java.awt.event.KeyEvent evt) {
+                                SendText(evt);
+                            }
+                        });
         jPanel1.setLayout(jPanel1Layout);
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
@@ -660,6 +704,13 @@ public class MonitorWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private JCheckBox chckbxKeepScrolledDown;
+    private JCheckBox checkBox;
+    private JCheckBox checkBox_1;
+    private JPanel panel_1;
+    private JPanel panel_2;
+    private JPanel panel_3;
+    private JCheckBox checkBox_2;
+    private JCheckBox checkBox_3;
     
     public void setLogedOut() {       
     	btnExit.setEnabled(false);
@@ -724,6 +775,9 @@ public class MonitorWindow extends javax.swing.JFrame {
         	upConCounter = 0;
             jTextArea2.setText("");
         }
+        if (autoScrollDownSocketSend) {
+        	jTextArea2.select(jTextArea2.getHeight() + 10000, 0);
+        }
     }
 
     public void clearUp() {
@@ -741,6 +795,9 @@ public class MonitorWindow extends javax.swing.JFrame {
             downConCounter = 0;
             jTextArea1.setText("");
         }
+        if (autoScrollDownSocketReceive) {
+        	jTextArea1.select(jTextArea1.getHeight() + 10000, 0);
+        }
     }
     
     public void clearDown() {
@@ -757,6 +814,9 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (downCounter > 600) {
             downCounter = 0;
             jTextArea4.setText("");
+        }
+        if (autoScrollDownIntRead) {
+        	jTextArea4.select(jTextArea4.getHeight() + 10000, 0);
         }
     }
     
@@ -786,6 +846,9 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (upCounter > 600) {
         	upCounter = 0;
             jTextArea5.setText("");
+        }
+        if (autoScrollDownIntWrite) {
+        	jTextArea5.select(jTextArea5.getHeight() + 10000, 0);
         }
     }
     
