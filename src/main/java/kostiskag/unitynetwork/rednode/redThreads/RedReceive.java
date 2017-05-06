@@ -106,7 +106,7 @@ public class RedReceive extends Thread {
                 } else if (UnityPacket.isShortRoutedAck(packet)) {
                 	App.login.monitor.writeToConnectionDown(pre+"SHORT ROUTED ACK RECEIVED");
                 	try {
-						App.login.connection.getTrafficMan().gotACK();
+						App.login.connection.getTrafficMan().gotACK(UnityPacket.getShortRoutedAckTrackNum(packet));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -134,8 +134,8 @@ public class RedReceive extends Thread {
 	                    App.login.connection.getUpMan().offer(ACKS);
 	                    
 	                    //this is the place to build end to end acks
-	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), UnityPacket.getSourceAddress(packet), 0);
-	                    App.login.connection.getUpMan().offer(ACKL);
+	                    //byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), UnityPacket.getSourceAddress(packet), 0);
+	                    //App.login.connection.getUpMan().offer(ACKL);
 	                    
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -154,8 +154,8 @@ public class RedReceive extends Thread {
                     App.login.connection.getUpMan().offer(ACKS);
                     
                     //this is the place to build end to end acks
-                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), IPv4Packet.getSourceAddress(packet), 0);
-                    App.login.connection.getUpMan().offer(ACKL);
+                    //byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), IPv4Packet.getSourceAddress(packet), 0);
+                    //App.login.connection.getUpMan().offer(ACKL);
                 
                 } catch (Exception e) {
 					e.printStackTrace();

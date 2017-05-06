@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 public class UploadManager {
 
     private int len = 1;    
+    private int buufer = 0; //this is the bluenodes buffer queue
     private long oldTime;
     private long time;
     private long averageTime=250;
@@ -18,20 +19,26 @@ public class UploadManager {
     	
     }
 
-    public synchronized void gotACK() {
-        if (len >= 1 && len <= 10) {
-            len++;
-        } else if (len < 1){
-            len = 1;
+    public synchronized void gotACK(int buffer) {
+    	System.out.println("buffer "+buffer);
+    	//a bluenode has an availlable queue for each rn up to size 20 
+        if (buffer < 10) {
+	    	if (len >= 1 && len <= 10) {
+	            len++;
+	        } else if (len < 1){
+	            len = 1;
+	        }
+	        oldTime = time;
+	        time = System.currentTimeMillis();  
+	        if (time-oldTime < 500) {
+	            averageTime = (2*averageTime + (time-oldTime)/2)/3;        
+	        }
+	        if (averageTime > 1000)
+	            averageTime=1000;
+	        System.out.println("got ack, avtime "+averageTime);
+        } else {
+        	averageTime = 2000;
         }
-        oldTime = time;
-        time = System.currentTimeMillis();  
-        if (time-oldTime < 500) {
-            averageTime = (2*averageTime + (time-oldTime)/2)/3;        
-        }
-        if (averageTime > 1000)
-            averageTime=1000;
-        System.out.println("got ack, avtime "+averageTime);
         notify();
     }
 
