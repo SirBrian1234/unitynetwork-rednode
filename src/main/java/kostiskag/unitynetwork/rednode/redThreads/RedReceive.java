@@ -141,26 +141,27 @@ public class RedReceive extends Thread {
 						e.printStackTrace();
 					}
                     
-                } else if (IPv4Packet.isIPv4(packet)) {
-                	try {
-						App.login.monitor.writeToConnectionDown(pre+"IPv4 RECEIVED " + packet.length + " Bytes from: " + IPv4Packet.getSourceAddress(packet).getHostAddress());
-					
-						App.login.monitor.updateConUpBufferQueue(receiveQueue.getlen());
-						receiveQueue.offer(packet);                    
-	                    
-	                    //this is the place to build short routed acks
-	                    byte[] ACKS = UnityPacket.buildShortRoutedAckPacket(0);
-	                    App.login.connection.getUpMan().offer(ACKS);
-	                    
-	                    //this is the place to build end to end acks
-	                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), IPv4Packet.getSourceAddress(packet), 0);
-	                    App.login.connection.getUpMan().offer(ACKL);
+                } 
+	        } else if (IPv4Packet.isIPv4(packet)) {
+            	try {
+					App.login.monitor.writeToConnectionDown(pre+"IPv4 RECEIVED " + packet.length + " Bytes from: " + IPv4Packet.getSourceAddress(packet).getHostAddress());
+				
+					App.login.monitor.updateConUpBufferQueue(receiveQueue.getlen());
+					receiveQueue.offer(packet);                    
                     
-                    } catch (Exception e) {
-						e.printStackTrace();
-					}
-                }
-	        }
+                    //this is the place to build short routed acks
+                    byte[] ACKS = UnityPacket.buildShortRoutedAckPacket(0);
+                    App.login.connection.getUpMan().offer(ACKS);
+                    
+                    //this is the place to build end to end acks
+                    byte[] ACKL = UnityPacket.buildLongRoutedAckPacket(App.login.connection.getMyIP(), IPv4Packet.getSourceAddress(packet), 0);
+                    App.login.connection.getUpMan().offer(ACKL);
+                
+                } catch (Exception e) {
+					e.printStackTrace();
+				}
+            }
+            App.login.monitor.updateConDownBufferQueue(receiveQueue.getlen());
         }
         receiveQueue.clear();
         App.login.monitor.writeToConnectionDown(pre+"ended");

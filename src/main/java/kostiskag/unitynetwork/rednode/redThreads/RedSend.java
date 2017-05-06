@@ -91,6 +91,7 @@ public class RedSend extends Thread {
 						e.printStackTrace();
 					}
                 }
+                App.login.monitor.updateConUpBufferQueue(sendQueue.getlen());
             } catch (java.net.SocketException ex1) {
                 break;
             } catch (IOException ex) {

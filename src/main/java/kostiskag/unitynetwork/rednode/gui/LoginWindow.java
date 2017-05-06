@@ -355,7 +355,7 @@ public class LoginWindow extends javax.swing.JFrame {
 			// does logout
 			jButton1.setEnabled(false);
 			App.login.connection.giveCommand("EXIT");
-		} else {
+		} else if  (loggedin == 2) {
 			// does retry
 			jButton1.setText("Login");
 			jPanel4.setVisible(true);
@@ -363,13 +363,23 @@ public class LoginWindow extends javax.swing.JFrame {
 			jTextArea1.setText("");
 			jTextArea1.setVisible(false);
 			loggedin = 0;
+		} else {
+			//does exit
+			System.exit(0);
 		}
 	}
 
 	public void setLogedOut() {
-		loggedin = 2;
-		jButton1.setText("Retry");
-		jButton1.setEnabled(true);
+		//if the interface was used the app has to close
+		if (!connection.isInterfaceSet()) {
+			loggedin = 2;
+			jButton1.setText("Retry");
+			jButton1.setEnabled(true);
+		} else {
+			loggedin = 3;
+			jButton1.setText("Exit");
+			jButton1.setEnabled(true);
+		}
 	}
 
 	public void setLoggedIn() {
