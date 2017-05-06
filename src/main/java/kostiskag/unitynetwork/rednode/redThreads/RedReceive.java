@@ -101,7 +101,7 @@ public class RedReceive extends Thread {
                 	
                 } else if(UnityPacket.isDping(packet)) {
                 	App.login.monitor.writeToConnectionDown(pre+"DPING RECEIVED");
-                	App.login.monitor.writeToCommands("DPING OK");
+                	App.login.monitor.writeToCommands(pre+"DPING RECEIVED");
                     App.login.connection.setClientDPinged(true);
                     
                 } else if (UnityPacket.isShortRoutedAck(packet)) {

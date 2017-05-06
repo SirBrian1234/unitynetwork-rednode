@@ -60,7 +60,7 @@ public class ConnectionManager extends Thread {
     private  ReverseARPTable arpTable;
     private  MacAddress myMac;    
     private  boolean isDHCPset;    
-    private  boolean isClientDPinged;
+    private  AtomicBoolean isClientDPinged;
     private  boolean libError=false;    
     private String command;
     private AtomicBoolean kill = new AtomicBoolean(false);
@@ -84,7 +84,7 @@ public class ConnectionManager extends Thread {
             return;
         }
         
-        this.isClientDPinged = false;
+        this.isClientDPinged = new AtomicBoolean(false);
         this.isDHCPset = false;
         this.libError = false;
         
@@ -136,7 +136,7 @@ public class ConnectionManager extends Thread {
 	}
     
     public boolean isClientDPinged() {
-		return isClientDPinged;
+		return isClientDPinged.get();
 	}
     
     public void setMyMac(MacAddress myMac) {
@@ -148,7 +148,7 @@ public class ConnectionManager extends Thread {
 	}
     
     public void setClientDPinged(boolean isClientDPinged) {
-		this.isClientDPinged = isClientDPinged;
+		this.isClientDPinged.set(isClientDPinged);
 	}
     
     public void setLibError(boolean libError) {
@@ -338,11 +338,6 @@ public class ConnectionManager extends Thread {
         App.login.setLoggedIn();
     }
 
-    public synchronized void giveCommand(String command) {
-        notify();
-        this.command = command;
-    }
-    
     public synchronized void authCommands() {        
         while (!kill.get()) {                                    
             try {
@@ -353,11 +348,7 @@ public class ConnectionManager extends Thread {
             if (kill.get()) {
             	break;
             } else if (!command.isEmpty()) {
-                if (command.equals("EXIT")) {
-                    App.login.writeInfo("Logging Out...");
-                    authClient.exit();
-                    break;
-                } else if (command.equals("PING")) {
+                if (command.equals("PING")) {
                     authClient.ping();
                 } else if (command.equals("UPING")) {
                     uPing();
@@ -369,6 +360,10 @@ public class ConnectionManager extends Thread {
                     urefresh();
                 } else if (command.equals("DIAGNOSTICS")) {
                     LinkDiagnostic();
+                } else if (command.equals("EXIT")) {
+                    App.login.writeInfo("Logging Out...");
+                    authClient.exit();
+                    break;
                 } else {
                     authClient.sendAuthData(command);
                 }
@@ -377,6 +372,11 @@ public class ConnectionManager extends Thread {
         }
     }
 
+    public synchronized void giveCommand(String command) {
+        this.command = command;
+        notify();        
+    }
+    
     public synchronized void killConnectionManager() {
         kill.set(true);
         notify();
@@ -416,6 +416,43 @@ public class ConnectionManager extends Thread {
     		return true;
     	}
     	return false;
+    }
+    
+    public boolean uPing() {
+        byte[] packet = UnityPacket.buildUpingPacket();
+        authClient.sendAuthData("UPING");
+        authClient.receiveAuthData(); //SET
+        for (int i = 0; i < 10; i++) {
+            upMan.offer(packet);
+            try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        }
+        String input = authClient.receiveAuthData();
+        if (input.equals("UPING OK")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean dPing() {
+        isClientDPinged.set(false);
+        authClient.sendAuthData("DPING");
+        //this is a pseudo synchronized wait for the response 
+        for (int i = 0; i < 2*10*2; i++) {
+            try {
+                sleep(50);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (isClientDPinged.get()) {
+                break;
+            }
+        }
+        return isClientDPinged.get();
     }
 
     public void drefresh() {
@@ -469,42 +506,6 @@ public class ConnectionManager extends Thread {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
         uPing();
-    }
-
-    public boolean uPing() {
-        byte[] packet = UnityPacket.buildUpingPacket();
-        authClient.sendAuthData("UPING");
-        authClient.receiveAuthData(); //SET
-        for (int i = 0; i < 10; i++) {
-            upMan.offer(packet);
-            try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-        }
-        String input = authClient.receiveAuthData();
-        if (input.equals("UPING OK")) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean dPing() {
-        isClientDPinged = false;
-        authClient.sendAuthData("DPING");
-        for (int i = 0; i < 8; i++) {
-            try {
-                sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            if (isClientDPinged) {
-                break;
-            }
-        }
-        return isClientDPinged;
     }
 
     public void sendStringData(String address, String message) {

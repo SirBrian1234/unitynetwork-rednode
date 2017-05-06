@@ -1,14 +1,16 @@
 package kostiskag.unitynetwork.rednode.redThreads;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 
@@ -18,6 +20,7 @@ import kostiskag.unitynetwork.rednode.functions.HashFunctions;
  */
 public class AuthClient extends Thread {
 
+	private final String pre = "^AuthClient ";
 	private final String username;
 	private final String password;
 	private final String hostname;
@@ -32,7 +35,6 @@ public class AuthClient extends Thread {
 	private int serverSendPort; // I use this port to send data
 	
 	private String vaddress;
-	private String receivedMessage = "none";
 	private String socketResponce;
 	private AtomicBoolean kill = new AtomicBoolean(false);
 
@@ -43,96 +45,94 @@ public class AuthClient extends Thread {
 		this.serverIPAddress = serverIPAddress;
 		this.serverPort = serverPort;
 	}
+	
+	public String getVaddress() {
+		return vaddress;
+	}
+
+	public int getServerSendPort() {
+		return serverSendPort;
+	}
+	
+	public int getServerReceivePort() {
+		return serverReceivePort;
+	}
 
 	public boolean auth() {
-		if (serverPort == -1) {
-			App.login.writeInfo("WRONG AUTH PORT GIVEN");
+		if (serverPort <= 0 || serverPort > 65535) {
+			App.login.writeInfo(pre+"WRONG AUTH PORT GIVEN");
 			return false;
 		}
 
 		try {
+			String hashedData = null;
+			hashedData = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT + password);
+			hashedData = HashFunctions.SHA256(hashedData);
+			
 			socket = new Socket(serverIPAddress, serverPort);
-			socket.setSoTimeout(10000);
-			try {
-				socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				socketWriter = new PrintWriter(socket.getOutputStream(), true);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				receivedMessage = socketReader.readLine();
-			} catch (IOException ex) {
-				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-				return false;
-			}
-			App.login.monitor.writeToCommands(receivedMessage);
+			socket.setSoTimeout(6000);
+			
+			socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			socketWriter = new PrintWriter(socket.getOutputStream(), true);
+			String args[];
+			
+			String receivedMessage = socketReader.readLine();
+			App.login.monitor.writeToCommands(pre+receivedMessage);
 
 			String messageToSend = "REDNODE " + hostname;
 			sendAuthData(messageToSend);
-			String received = socketReader.readLine();
-			String[] args = received.split("\\s+");
+			receivedMessage = socketReader.readLine();
+			App.login.monitor.writeToCommands(pre+receivedMessage);
 
-			String data = null;
-			try {
-				data = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT + password);
-				data = HashFunctions.SHA256(data);
-			} catch (NoSuchAlgorithmException ex) {
-				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-			} catch (UnsupportedEncodingException ex) {
-				Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-			messageToSend = "LEASE "+username+" "+data;
+			messageToSend = "LEASE "+username+" "+hashedData;
 			sendAuthData(messageToSend);
-			received = socketReader.readLine();
-
-			if (received.startsWith("FAILED")) {
-				
-				if (received.startsWith("FAILED BLUENODE")) {
+			receivedMessage = socketReader.readLine();
+			App.login.monitor.writeToCommands(pre+receivedMessage);
+			
+			if (receivedMessage.startsWith("FAILED")) {
+				if (receivedMessage.startsWith("FAILED BLUENODE")) {
 					App.login.writeInfo("BlueNode Error, try connecting from a different BN");
-				} else if (received.startsWith("FAILED USER")) {
+				} else if (receivedMessage.startsWith("FAILED USER")) {
 					App.login.writeInfo("Wrong hostname, username or password");
-				} else if (received.startsWith("FAILED HOSTNAME")) {
+				} else if (receivedMessage.startsWith("FAILED HOSTNAME")) {
 					App.login.writeInfo("Hostname allready in use");
 					App.login.writeInfo(
 							"Check if you are not connected from another place, and if not contact BNs admin to inform him");
 				} else {
 					App.login.writeInfo("Failed to connect.");
 				}
-				
 				return false;
 			
 			} else {
-				args = received.split("\\s+");
+				args = receivedMessage.split("\\s+");
 				if (args.length == 4 && args[0].equals("REG_OK")) {
 					vaddress = args[1];
 					serverReceivePort = Integer.parseInt(args[2]); //the port where the server receives
 					serverSendPort = Integer.parseInt(args[3]); //the port where the server sends
-					System.out.println("collected resp: "+received);
 					return true;
 				} 
 				return false;				
 			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			App.login.writeInfo("NO SUCH ALGORITHM ERROR");
+			return false;
 		} catch (UnknownHostException ex) {
 			ex.printStackTrace();
-			App.login.monitor.writeToCommands("HOST ERROR");
 			App.login.writeInfo("HOST ERROR");
 			return false;
 		} catch (java.net.ConnectException ex) {
-			App.login.monitor.writeToCommands("HOST NOT FOUND");
 			App.login.writeInfo("HOST NOT FOUND");
 			return false;
 		} catch (IOException ex) {
-			App.login.monitor.writeToCommands("COULD NOT CONNECT TO THE BLUE NODE");
 			App.login.writeInfo("COULD NOT CONNECT TO THE BLUE NODE");
 			return false;
-		}
+		} 
 	}
 
 	public void sendAuthData(String messageToSend) {
 		socketWriter.println(messageToSend);
-		App.login.monitor.writeToCommands(messageToSend);
+		App.login.monitor.writeToCommands(pre+"send "+messageToSend);
 	}
 
 	public String receiveAuthData() {
@@ -141,7 +141,6 @@ public class AuthClient extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		App.login.monitor.writeToCommands(socketResponce);
 		return socketResponce;
 	}
 
@@ -156,22 +155,10 @@ public class AuthClient extends Thread {
 	public void exit() {
 		sendAuthData("EXIT");
 	}
-
-	public int getServerReceivePort() {
-		return serverReceivePort;
-	}
-
-	public int getServerSendPort() {
-		return serverSendPort;
-	}
-
-	public String getVaddress() {
-		return vaddress;
-	}
-
-	// wait for socket to drop and for the responses
+	
 	@Override
 	public void run() {
+		// this waits for socket to drop and for the responses
 		try {
 			socket.setSoTimeout(0);
 		} catch (SocketException e) {
@@ -195,7 +182,7 @@ public class AuthClient extends Thread {
 				return;				
 			} else {				
 				socketResponce = receivedMessage;
-				App.login.writeInfo(socketResponce);
+				App.login.monitor.writeToCommands(pre+"received "+socketResponce);				
 			}
 		}
 	}

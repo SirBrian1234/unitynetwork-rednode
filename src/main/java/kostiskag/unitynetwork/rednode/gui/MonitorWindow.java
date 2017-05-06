@@ -6,6 +6,12 @@ import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import kostiskag.unitynetwork.rednode.App;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JCheckBox;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 /**
  *
@@ -24,6 +30,7 @@ public class MonitorWindow extends javax.swing.JFrame {
     private int downCounter = 0;
     public String command;
     public boolean loggedin = false;
+    private boolean autoScrollDownCommands;
 
     public MonitorWindow() {
         System.out.println("@Started MainWindow at " + Thread.currentThread().getName());
@@ -44,11 +51,9 @@ public class MonitorWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         commandw = new javax.swing.JPanel();
-        jLabel7 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
-        jTextField5 = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
@@ -97,8 +102,6 @@ public class MonitorWindow extends javax.swing.JFrame {
 
         commandw.setBorder(javax.swing.BorderFactory.createTitledBorder("Command Window"));
 
-        jLabel7.setText("COMMAND HISTORY");
-
         jButton11.setText("DIAGNOSTICS");
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -111,13 +114,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea3.setRows(5);
         jScrollPane3.setViewportView(jTextArea3);
 
-        jTextField5.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                SendCommandByEnter(evt);
-            }
-        });
-
-        jButton3.setText("SEND");
+        jButton3.setText("WHOAMI");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -130,45 +127,61 @@ public class MonitorWindow extends javax.swing.JFrame {
                 jButton10ActionPerformed(evt);
             }
         });
+        
+        btnExit = new JButton("EXIT");
+        btnExit.setEnabled(false);
+        btnExit.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		exitButtonActionPerformed(arg0);
+        	}
+        });
+        
+        chckbxKeepScrolledDown = new JCheckBox("keep scrolled down");
+        chckbxKeepScrolledDown.addPropertyChangeListener(new PropertyChangeListener() {
+        	public void propertyChange(PropertyChangeEvent evt) {
+        		if (chckbxKeepScrolledDown.isSelected()) {
+        			autoScrollDownCommands = true;
+        		} else {
+        			autoScrollDownCommands = false;
+        		}
+        	}
+        });
+        chckbxKeepScrolledDown.setSelected(true);
 
         javax.swing.GroupLayout commandwLayout = new javax.swing.GroupLayout(commandw);
-        commandw.setLayout(commandwLayout);
         commandwLayout.setHorizontalGroup(
-            commandwLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(commandwLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(commandwLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(commandwLayout.createSequentialGroup()
-                        .addComponent(jTextField5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton10))
-                    .addGroup(commandwLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jLabel7)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3))
-                .addContainerGap())
+        	commandwLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(commandwLayout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(commandwLayout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+        				.addGroup(commandwLayout.createSequentialGroup()
+        					.addComponent(jButton3)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(jButton11, GroupLayout.PREFERRED_SIZE, 127, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(jButton10)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(btnExit)
+        					.addPreferredGap(ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
+        					.addComponent(chckbxKeepScrolledDown)))
+        			.addContainerGap())
         );
         commandwLayout.setVerticalGroup(
-            commandwLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(commandwLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(commandwLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7)
-                    .addComponent(jButton11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(commandwLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton10))
-                .addContainerGap())
+        	commandwLayout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(commandwLayout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(jScrollPane3, GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addGroup(commandwLayout.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(jButton3)
+        				.addComponent(jButton11)
+        				.addComponent(jButton10)
+        				.addComponent(btnExit)
+        				.addComponent(chckbxKeepScrolledDown))
+        			.addContainerGap())
         );
+        commandw.setLayout(commandwLayout);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Interface"));
 
@@ -322,14 +335,14 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jButton5.setText("PING");
+        jButton5.setText("DPING");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        jButton6.setText("REFRESH");
+        jButton6.setText("DREFRESH");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -407,14 +420,14 @@ public class MonitorWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton9.setText("PING");
+        jButton9.setText("UPING");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
             }
         });
 
-        jButton8.setText("REFRESH");
+        jButton8.setText("UREFRESH");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
@@ -444,8 +457,8 @@ public class MonitorWindow extends javax.swing.JFrame {
         			.addContainerGap()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.TRAILING)
         				.addComponent(jScrollPane2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        					.addGroup(Alignment.TRAILING, jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(Alignment.LEADING, jPanel1Layout.createParallelGroup(Alignment.TRAILING)
+        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
         						.addGroup(jPanel1Layout.createSequentialGroup()
         							.addComponent(jTextField10, 80, 80, 80)
         							.addPreferredGap(ComponentPlacement.RELATED)
@@ -458,7 +471,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         							.addComponent(jButton8, GroupLayout.PREFERRED_SIZE, 117, GroupLayout.PREFERRED_SIZE)
         							.addPreferredGap(ComponentPlacement.RELATED)
         							.addComponent(jButton7, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)))
-        					.addGroup(Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        					.addGroup(jPanel1Layout.createSequentialGroup()
         						.addComponent(jLabel16)
         						.addPreferredGap(ComponentPlacement.RELATED)
         						.addComponent(jTextField15, GroupLayout.PREFERRED_SIZE, 59, GroupLayout.PREFERRED_SIZE)))
@@ -466,13 +479,13 @@ public class MonitorWindow extends javax.swing.JFrame {
         			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(jLabel2)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jLabel16)
         				.addComponent(jTextField15, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -540,40 +553,44 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextField4.setText("");
     }
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand(jTextField5.getText());        
-    }
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
        jTextArea1.setText("");
     }
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+    	App.login.connection.giveCommand("WHOAMI");       
+    }
+    
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {
+        App.login.connection.giveCommand("PING");
+    }
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {
+        App.login.connection.giveCommand("UPING");
+    }
+    
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {
         App.login.connection.giveCommand("DPING");
+    }
+    
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {
+        App.login.connection.giveCommand("UREFRESH");
     }
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
         App.login.connection.giveCommand("DREFRESH");
     }
+    
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {
+        App.login.connection.giveCommand("DIAGNOSTICS");
+    }
+    
+    private void exitButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        App.login.connection.giveCommand("EXIT");
+    }
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {
         clearUp();
-    }
-   
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("UREFRESH");
-    }
-    
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("UPING");
-    }
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("PING");
-    }
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("DIAGNOSTICS");
     }
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -594,17 +611,8 @@ public class MonitorWindow extends javax.swing.JFrame {
         }
     }
 
-    private void SendCommandByEnter(java.awt.event.KeyEvent evt) {
-        if (loggedin == true) {
-            int key = evt.getKeyCode();
-            if (key == KeyEvent.VK_ENTER) {
-                App.login.connection.giveCommand(jTextField5.getText());
-                jTextField5.setText("");
-            }
-        }
-    }
-
     private javax.swing.JPanel commandw;
+    private javax.swing.JButton btnExit;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton14;
@@ -626,7 +634,6 @@ public class MonitorWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -652,9 +659,10 @@ public class MonitorWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField15;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private JCheckBox chckbxKeepScrolledDown;
     
-    public void setLogedOut() {                
+    public void setLogedOut() {       
+    	btnExit.setEnabled(false);
         jButton2.setEnabled(false);
         jButton3.setEnabled(false);
         jButton4.setEnabled(false);
@@ -669,7 +677,8 @@ public class MonitorWindow extends javax.swing.JFrame {
         jButton15.setEnabled(false);
     }
 
-    public void setLogedIn() {        
+    public void setLogedIn() {    
+    	btnExit.setEnabled(true);
         jButton2.setEnabled(true);
         jButton3.setEnabled(true);
         jButton4.setEnabled(true);
@@ -698,6 +707,9 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (commandCounter > 1000) {
         	commandCounter = 0;
         	jTextArea3.append("");
+        }
+        if (autoScrollDownCommands) {
+        	jTextArea3.select(jTextArea3.getHeight() + 10000, 0);
         }
     }
     
