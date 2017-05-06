@@ -98,12 +98,12 @@ public class RedSend extends Thread {
                 break;
             }                        
         }        
+        socket.close();   
         App.login.monitor.writeToCommands(pre+"ended");
     }
 
     public void kill() {
         kill.set(true);
-        sendQueue.exit();
-        socket.close();        
+        sendQueue.clear();
     }
 }

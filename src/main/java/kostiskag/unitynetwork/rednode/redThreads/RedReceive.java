@@ -162,7 +162,8 @@ public class RedReceive extends Thread {
                 }
 	        }
         }
-        receiveQueue.exit();
+        receiveQueue.clear();
+        App.login.monitor.writeToConnectionDown(pre+"ended");
     }
 
     public void kill() {

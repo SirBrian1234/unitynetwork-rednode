@@ -618,11 +618,11 @@ public class MonitorWindow extends javax.swing.JFrame {
     }
     
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("UREFRESH");
+        App.login.connection.urefresh();
     }
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.giveCommand("DREFRESH");
+        App.login.connection.drefresh();
     }
     
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {

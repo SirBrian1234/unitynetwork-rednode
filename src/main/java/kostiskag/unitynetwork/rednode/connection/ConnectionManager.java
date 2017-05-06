@@ -375,23 +375,28 @@ public class ConnectionManager extends Thread {
     }
 
     public void drefresh() {
+    	//receiveRefresh for the client -> sendRefresh for the server
         receive.kill();
         App.login.monitor.clearDown();
         authClient.sendAuthData("DREFRESH");
         String returnstr = authClient.receiveAuthData();
         String[] args = returnstr.split("\\s+");
 
-        if (args.length < 3) {
+        if (args.length !=2 && !args[0].equals("DREFRESH")) {
+        	return;
+        }
+        
+        int serverPort;
+        try {
+            serverPort = Integer.parseInt(args[1]);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
             return;
         }
-        int downPort = Integer.parseInt(args[2]);
-        if (downPort == -1) {
-            return;
-        }
-        receive = new RedReceive(fullBlueNodeAddress, downPort, downMan);
+        
+        receive = new RedReceive(fullBlueNodeAddress, serverPort, downMan);
         receive.start();
         try {
-            sleep(4000);
+            sleep(2000);
         } catch (InterruptedException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -404,22 +409,21 @@ public class ConnectionManager extends Thread {
         String returnstr = authClient.receiveAuthData();
         String[] args = returnstr.split("\\s+");
 
-        if (args.length < 3) {
-            return;
+        if (args.length !=2 && !args[0].equals("UREFRESH")) {
+        	return;
         }
-        int upPort = -1;
+        
+        int serverPort;
         try {
-            upPort = Integer.parseInt(args[2]);
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            upPort = -1;
-        }
-        if (upPort == -1) {
+            serverPort = Integer.parseInt(args[1]);
+        } catch (ArrayIndexOutOfBoundsException | NumberFormatException ex) {
             return;
         }
-        send = new RedSend(fullBlueNodeAddress, upPort, upMan);
+        
+        send = new RedSend(fullBlueNodeAddress, serverPort, upMan);
         send.start();
         try {
-            sleep(4000);
+            sleep(2000);
         } catch (InterruptedException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
