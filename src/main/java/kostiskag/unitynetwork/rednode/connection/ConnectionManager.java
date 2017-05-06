@@ -58,10 +58,11 @@ public class ConnectionManager extends Thread {
     //ehternet & routing       
     private  int osType;
     private  ReverseARPTable arpTable;
-    private  MacAddress myMac;    
-    private  boolean isDHCPset;    
-    private  AtomicBoolean isClientDPinged;
-    private  boolean libError=false;    
+    private  MacAddress myMac;
+    private  boolean interfaceSet;
+    private  boolean isDHCPset;  
+    private  boolean libError; 
+    private  AtomicBoolean isClientDPinged;      
     private String command;
     private AtomicBoolean kill = new AtomicBoolean(false);
     
@@ -129,6 +130,10 @@ public class ConnectionManager extends Thread {
     
     public QueueManager getWriteMan() {
 		return writeMan;
+	}
+    
+    public boolean isInterfaceSet() {
+		return interfaceSet;
 	}
     
     public boolean isIsDHCPset() {
@@ -225,7 +230,7 @@ public class ConnectionManager extends Thread {
         App.login.setLogedOut();
     }
    
-    public void openThreads(int serverReceive, int serverSend) {
+    private void openThreads(int serverReceive, int serverSend) {
         //set
     	receive = new RedReceive(fullBlueNodeAddress, serverSend, downMan);
         send = new RedSend(fullBlueNodeAddress, serverReceive, upMan);
@@ -275,64 +280,8 @@ public class ConnectionManager extends Thread {
         return link;
     }
 
-    public boolean startInterface() {
-
-        App.login.writeInfo("Setting Interface...");
-        //starting the real interface                
-        try {
-            tuntap = TunTap.createTunTap();
-        } catch (Exception ex) {
-            return false;
-        }
-
-        //stupid interface
-        if (tuntap.getDev() == null) {
-            if (libError == false) {
-                for (int i = 0; i < 3; i++) {
-                    try {
-                        tuntap = TunTap.createTunTap();
-                    } catch (Exception ex) {
-                        return false;
-                    }
-                    if (tuntap.getDev() != null) {
-                        break;
-                    }
-                    try {
-                        sleep(2000);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-                App.login.writeInfo("COULD NOT OPEN INTERFACE, check if your interface is activated and if its not being used");
-            }
-            tuntap = null;
-            return false;
-        }
-
-
-        if (tuntap != null) {
-            readMan = new QueueManager(20);
-            writeMan = new QueueManager(1000);
-
-            read = new InterfaceRead(tuntap, readMan);
-            read.start();
-
-            write = new InterfaceWrite(tuntap, writeMan);
-            write.start();
-
-            router = new EthernetRouter(readMan, upMan, trafficMan);
-            router.start();
-
-            vrouter = new VirtualRouter(writeMan, downMan);
-            vrouter.start();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public void LoggedIn() {
-        byte[] packet = UnityPacket.buildMessagePacket(myIP, myIP, "[HELLO PACKET]");
+        byte[] packet = UnityPacket.buildMessagePacket(myIP, myIP, "HELLO MESSAGE");
         upMan.offer(packet);
         App.login.monitor.setLogedIn();
         App.login.setLoggedIn();
@@ -370,6 +319,8 @@ public class ConnectionManager extends Thread {
                 command = "";                
             }            
         }
+        //do not kill anything after this
+        //the end sequence after kill is in run()
     }
 
     public synchronized void giveCommand(String command) {
@@ -377,41 +328,9 @@ public class ConnectionManager extends Thread {
         notify();        
     }
     
-    public synchronized void killConnectionManager() {
-        kill.set(true);
-        notify();
-    }
-
-    private void killTasks() {
-        send.kill();
-        receive.kill();
-        ka.kill();
-    }
-
-    private void killInterface() {
-        if (tuntap != null) {
-            router.kill();
-            vrouter.kill();
-            read.kill();
-            write.kill();
-            try {
-                sleep(500);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                tuntap.close();
-            } catch (Exception ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            tuntap = null;
-        }
-    }
-
     public boolean ping() {
     	authClient.ping();
     	String input = authClient.receiveAuthData();  
-    	System.out.println(input);
     	if (input.equals("PING OK")) {
     		return true;
     	}
@@ -476,7 +395,6 @@ public class ConnectionManager extends Thread {
         } catch (InterruptedException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        dPing();
     }
 
     public void urefresh() {
@@ -505,10 +423,9 @@ public class ConnectionManager extends Thread {
         } catch (InterruptedException ex) {
             Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
         }
-        uPing();
     }
 
-    public void sendStringData(String address, String message) {
+    public void sendMessage(String address, String message) {
         //converting into unity packet        
         InetAddress destvaddr = null;
         try {
@@ -518,6 +435,89 @@ public class ConnectionManager extends Thread {
         } catch (UnknownHostException ex) {
             Logger.getLogger(AuthClient.class.getName()).log(Level.SEVERE, null, ex);           
         }       
+    }
+    
+    public synchronized void killConnectionManager() {
+        kill.set(true);
+        notify();
+    }
+
+    private void killTasks() {
+        send.kill();
+        receive.kill();
+        ka.kill();
+    }
+    
+    private boolean startInterface() {
+    	App.login.writeInfo("Setting Interface...");
+        //starting the real interface                
+        try {
+            tuntap = TunTap.createTunTap();
+        } catch (Exception ex) {
+            return false;
+        }
+
+        if (tuntap.getDev() == null) {
+            if (libError == false) {
+                for (int i = 0; i < 3; i++) {
+                    try {
+                        tuntap = TunTap.createTunTap();
+                    } catch (Exception ex) {
+                        return false;
+                    }
+                    if (tuntap.getDev() != null) {
+                        break;
+                    }
+                    try {
+                        sleep(2000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                App.login.writeInfo("COULD NOT OPEN INTERFACE, check if your interface is activated and if its not being used");
+            }
+            tuntap = null;
+            return false;
+        }
+
+
+        if (tuntap != null) {
+            read = new InterfaceRead(tuntap, readMan);
+            read.start();
+
+            write = new InterfaceWrite(tuntap, writeMan);
+            write.start();
+
+            router = new EthernetRouter(readMan, upMan, trafficMan);
+            router.start();
+
+            vrouter = new VirtualRouter(writeMan, downMan);
+            vrouter.start();
+            interfaceSet = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void killInterface() {
+        if (interfaceSet) {
+            router.kill();
+            vrouter.kill();
+            read.kill();
+            write.kill();
+            try {
+                sleep(500);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(ConnectionManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                tuntap.close();
+            } catch (Exception ex) {
+                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            tuntap = null;
+        }
     }
 
     private boolean checkDHCP() {

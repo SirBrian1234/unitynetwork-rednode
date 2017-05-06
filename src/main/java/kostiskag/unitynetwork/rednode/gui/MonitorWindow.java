@@ -593,7 +593,7 @@ public class MonitorWindow extends javax.swing.JFrame {
     }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-        App.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
+        App.login.connection.sendMessage(jTextField10.getText(), jTextField4.getText());
         jTextField4.setText("");
     }
 
@@ -649,7 +649,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         if (loggedin == true) {
             int key = evt.getKeyCode();
             if (key == KeyEvent.VK_ENTER) {
-                App.login.connection.sendStringData(jTextField10.getText(), jTextField4.getText());
+                App.login.connection.sendMessage(jTextField10.getText(), jTextField4.getText());
                 jTextField4.setText("");
             }
         }
