@@ -72,9 +72,8 @@ java -jar UnityNetwork_RedNode-1.0.jar
 ```
 
 ## Authorship
-The source code:
-was created by Konstantinos Kagiampakis
-makes use of OpenVPN's tun/tap adapter and tun/tap libraries written by Wolfgang Ginolas
+The source code was created by Konstantinos Kagiampakis
+The source code makes use of OpenVPN's tun/tap adapter and tun/tap libraries written by Wolfgang Ginolas
 
 ## License
 The project's article and source code are licensed under Creative Commons Atribution 4.0 International: https://creativecommons.org/licenses/by/4.0/
