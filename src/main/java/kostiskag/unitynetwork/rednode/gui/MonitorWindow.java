@@ -62,7 +62,7 @@ public class MonitorWindow extends javax.swing.JFrame {
                         jButton7.setBounds(234, 71, 97, 25);
                         panel_1.add(jButton7);
                         
-                                jButton7.setText("CLEAN");
+                                jButton7.setText("Clear");
                                 jButton7.addActionListener(new java.awt.event.ActionListener() {
                                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                                         jButton7ActionPerformed(evt);
@@ -258,7 +258,7 @@ public class MonitorWindow extends javax.swing.JFrame {
                         panel_3.add(jButton14);
                         jButton14.setEnabled(false);
                         
-                                jButton14.setText("Clean");
+                                jButton14.setText("Clear");
                                 
                                 checkBox_2 = new JCheckBox("keep scrolled down");
                                 checkBox_2.addPropertyChangeListener(new PropertyChangeListener() {
@@ -334,7 +334,7 @@ public class MonitorWindow extends javax.swing.JFrame {
                         panel_2.add(jButton15);
                         jButton15.setEnabled(false);
                         
-                                jButton15.setText("Clean");
+                                jButton15.setText("Clear");
                                 
                                 checkBox_3 = new JCheckBox("keep scrolled down");
                                 checkBox_3.addPropertyChangeListener(new PropertyChangeListener() {
@@ -449,7 +449,7 @@ public class MonitorWindow extends javax.swing.JFrame {
                                 jButton4.setBounds(218, 39, 99, 25);
                                 panel.add(jButton4);
                                 
-                                        jButton4.setText("CLEAN");
+                                        jButton4.setText("Clean");
                                         jButton4.addActionListener(new java.awt.event.ActionListener() {
                                             public void actionPerformed(java.awt.event.ActionEvent evt) {
                                                 jButton4ActionPerformed(evt);
@@ -530,7 +530,7 @@ public class MonitorWindow extends javax.swing.JFrame {
                 jButton2.setBounds(268, 39, 63, 25);
                 panel_1.add(jButton2);
                 
-                        jButton2.setText("SEND");
+                        jButton2.setText("Send");
                         jButton2.addActionListener(new java.awt.event.ActionListener() {
                             public void actionPerformed(java.awt.event.ActionEvent evt) {
                                 jButton2ActionPerformed(evt);
