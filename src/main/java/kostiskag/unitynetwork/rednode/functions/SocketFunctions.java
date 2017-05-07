@@ -14,9 +14,8 @@ import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
-
 public class SocketFunctions {
 	// socket stuff
 	public static String pre = "^SOCKET ";

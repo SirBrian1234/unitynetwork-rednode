@@ -9,7 +9,7 @@ import org.p2pvpn.tuntap.TunTap;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class InterfaceRead extends Thread{
 

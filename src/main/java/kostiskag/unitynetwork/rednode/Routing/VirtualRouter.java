@@ -13,7 +13,7 @@ import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 /**
  * Gets packets from the incoming queue and writes them to the medium.
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class VirtualRouter extends Thread {
 

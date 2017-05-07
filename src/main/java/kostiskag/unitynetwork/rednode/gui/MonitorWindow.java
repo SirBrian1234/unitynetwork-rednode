@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class MonitorWindow extends javax.swing.JFrame {
 

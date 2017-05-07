@@ -14,7 +14,7 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
  * This class's thread listens for incoming traffic and writes them to the received Queue.
  * In addition, it sends acks to the sources
  * 
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class RedReceive extends Thread {
 

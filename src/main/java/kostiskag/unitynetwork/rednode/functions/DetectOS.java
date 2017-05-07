@@ -1,9 +1,5 @@
 package kostiskag.unitynetwork.rednode.functions;
 
-/**
- *
- * @author kostis
- */
 public class DetectOS {
 
     int type = -1;

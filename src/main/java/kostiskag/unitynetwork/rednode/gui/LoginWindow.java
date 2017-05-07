@@ -27,7 +27,7 @@ import java.awt.event.ActionEvent;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class LoginWindow extends javax.swing.JFrame {
 

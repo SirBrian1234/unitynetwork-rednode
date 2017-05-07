@@ -4,7 +4,7 @@ import java.net.InetAddress;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class ARPGenerate {
 

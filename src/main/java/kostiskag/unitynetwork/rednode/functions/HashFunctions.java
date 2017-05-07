@@ -5,6 +5,10 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
  
+/**
+ * 
+ * @author Konstantinos Kagiampakis
+ */
 public class HashFunctions { 
  
     public static String bytesToHexStr(byte[] data) { 

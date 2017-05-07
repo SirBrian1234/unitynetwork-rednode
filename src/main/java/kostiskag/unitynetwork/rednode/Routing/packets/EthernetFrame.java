@@ -4,7 +4,7 @@ import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class EthernetFrame {         
     

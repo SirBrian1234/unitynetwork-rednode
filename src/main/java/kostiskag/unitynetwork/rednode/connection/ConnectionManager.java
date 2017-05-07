@@ -25,7 +25,7 @@ import kostiskag.unitynetwork.rednode.redThreads.RedSend;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class ConnectionManager extends Thread {
 

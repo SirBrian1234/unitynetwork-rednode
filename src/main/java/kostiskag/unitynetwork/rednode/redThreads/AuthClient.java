@@ -17,6 +17,7 @@ import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 /**
  * Auth client is responsible to connect to the blue node's TCP auth port
  * 
+ * @author Konstantinos Kagiampakis
  */
 public class AuthClient extends Thread {
 

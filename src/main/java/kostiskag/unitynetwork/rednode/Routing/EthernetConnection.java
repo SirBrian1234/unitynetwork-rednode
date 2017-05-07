@@ -13,7 +13,7 @@ import kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
  * This linear progress code will help up organize ethernet
  * connection and issues like doing arps after dhcp and that kind of stuff.
  * 
- * @author kostis 
+ * @author Konstantinos Kagiampakis 
  */
 public class EthernetConnection {
 

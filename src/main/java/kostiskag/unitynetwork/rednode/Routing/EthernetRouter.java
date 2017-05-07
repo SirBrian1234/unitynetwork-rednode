@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This class is responsible to examine all the received frames from read and send
  * them to the rednode's send queue.
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class EthernetRouter extends Thread {
 

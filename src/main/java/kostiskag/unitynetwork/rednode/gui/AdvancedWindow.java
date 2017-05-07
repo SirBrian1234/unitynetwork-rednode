@@ -14,7 +14,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class AdvancedWindow extends javax.swing.JFrame {
 

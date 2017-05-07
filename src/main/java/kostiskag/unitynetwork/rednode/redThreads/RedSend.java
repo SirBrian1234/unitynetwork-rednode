@@ -16,7 +16,7 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class RedSend extends Thread {
 

@@ -8,7 +8,7 @@ import kostiskag.unitynetwork.rednode.App;
 
 /**
  *
- * @author kostis
+ * @author Konstantinos Kagiampakis
  */
 public class DHCPGenerate {
 
