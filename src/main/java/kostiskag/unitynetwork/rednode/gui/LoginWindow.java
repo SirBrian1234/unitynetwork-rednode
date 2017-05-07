@@ -22,6 +22,8 @@ import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 /**
  *
@@ -52,6 +54,8 @@ public class LoginWindow extends javax.swing.JFrame {
 	private AdvancedWindow advanced;
 	public MonitorWindow monitor;
 	public ConnectionManager connection;
+	//about
+	About about;
 
 	public LoginWindow() {
 		initComponents();
@@ -263,10 +267,24 @@ public class LoginWindow extends javax.swing.JFrame {
 			}
 		});
 		jPanel1.add(jButton3);
-		jButton3.setBounds(460, 430, 120, 30);
+		jButton3.setBounds(10, 430, 125, 30);
 
 		getContentPane().add(jPanel1);
 		jPanel1.setBounds(1, 1, 600, 500);
+		
+		JButton btnNewButton = new JButton("About");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (about == null) {
+					about = new About();
+				} else if (!about.isVisible()) {
+					about = new About();
+				}
+			}
+		});
+		btnNewButton.setBackground(Color.BLACK);
+		btnNewButton.setBounds(489, 430, 89, 30);
+		jPanel1.add(btnNewButton);
 
 		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("loginBg.jpg"))); // NOI18N
 		getContentPane().add(jLabel1);
