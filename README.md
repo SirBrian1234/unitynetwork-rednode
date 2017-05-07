@@ -38,15 +38,32 @@ UnityNetwork is composed by three software applications which may be found on th
 # unitynetwork-rednode
 The rednode is the host-client application responsible to transfer a host to the network and exchange traffic towards the closest bluenode. RedNode may be used from a variety of systems which may support a TAN/TUP virtual network adapter. It is currently tested to work on windows and linux with Java Runtime Environment 7 or greater.
 
-## Requirements
-In order to build this project, Java JDK 1.7 or greater and Apache Maven have to already be installed on your system.
-
-## Build
+## Option A - Build from source code
+In order to build this project, Java JDK 1.7 or greater and Apache Maven have to be installed on your system.
 ```
 git clone https://github.com/kostiskag/unitynetwork-rednode.git
 cd unitynetwork-rednode
 mvn package
 ```
+
+## Option B - Download and use a pre-built version
+You can download, unzip and use a pre-built version of Red Node from this url:
+https://drive.google.com/file/d/0BzPrI7NjFz2SSDhfZzQ4U2lUUVk/view?usp=sharing
+
+In order to establish data integrity, you should verify the zip file's signature to be:
+
+| Algorithm | Hash Signature |
+| --- | --- |
+| MD5 | 970b78033c214a6e356480af63564c29 |
+| SHA256 | b5cda1faf0cc97376481bcc4d0c7eac0276912cd92ab01f8ed123f0735539e7b |
+
+## Requirements
+In order to be able to use the Red Node, your system has to be able to create tun/tap interfaces or to have a tun/tap adapter pre-installed.
+
+**In Linux Ubuntu:** The adapters can be dynamicaly generated, other Linux distributions may work under the same manner
+
+**In Windows 7 or older:** You may use OpenVPN's tun/tap adapter found from here:
+https://openvpn.net/index.php/download/community-downloads.html
 
 ## Run
 ```
