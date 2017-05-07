@@ -12,7 +12,7 @@ public class App {
 
     public static final int defaultBlueNodeAuthPort = 7000; 
     public static final int defaultTrackerAuthPort = 8000;
-    public static final int keepAliveTimeSec = 20;                    
+    public static final int keepAliveTimeSec = 10;                    
     public static final String SALT = "=UrBN&RLJ=dBshBX3HFn!S^Au?yjqV8MBx7fMyg5p6U8T^%2kp^X-sk9EQeENgVEj%DP$jNnz&JeF?rU-*meW5yFkmAvYW_=mA+E$F$xwKmw=uSxTdznSTbunBKT*-&!";
     public static LoginWindow login;
     

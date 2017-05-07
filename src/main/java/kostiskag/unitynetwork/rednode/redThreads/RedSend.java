@@ -51,14 +51,18 @@ public class RedSend extends Thread {
         byte[] packet;
         while (!kill.get()) {
             try {
-                packet = sendQueue.poll();
+                packet = sendQueue.pollWithTimeout();
             } catch (java.lang.NullPointerException ex1){       
             	App.login.writeInfo(pre + "QUEUE NULL EXCEPTION");
                 continue;
             } catch (java.util.NoSuchElementException ex) {
             	App.login.writeInfo(pre + "QUEUE NO SUCH ELEMENT EXCEPTION");
                 continue;
-            }
+            } catch (Exception e) {
+            	//this means that wait has exceeded the maximum wait time
+				//in which case keep alive messages are going to be served
+				packet = UnityPacket.buildKeepAlivePacket();
+			}
             
             int len = packet.length;
             if (len <= 0 || len > 1500) {
@@ -68,23 +72,30 @@ public class RedSend extends Thread {
             
             DatagramPacket sendPacket = new DatagramPacket(packet, len, address, port);                        
             try {
-                socket.send(sendPacket); 
-                App.login.monitor.updateConDownBufferQueue(sendQueue.getlen());
                 if (UnityPacket.isUnity(packet)) {
                 	if (UnityPacket.isKeepAlive(packet)) {
-                		App.login.monitor.writeToConnectionUp(pre+"KEEP ALIVE SENT");
+                		for (int i=0; i<3; i++) {
+                			socket.send(sendPacket);
+                			App.login.monitor.writeToConnectionUp(pre+"KEEP ALIVE SENT");
+                		}                		
                 	} else if (UnityPacket.isUping(packet)) {
+                		socket.send(sendPacket); 
                 		App.login.monitor.writeToConnectionUp(pre+"UPING SENT");
                 	} else if (UnityPacket.isDping(packet)) {
+                		socket.send(sendPacket); 
                 		App.login.monitor.writeToConnectionUp(pre+"DPING SENT");
                 	} else if (UnityPacket.isShortRoutedAck(packet)) {
+                		socket.send(sendPacket); 
                 		App.login.monitor.writeToConnectionUp(pre+"SHORT ACK SENT");
                 	} else if (UnityPacket.isLongRoutedAck(packet)) {
+                		socket.send(sendPacket); 
                 		App.login.monitor.writeToConnectionUp(pre+"LONG ACK SENT");
                 	} else if (UnityPacket.isMessage(packet)) {
+                		socket.send(sendPacket); 
                 		App.login.monitor.writeToConnectionUp(pre+"MESSAGE SENT");
                 	}                    
-                } else if (IPv4Packet.isIPv4(packet)){
+                } else if (IPv4Packet.isIPv4(packet)) {
+                	socket.send(sendPacket); 
                     try {
 						App.login.monitor.writeToConnectionUp(pre+"IPV4 PACKET SENT Len:" + packet.length + " To: " + IPv4Packet.getDestAddress(packet).getHostAddress());
 					} catch (Exception e) {

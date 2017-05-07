@@ -5,8 +5,14 @@ import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.p2pvpn.tuntap.TunTap;
+
 import kostiskag.unitynetwork.rednode.App;
-import kostiskag.unitynetwork.rednode.Routing.*;
+import kostiskag.unitynetwork.rednode.Routing.EthernetRouter;
+import kostiskag.unitynetwork.rednode.Routing.QueueManager;
+import kostiskag.unitynetwork.rednode.Routing.UploadManager;
+import kostiskag.unitynetwork.rednode.Routing.VirtualRouter;
 import kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 import kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
 import kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceRead;
@@ -15,10 +21,7 @@ import kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 import kostiskag.unitynetwork.rednode.functions.DetectOS;
 import kostiskag.unitynetwork.rednode.redThreads.AuthClient;
 import kostiskag.unitynetwork.rednode.redThreads.RedReceive;
-import kostiskag.unitynetwork.rednode.redThreads.KeepAlive;
 import kostiskag.unitynetwork.rednode.redThreads.RedSend;
-
-import org.p2pvpn.tuntap.TunTap;
 
 /**
  *
@@ -47,7 +50,6 @@ public class ConnectionManager extends Thread {
     private  QueueManager downMan;
     private  QueueManager readMan;
     private  QueueManager writeMan;
-    private  KeepAlive ka;
     private  UploadManager trafficMan;   
     
      //services & sockets    
@@ -89,10 +91,10 @@ public class ConnectionManager extends Thread {
         this.isDHCPset = false;
         this.libError = false;
         
-        upMan = new QueueManager(20);
-        downMan = new QueueManager(20);
-        readMan = new QueueManager(20);
-        writeMan = new QueueManager(20);        
+        upMan = new QueueManager(20, App.keepAliveTimeSec);
+        downMan = new QueueManager(20, App.keepAliveTimeSec);
+        readMan = new QueueManager(20, App.keepAliveTimeSec);
+        writeMan = new QueueManager(20, App.keepAliveTimeSec);        
         trafficMan = new UploadManager();
     }
     
@@ -234,11 +236,9 @@ public class ConnectionManager extends Thread {
         //set
     	receive = new RedReceive(fullBlueNodeAddress, serverSend, downMan);
         send = new RedSend(fullBlueNodeAddress, serverReceive, upMan);
-        ka = new KeepAlive(upMan, App.keepAliveTimeSec);
         //start
         send.start();
         receive.start();
-        ka.start();
         //just a time to make sure all the services started and running properly before testing
         try {
             sleep(4000);
@@ -449,7 +449,6 @@ public class ConnectionManager extends Thread {
     private void killTasks() {
         send.kill();
         receive.kill();
-        ka.kill();
     }
     
     private boolean startInterface() {
