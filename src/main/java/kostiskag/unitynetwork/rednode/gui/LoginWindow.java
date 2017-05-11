@@ -60,7 +60,6 @@ public class LoginWindow extends javax.swing.JFrame {
 	public LoginWindow() {
 		initComponents();
 		monitor = new MonitorWindow();
-		advanced = new AdvancedWindow();
 		jScrollPane1.setVisible(false);
 		jTextArea1.setVisible(false);
 	}
@@ -70,13 +69,8 @@ public class LoginWindow extends javax.swing.JFrame {
 		jPanel1 = new javax.swing.JPanel();
 		jButton1 = new javax.swing.JButton();
 		jPanel4 = new javax.swing.JPanel();
-		jLabel3 = new javax.swing.JLabel();
-		jTextField2 = new javax.swing.JTextField();
-		jLabel4 = new javax.swing.JLabel();
 		jLabel5 = new javax.swing.JLabel();
-		jTextField1 = new javax.swing.JTextField();
 		jSeparator1 = new javax.swing.JSeparator();
-		jPasswordField1 = new javax.swing.JPasswordField();
 		jScrollPane1 = new javax.swing.JScrollPane();
 		jTextArea1 = new javax.swing.JTextArea();
 		jButton3 = new javax.swing.JButton();
@@ -103,17 +97,9 @@ public class LoginWindow extends javax.swing.JFrame {
 			}
 		});
 		jPanel1.add(jButton1);
-		jButton1.setBounds(200, 400, 164, 41);
+		jButton1.setBounds(225, 393, 164, 41);
 
 		jPanel4.setOpaque(false);
-
-		jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-		jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-		jLabel3.setText("Username");
-
-		jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-		jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-		jLabel4.setText("Password");
 
 		jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
 		jLabel5.setForeground(new java.awt.Color(255, 255, 255));
@@ -121,64 +107,72 @@ public class LoginWindow extends javax.swing.JFrame {
 	    tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBackground(new Color(0, 102, 153));
 		
-		lblHostname = new JLabel();
-		lblHostname.setText("Hostname");
-		lblHostname.setForeground(Color.WHITE);
-		lblHostname.setFont(new Font("Tahoma", Font.BOLD, 11));
+		JPanel panel_2 = new JPanel();
+		panel_2.setOpaque(false);
 
 		javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
 		jPanel4Layout.setHorizontalGroup(
 			jPanel4Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel4Layout.createSequentialGroup()
 					.addContainerGap()
+					.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(27)
 					.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
 						.addGroup(jPanel4Layout.createSequentialGroup()
-							.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(jPanel4Layout.createSequentialGroup()
-									.addGap(16)
-									.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING, false)
-										.addComponent(jLabel3)
-										.addComponent(jTextField2)
-										.addComponent(jLabel4)
-										.addComponent(jPasswordField1)
-										.addGroup(jPanel4Layout.createSequentialGroup()
-											.addComponent(jLabel5)
-											.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
-												.addComponent(jTextField1, GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
-												.addComponent(lblHostname, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)))))
-								.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addContainerGap())
-						.addGroup(jPanel4Layout.createSequentialGroup()
-							.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
-							.addGap(16))))
+							.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 328, GroupLayout.PREFERRED_SIZE)
+							.addGap(31)
+							.addComponent(jLabel5)))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		jPanel4Layout.setVerticalGroup(
 			jPanel4Layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(jPanel4Layout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(jLabel3)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(jLabel4)
-					.addGap(3)
-					.addComponent(jPasswordField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGroup(jPanel4Layout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(jLabel5)
-							.addGap(26)
-							.addGap(18)
-							.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 7, GroupLayout.PREFERRED_SIZE))
+					.addGap(13)
+					.addGroup(jPanel4Layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(jPanel4Layout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lblHostname)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-							.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 96, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 118, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(tabbedPane, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE))
+						.addGroup(jPanel4Layout.createSequentialGroup()
+							.addGap(155)
+							.addComponent(jLabel5)
+							.addGap(116)
+							.addComponent(jSeparator1, GroupLayout.PREFERRED_SIZE, 7, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
+		panel_2.setLayout(null);
+		jLabel3 = new javax.swing.JLabel();
+		jLabel3.setBounds(12, 13, 58, 14);
+		panel_2.add(jLabel3);
+		
+				jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+				jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+				jLabel3.setText("Username");
+				jLabel4 = new javax.swing.JLabel();
+				jLabel4.setBounds(12, 48, 54, 14);
+				panel_2.add(jLabel4);
+				
+						jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+						jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+						jLabel4.setText("Password");
+						
+						lblHostname = new JLabel();
+						lblHostname.setBounds(12, 86, 75, 14);
+						panel_2.add(lblHostname);
+						lblHostname.setText("Hostname");
+						lblHostname.setForeground(Color.WHITE);
+						lblHostname.setFont(new Font("Tahoma", Font.BOLD, 11));
+						jTextField2 = new javax.swing.JTextField();
+						jTextField2.setBounds(92, 8, 156, 22);
+						panel_2.add(jTextField2);
+						jPasswordField1 = new javax.swing.JPasswordField();
+						jPasswordField1.setBounds(92, 43, 156, 22);
+						panel_2.add(jPasswordField1);
+						jTextField1 = new javax.swing.JTextField();
+						jTextField1.setBounds(92, 81, 156, 22);
+						panel_2.add(jTextField1);
 		
 		panel = new JPanel();
 		panel.setBackground(new Color(0, 102, 153));
@@ -214,10 +208,21 @@ public class LoginWindow extends javax.swing.JFrame {
 				jButton2ActionPerformed(evt);
 			}
 		});
-		jButton2.setBounds(201, 30, 81, 23);
-		jButton2.setText("Advanced");
+		jButton2.setBounds(10, 64, 186, 23);
+		jButton2.setText("Advanced Connection");
 		jButton2.setBackground(Color.BLACK);
 		panel.add(jButton2);
+		
+		btnNewButton_1 = new JButton("Keyring");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//open keyring gui
+				new keyringGUI().setVisible();
+			}
+		});
+		btnNewButton_1.setBackground(new Color(0, 0, 0));
+		btnNewButton_1.setBounds(208, 29, 85, 25);
+		panel.add(btnNewButton_1);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(0, 102, 153));
@@ -246,10 +251,20 @@ public class LoginWindow extends javax.swing.JFrame {
 		jTextField6.setColumns(10);
 		jTextField6.setBounds(156, 31, 40, 20);
 		panel_1.add(jTextField6);
+		
+		button = new JButton("Keyring");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//manage keyring for standalone bns
+			}
+		});
+		button.setBackground(Color.BLACK);
+		button.setBounds(208, 29, 85, 25);
+		panel_1.add(button);
 		jPanel4.setLayout(jPanel4Layout);
 
 		jPanel1.add(jPanel4);
-		jPanel4.setBounds(129, 94, 322, 266);
+		jPanel4.setBounds(95, 94, 399, 278);
 
 		jTextArea1.setColumns(20);
 		jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
@@ -297,8 +312,8 @@ public class LoginWindow extends javax.swing.JFrame {
 		toggleLogin();
 	}
 	
-	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {			
-		advanced.toggleVisible();
+	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {	
+		new AdvancedWindow(jTextField3.getText(), jTextField4.getText()).setVisible();
 	}
 
 	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -331,6 +346,8 @@ public class LoginWindow extends javax.swing.JFrame {
 	private JTextField jTextField5;
 	private JTextField jTextField6;
 	private JLabel lblHostname;
+	private JButton btnNewButton_1;
+	private JButton button;
 
 	public void toggleLogin() {
 		// does login

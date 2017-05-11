@@ -32,20 +32,17 @@ public class AdvancedWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
-    
-	private DefaultTableModel bluenodes;
+    private DefaultTableModel bluenodes;
 
-    public AdvancedWindow() {
+    public AdvancedWindow(String address, String portField) {
         bluenodes = new DefaultTableModel(new String[][]{}, new String[]{"Hostname", "Physical Address", "Auth Port", "RedNode Load"});
         initComponents();
+        jTextField1.setText(address);
+        jTextField2.setText(portField);
     }
 
-    public void toggleVisible() {
-        if (this.isVisible()) {
-            this.setVisible(false);
-        } else {
-            this.setVisible(true);
-        }
+    public void setVisible() {
+    	this.setVisible(true);
     }
 
     public void setLoggedIn() {
@@ -62,7 +59,9 @@ public class AdvancedWindow extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
+        jTextField1.setEditable(false);
         jTextField2 = new javax.swing.JTextField();
+        jTextField2.setEditable(false);
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -86,7 +85,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
         jLabel2.setText("port");
         jLabel2.setToolTipText("");
 
-        jButton1.setText("Get Blue Node List");
+        jButton1.setText("Get Blue Node List From Tracker");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -115,9 +114,9 @@ public class AdvancedWindow extends javax.swing.JFrame {
         				.addGroup(jPanel1Layout.createSequentialGroup()
         					.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
         					.addPreferredGap(ComponentPlacement.UNRELATED)
-        					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(134, Short.MAX_VALUE))
-        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
+        					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(59, Short.MAX_VALUE))
+        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
@@ -132,7 +131,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
         				.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jButton1))
         			.addGap(18)
-        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
+        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
         );
         jPanel1.setLayout(jPanel1Layout);
         
@@ -186,14 +185,15 @@ public class AdvancedWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.LEADING)
         		.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        		.addComponent(jPanel2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
+        		.addComponent(jPanel2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-        	layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+        	layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(layout.createSequentialGroup()
         			.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE))
+        			.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
         );
         getContentPane().setLayout(layout);
 
@@ -243,10 +243,8 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	        args = SocketFunctions.sendData("REDNODE "+App.login.hostname, writer, inputReader);
 	
 	        if (args[0].equals("OK")) {
-	
-	            args = SocketFunctions.sendData("GETBNS", writer, inputReader);
-	
-	            int count = Integer.parseInt(args[1]);
+	        	args = SocketFunctions.sendData("GETBNS", writer, inputReader);
+	        	int count = Integer.parseInt(args[1]);
 	            for (int i = 0; i < count; i++) {
 	                args = SocketFunctions.readData(inputReader);
 	                bluenodes.addRow(new Object[]{args[0], args[1], args[2], args[3]});
