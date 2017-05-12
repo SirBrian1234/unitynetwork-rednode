@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.connection.ConnectionManager;
+import kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 import java.awt.event.ActionListener;
@@ -356,7 +357,6 @@ public class LoginWindow extends javax.swing.JFrame {
 			jPanel4.setVisible(false);
 			jScrollPane1.setVisible(true);
 			jTextArea1.setVisible(true);
-			advanced.setVisible(false);
 			monitor.clearCommands();
 
 			writeInfo("Getting Data from input...");
@@ -554,40 +554,12 @@ public class LoginWindow extends javax.swing.JFrame {
 	public boolean getRecomendedBlueNode(String TrackerAddress, int TrackerPort) {
 		writeInfo("Getting recomended BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
-		InetAddress addr = SocketFunctions.getAddress(TrackerAddress);
-		
-		Socket socket;
-		if (addr != null) {
-			socket = SocketFunctions.absoluteConnect(addr, TrackerPort);
-		} else {
-			writeInfo("Tracker connection failed - host not found.");
-			return false;
+		TrackerClient tr = new TrackerClient(TrackerAddress, TrackerPort);
+		if (tr.getRecomendedBlueNode()) {
+			blueNodePort = tr.getRecomendedBlueNodePort();
+			blueNodeAddress = tr.getRecomendedBlueNodeAddress();
+			return true;
 		}
-		
-		if (socket == null) {
-			writeInfo("Tracker connection failed.");
-			return false;
-		}
-
-		BufferedReader inputReader = SocketFunctions.makeReadWriter(socket);
-		PrintWriter writer = SocketFunctions.makeWriteWriter(socket);
-		String args[] = SocketFunctions.readData(inputReader);
-		args = SocketFunctions.sendData("REDNODE " + App.login.hostname, writer, inputReader);
-
-		if (args[0].equals("OK")) {
-			args = SocketFunctions.sendData("GETRBN", writer, inputReader);
-			if (!args[0].equals("NONE")) {
-				writeInfo("Tracker Gave BN " + args[0] + " " + args[1] + " " + args[2] + " " + args[3]);
-				blueNodeAddress = args[1];
-				blueNodePort = Integer.parseInt(args[2]);
-				return true;
-			} else {
-				writeInfo(
-						"The Tracker is up but does not have any associated BlueNodes.\nIn other words, the network is down as there are no BlueNodes to carry the traffic.\nPlease select either to connect to another Network or define a standalone BlueNode from the Advanced Settings tab.");
-				return false;
-			}
-		}
-		SocketFunctions.connectionClose(socket);
 		return false;
 	}
 }
