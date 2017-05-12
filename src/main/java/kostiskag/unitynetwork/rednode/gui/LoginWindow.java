@@ -315,6 +315,7 @@ public class LoginWindow extends javax.swing.JFrame {
 	}
 	
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {	
+		hostname = jTextField1.getText();
 		new AdvancedWindow(jTextField3.getText(), jTextField4.getText()).setVisible();
 	}
 

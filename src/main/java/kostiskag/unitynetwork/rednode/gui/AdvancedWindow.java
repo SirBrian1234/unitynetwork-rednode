@@ -4,8 +4,12 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import javax.swing.table.DefaultTableModel;
 import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 
 import javax.swing.GroupLayout.Alignment;
@@ -216,41 +220,22 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	            bluenodes.removeRow(0);
 	        }
 	
-	        InetAddress addr = SocketFunctions.getAddress(jTextField1.getText());
+	        String addr = jTextField1.getText();
 	        int port;
+	        
 	        if (jTextField2.getText().isEmpty()) {
 	        	port = App.defaultTrackerAuthPort;
 	        } else {
 	        	port = Integer.parseInt(jTextField2.getText());
 	        }
-	        
-	        Socket socket;
-	        if (addr != null) {
-	        	socket = SocketFunctions.absoluteConnect(addr, port);
-	        } else {
-	        	return;
-	        }
-	        
-	        if (socket == null) {
-	            return;
-	        }
 	
-	        BufferedReader inputReader = SocketFunctions.makeReadWriter(socket);
-	        PrintWriter writer = SocketFunctions.makeWriteWriter(socket);
-	        String args[] = SocketFunctions.readData(inputReader);
+	        TrackerClient cl = new TrackerClient(addr,port);
+	        LinkedList<String[]> list = cl.getBNs();
 	        
-	        App.login.getInputData();
-	        args = SocketFunctions.sendData("REDNODE "+App.login.hostname, writer, inputReader);
-	
-	        if (args[0].equals("OK")) {
-	        	args = SocketFunctions.sendData("GETBNS", writer, inputReader);
-	        	int count = Integer.parseInt(args[1]);
-	            for (int i = 0; i < count; i++) {
-	                args = SocketFunctions.readData(inputReader);
-	                bluenodes.addRow(new Object[]{args[0], args[1], args[2], args[3]});
-	            }
-	        }
-	        SocketFunctions.connectionClose(socket);
+	        Iterator<String[]> it = list.listIterator();
+	        while(it.hasNext()) {
+	        	bluenodes.addRow(it.next());
+	        }	        
         }
     }
 

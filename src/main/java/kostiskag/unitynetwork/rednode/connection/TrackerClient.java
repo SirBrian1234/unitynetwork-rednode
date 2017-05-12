@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.PublicKey;
+import java.util.LinkedList;
 
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.functions.CryptoMethods;
@@ -98,6 +99,28 @@ public class TrackerClient {
 		return false;
 	}
 	
+	public int getRecomendedBlueNodePort() {
+		return RecBlueNodePort;
+	}
+
+	public String getRecomendedBlueNodeAddress() {
+		return RecBlueNodeAddress;
+	}
+	
+	public LinkedList<String[]> getBNs() {
+		LinkedList<String[]> fetched = new LinkedList<String[]>();
+		if (connected) {
+			String[] args = SocketFunctions.sendData("GETBNS", socketWriter, socketReader);
+        	int count = Integer.parseInt(args[1]);
+            for (int i = 0; i < count; i++) {
+                args = SocketFunctions.readData(socketReader);
+                fetched.add(new String[]{args[0], args[1], args[2], args[3]});
+            }
+            closeCon();
+		}
+		return fetched;
+	}
+	
     public String offerPubKey(String ticket) {
     	if (connected) {
 	    	PublicKey pub = App.rednodeKeys.getPublic(); 
@@ -140,13 +163,5 @@ public class TrackerClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}			
-	}
-
-	public int getRecomendedBlueNodePort() {
-		return RecBlueNodePort;
-	}
-
-	public String getRecomendedBlueNodeAddress() {
-		return RecBlueNodeAddress;
 	}
 }
