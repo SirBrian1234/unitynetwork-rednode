@@ -10,6 +10,7 @@ import java.security.PublicKey;
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.functions.CryptoMethods;
 import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
+import kostiskag.unitynetwork.rednode.tables.trackerInstance;
 
 /**
  * 
@@ -17,17 +18,31 @@ import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
  */
 public class TrackerClient {
 
+	InetAddress trackerInetAddress;
+	int trackerPort;
+	
 	private Socket socket;
 	private BufferedReader socketReader;
 	private PrintWriter socketWriter;
 	private String RecBlueNodeAddress;
 	private int RecBlueNodePort;
 	private boolean connected = false;
+	private trackerInstance tracker;
 
-	public TrackerClient(String trackerAddress, int trackerPort) {
-		
-		InetAddress trackerInetAddress = SocketFunctions.getAddress(trackerAddress);
-		
+	public TrackerClient(String trackerAddress, int trackerPort) {		
+		this.trackerInetAddress = SocketFunctions.getAddress(trackerAddress);
+		this.trackerPort = trackerPort;
+		connect();
+	}
+	
+	public TrackerClient(trackerInstance tracker) {
+		this.tracker = tracker;
+		this.trackerInetAddress = SocketFunctions.getAddress(tracker.getAddress());
+		this.trackerPort = tracker.getPort();
+		connect();
+	}
+	
+	private void connect() {
 		socket = null;
 		if (trackerInetAddress != null) {
 			socket = SocketFunctions.absoluteConnect(trackerInetAddress, trackerPort);
@@ -108,11 +123,9 @@ public class TrackerClient {
      * it writes a file and updates bn's tracker public key
      * to use.
      */
-	public static void getPubKey() {
-		/*
-		InetAddress addr = SocketFunctions.getAddress(App.bn.trackerAddress);
-		int port = App.bn.trackerPort;
-		Socket socket = SocketFunctions.absoluteConnect(addr, port);
+	public static void getPubKey(trackerInstance element) {
+		InetAddress addr = SocketFunctions.getAddress(element.getAddress());		
+		Socket socket = SocketFunctions.absoluteConnect(addr, element.getPort());
 		if (socket == null) {
 			return;
 		}
@@ -121,14 +134,12 @@ public class TrackerClient {
 		String args[] = SocketFunctions.readData(reader);
 		
 		args = SocketFunctions.sendData("GETPUB", writer, reader);        
-        App.bn.trackerPublicKey = (PublicKey) CryptoMethods.base64StringRepresentationToObject(args[0]);
-        CryptoMethods.objectToFile(App.bn.trackerPublicKey, new File(App.trackerPublicKeyFileName));
+        element.setPubKey((PublicKey) CryptoMethods.base64StringRepresentationToObject(args[0]));        
 		try {
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		*/	
+		}			
 	}
 
 	public int getRecomendedBlueNodePort() {

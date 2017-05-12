@@ -218,7 +218,8 @@ public class LoginWindow extends javax.swing.JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//open keyring gui
-				new keyringGUI().setVisible();
+				hostname = jTextField1.getText();
+				new keyringGUI().setVisible();	 			
 			}
 		});
 		btnNewButton_1.setBackground(new Color(0, 0, 0));
