@@ -255,14 +255,16 @@ public class AdvancedWindow extends javax.swing.JFrame {
     }
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-    	App.login.blueNodeAddress = jTextField3.getText();
-        if (jTextField4.getText().isEmpty()) {
-        	App.login.blueNodePort = App.defaultBlueNodeAuthPort;
-        } else {
-        	App.login.blueNodePort = Integer.parseInt(jTextField4.getText());
-        }        
-        App.login.useNetworkSelectedBN = true;
-        App.login.toggleLogin();
-        setVisible(false);
+    	if (!jTextField3.getText().isEmpty()) {
+	    	App.login.blueNodeAddress = jTextField3.getText();
+	        if (jTextField4.getText().isEmpty()) {
+	        	App.login.blueNodePort = App.defaultBlueNodeAuthPort;
+	        } else {
+	        	App.login.blueNodePort = Integer.parseInt(jTextField4.getText());
+	        }        
+	        App.login.useNetworkSelectedBN = true;
+	        App.login.toggleLogin();
+	        setVisible(false);
+    	}
     }     
 }
