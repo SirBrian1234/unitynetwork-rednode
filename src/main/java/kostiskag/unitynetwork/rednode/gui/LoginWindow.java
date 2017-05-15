@@ -2,11 +2,9 @@ package kostiskag.unitynetwork.rednode.gui;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -18,13 +16,12 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
-import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import kostiskag.unitynetwork.rednode.tables.trackerInstance;
 
 /**
  *
@@ -32,6 +29,10 @@ import java.awt.event.ActionEvent;
  */
 public class LoginWindow extends javax.swing.JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6012084060013753191L;
 	// max sizes
 	int max_str_size = 128;
 	int max_str_port_size = 5; //as 65535
@@ -52,7 +53,6 @@ public class LoginWindow extends javax.swing.JFrame {
 	private int loggedin = 0;
 	private boolean validTracker = false;
 	// objects
-	private AdvancedWindow advanced;
 	public MonitorWindow monitor;
 	public ConnectionManager connection;
 	//about
@@ -219,7 +219,7 @@ public class LoginWindow extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//open keyring gui
 				hostname = jTextField1.getText();
-				new keyringGUI().setVisible();	 			
+				new keyringGUI(hostname).setVisible();	 			
 			}
 		});
 		btnNewButton_1.setBackground(new Color(0, 0, 0));
@@ -316,7 +316,7 @@ public class LoginWindow extends javax.swing.JFrame {
 	
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {	
 		hostname = jTextField1.getText();
-		new AdvancedWindow(jTextField3.getText(), jTextField4.getText()).setVisible();
+		new AdvancedWindow(jTextField3.getText(), jTextField4.getText(), hostname).setVisible();
 	}
 
 	private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -556,11 +556,22 @@ public class LoginWindow extends javax.swing.JFrame {
 	public boolean getRecomendedBlueNode(String TrackerAddress, int TrackerPort) {
 		writeInfo("Getting recomended BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
-		TrackerClient tr = new TrackerClient(TrackerAddress, TrackerPort);
-		if (tr.getRecomendedBlueNode()) {
-			blueNodePort = tr.getRecomendedBlueNodePort();
-			blueNodeAddress = tr.getRecomendedBlueNodeAddress();
-			return true;
+		hostname = jTextField1.getText();
+		trackerInstance element;
+		if (App.trakerKeyRingTable.checkIfExisting(TrackerAddress, TrackerPort)) {
+			try {
+				element = App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
+				TrackerClient tr = new TrackerClient(element, hostname);
+				if (tr.getRecomendedBlueNode()) {
+					blueNodePort = tr.getRecomendedBlueNodePort();
+					blueNodeAddress = tr.getRecomendedBlueNodeAddress();
+					return true;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			writeInfo("The given tracker " + TrackerAddress + ":" + TrackerPort + " is not registered into the rednode's keyring ...");
 		}
 		return false;
 	}

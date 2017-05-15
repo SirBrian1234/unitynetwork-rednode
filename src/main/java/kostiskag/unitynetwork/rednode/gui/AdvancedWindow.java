@@ -1,20 +1,17 @@
 package kostiskag.unitynetwork.rednode.gui;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
+
 import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import kostiskag.unitynetwork.rednode.functions.SocketFunctions;
-
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import kostiskag.unitynetwork.rednode.tables.trackerInstance;
+import javax.swing.JLabel;
 
 /**
  *
@@ -22,6 +19,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
  */
 public class AdvancedWindow extends javax.swing.JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8836862621884801942L;
 	private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -37,8 +38,11 @@ public class AdvancedWindow extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private DefaultTableModel bluenodes;
+    private String hostname;
+    private JLabel lblNewLabel;
 
-    public AdvancedWindow(String address, String portField) {
+    public AdvancedWindow(String address, String portField, String hostname) {
+    	this.hostname = hostname;
         bluenodes = new DefaultTableModel(new String[][]{}, new String[]{"Hostname", "Physical Address", "Auth Port", "RedNode Load"});
         initComponents();
         jTextField1.setText(address);
@@ -103,24 +107,29 @@ public class AdvancedWindow extends javax.swing.JFrame {
             }
         });
         jScrollPane2.setViewportView(jTable1);
+        
+        lblNewLabel = new JLabel("");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jLabel1))
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(jLabel2)
+        				.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
         				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.UNRELATED)
-        					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(59, Short.MAX_VALUE))
-        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        						.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(jLabel1))
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        						.addComponent(jLabel2)
+        						.addGroup(jPanel1Layout.createSequentialGroup()
+        							.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+        							.addPreferredGap(ComponentPlacement.UNRELATED)
+        							.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)))))
+        			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
@@ -134,8 +143,11 @@ public class AdvancedWindow extends javax.swing.JFrame {
         				.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jButton1))
-        			.addGap(18)
-        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 269, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1.setLayout(jPanel1Layout);
         
@@ -229,12 +241,26 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	        	port = Integer.parseInt(jTextField2.getText());
 	        }
 	
-	        TrackerClient cl = new TrackerClient(addr,port);
-	        LinkedList<String[]> list = cl.getBNs();
-	        
-	        Iterator<String[]> it = list.listIterator();
-	        while(it.hasNext()) {
-	        	bluenodes.addRow(it.next());
+	        if (App.trakerKeyRingTable.checkIfExisting(addr, port)) {
+	        	trackerInstance tr;
+				try {
+					tr = App.trakerKeyRingTable.getEntry(addr, port);
+					TrackerClient cl = new TrackerClient(tr, hostname);
+					if (cl.isConnected()) {
+			        	LinkedList<String[]> list = cl.getBNs();
+				        
+				        Iterator<String[]> it = list.listIterator();
+				        while(it.hasNext()) {
+				        	bluenodes.addRow(it.next());
+				        }
+					} else {
+						lblNewLabel.setText("Could not connect to tracker.");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+	        } else {
+	        	lblNewLabel.setText("The given tracker credentials were not registered with the keyring.");
 	        }	        
         }
     }

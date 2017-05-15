@@ -14,6 +14,7 @@ import java.awt.Font;
 import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.event.ActionListener;
+import java.security.cert.CertPathValidatorException.Reason;
 import java.awt.event.ActionEvent;
 
 public class trackerKeyGUI {
@@ -28,14 +29,16 @@ public class trackerKeyGUI {
 	private JButton btnDownloadTrackersPublic;
 	private JButton btnRevokeThisRed;
 	private JButton button;
-	trackerInstance element;
+	private trackerInstance element;
+	private String hostname;
 	private JLabel lblNewLabel_1;
 	private JTextField textField_4;
 
 	/**
 	 * Create the application.
 	 */
-	public trackerKeyGUI(String address, int port) {
+	public trackerKeyGUI(String address, int port, String hostname) {
+		this.hostname = hostname;
 		try {
 			element = App.trakerKeyRingTable.getEntry(address, port);
 		} catch (Exception e) {
@@ -43,7 +46,7 @@ public class trackerKeyGUI {
 			return;
 		}
 		initialize();
-		textField_4.setText(App.login.hostname);
+		textField_4.setText(hostname);
 		if (element.getPubKey() != null) {
 			textArea.setText(CryptoMethods.bytesToBase64String(element.getPubKey().getEncoded()));
 			textField_2.setText("Key is set");
@@ -152,25 +155,25 @@ public class trackerKeyGUI {
 			}			
 		});
 		btnRevokeThisRed.setBackground(new Color(153, 51, 0));
-		btnRevokeThisRed.setBounds(205, 564, 229, 25);
+		btnRevokeThisRed.setBounds(205, 592, 229, 25);
 		frame.getContentPane().add(btnRevokeThisRed);
 		
 		JLabel label_4 = new JLabel("Tracker response");
-		label_4.setBounds(10, 619, 133, 14);
+		label_4.setBounds(10, 649, 133, 14);
 		frame.getContentPane().add(label_4);
 		
 		textField_3 = new JTextField();
 		textField_3.setColumns(10);
-		textField_3.setBounds(153, 616, 154, 20);
+		textField_3.setBounds(153, 646, 154, 20);
 		frame.getContentPane().add(textField_3);
 		
 		lblNewLabel_1 = new JLabel("This RedNode's hostname is");
-		lblNewLabel_1.setBounds(10, 11, 154, 14);
+		lblNewLabel_1.setBounds(10, 11, 190, 14);
 		frame.getContentPane().add(lblNewLabel_1);
 		
 		textField_4 = new JTextField();
 		textField_4.setEditable(false);
-		textField_4.setBounds(174, 8, 154, 20);
+		textField_4.setBounds(205, 11, 154, 20);
 		frame.getContentPane().add(textField_4);
 		textField_4.setColumns(10);
 	}
@@ -191,8 +194,7 @@ public class trackerKeyGUI {
 	
 	private void uploadPubKey() {
 		if (!textArea_1.getText().isEmpty()) {
-			TrackerClient tr = new TrackerClient(element);
-			String responce = tr.offerPubKey(textArea_1.getText());
+			String responce = TrackerClient.offerPubKey(textArea_1.getText(), hostname, element);
 			textField_3.setText(responce);
 			if (responce.equals("KEY_SET") || responce.equals("KEY_IS_SET")) {
 				btnRevokeThisRed.setEnabled(true);
@@ -201,8 +203,13 @@ public class trackerKeyGUI {
 	}
 	
 	private void revokePubKey() {
-		TrackerClient tr = new TrackerClient(element);
-		String responce = tr.revokePubKey();
+		TrackerClient tr = new TrackerClient(element, hostname);
+		String responce;
+		if (tr.isConnected()) {
+			responce = tr.revokePubKey();
+		} else {
+			responce = tr.reason;
+		}
 		textField_3.setText(responce);
 	}
 }

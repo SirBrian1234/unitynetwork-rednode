@@ -26,13 +26,15 @@ public class keyringGUI {
 	private JLabel lblNewLabel_1;
 	private String header[] = new String[] { "Unity Tracker Address", "Port" };
 	private DefaultTableModel model = new DefaultTableModel(new Object[][] {}, header);
+	private String hostname;
 
 	/**
 	 * Create the application.
 	 */
-	public keyringGUI() {
+	public keyringGUI(String hostname) {
 		initialize();
 		populateJTable();
+		this.hostname = hostname;
 	}
 
 	/**
@@ -147,7 +149,7 @@ public class keyringGUI {
 				}
 			} 
 			//opens a new window to edit the given entry
-			new trackerKeyGUI(address, port).setVisible();
+			new trackerKeyGUI(address, port, hostname).setVisible();
 		}
 	}
 	
