@@ -174,6 +174,44 @@ public class TrackerClient {
 		}
 		return fetched;
 	}
+	
+	public PublicKey getBlueNodesPubKey(String name) {            
+    	if (connected) {
+	        String[] args = null;
+			try {
+				args = SocketFunctions.sendReceiveAESEncryptedStringData("GETBNPUB"+" "+name, socketReader, socketWriter, sessionKey);
+				closeCon();
+				if (args[0].equals("NONE")) {
+		            return null;
+		        } else {
+		            return (PublicKey) CryptoMethods.base64StringRepresentationToObject(args[0]);
+			    }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}        
+	        closeCon();
+	    }
+    	return null;
+    }
+    
+    public PublicKey getRedNodesPubKey(String hostname) {            
+    	if (connected) {
+	        String[] args = null;
+			try {
+				args = SocketFunctions.sendReceiveAESEncryptedStringData("GETRNPUB"+" "+hostname, socketReader, socketWriter, sessionKey);
+				closeCon();
+				if (args[0].equals("NONE")) {
+		            return null;
+		        } else {
+		            return (PublicKey) CryptoMethods.base64StringRepresentationToObject(args[0]);
+		        }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}        
+	        closeCon();
+	    }
+    	return null;
+    }
 
     public String revokePubKey() {
 		if (connected) {
