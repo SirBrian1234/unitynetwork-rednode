@@ -2,6 +2,7 @@ package kostiskag.unitynetwork.rednode.connection;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.security.PublicKey;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +36,7 @@ public class ConnectionManager extends Thread {
     private final  String hostname;    
     private final  String blueNodeAddress;
     private final  int blueNodePort;
+    private final  PublicKey blueNodePubKey;
     private InetAddress fullBlueNodeAddress;
                  
     private String vaddress;
@@ -68,12 +70,18 @@ public class ConnectionManager extends Thread {
     private String command;
     private AtomicBoolean kill = new AtomicBoolean(false);
     
-    public ConnectionManager(String Username, String Password, String Hostname, String BlueNodeAddress, int BlueNodePort) {        
+    public ConnectionManager(String Username, String Password, String Hostname, String BlueNodeAddress, int BlueNodePort, PublicKey blueNodePubKey) {        
     	this.username = Username;        
         this.password = Password;
         this.hostname = Hostname;                        
         this.blueNodeAddress = BlueNodeAddress;
-        this.blueNodePort = BlueNodePort;      
+        this.blueNodePort = BlueNodePort;
+        this.blueNodePubKey = blueNodePubKey;
+        
+        if (blueNodePubKey == null) {
+        	App.login.writeInfo("BlueNode key could not be retrieved");
+        	return;
+        }
         
         if (!(BlueNodePort > 0 && BlueNodePort <= 65535)) {
             App.login.writeInfo("WRONG PORT GIVEN");
@@ -172,7 +180,7 @@ public class ConnectionManager extends Thread {
         
         App.login.writeInfo("Starting Connection...");
         App.login.writeInfo("Loging in Blue Node " + blueNodeAddress + ":" + blueNodePort + " ...");
-        authClient = new AuthClient(username, password, hostname, fullBlueNodeAddress, blueNodePort);
+        authClient = new AuthClient(username, password, hostname, fullBlueNodeAddress, blueNodePort, blueNodePubKey);
         if (!authClient.auth()) {
             App.login.monitor.setLogedOut();
             App.login.setLogedOut();
@@ -330,8 +338,8 @@ public class ConnectionManager extends Thread {
     
     public boolean ping() {
     	authClient.ping();
-    	String input = authClient.receiveAuthData();  
-    	if (input.equals("PING OK")) {
+    	String[] input = authClient.receiveAuthData();  
+    	if (input[0].equals("PING") && input[1].equals("OK")) {
     		return true;
     	}
     	return false;
@@ -349,8 +357,8 @@ public class ConnectionManager extends Thread {
 				e.printStackTrace();
 			}
         }
-        String input = authClient.receiveAuthData();
-        if (input.equals("UPING OK")) {
+        String[] input = authClient.receiveAuthData();
+        if (input[0].equals("UPING") && input[1].equals("OK")) {
             return true;
         } else {
             return false;
@@ -379,9 +387,8 @@ public class ConnectionManager extends Thread {
         receive.kill();
         App.login.monitor.clearDown();
         authClient.sendAuthData("DREFRESH");
-        String returnstr = authClient.receiveAuthData();
-        String[] args = returnstr.split("\\s+");
-
+        String[] args = authClient.receiveAuthData();
+        
         if (args.length !=2 && !args[0].equals("DREFRESH")) {
         	return;
         }
@@ -406,8 +413,7 @@ public class ConnectionManager extends Thread {
         send.kill();
         App.login.monitor.clearUp();
         authClient.sendAuthData("UREFRESH");
-        String returnstr = authClient.receiveAuthData();
-        String[] args = returnstr.split("\\s+");
+        String[] args = authClient.receiveAuthData();
 
         if (args.length !=2 && !args[0].equals("UREFRESH")) {
         	return;

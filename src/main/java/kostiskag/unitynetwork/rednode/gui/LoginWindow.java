@@ -361,7 +361,7 @@ public class LoginWindow extends javax.swing.JFrame {
 					if (!useNetworkSelectedBN) {
 						validTracker = getRecomendedBlueNode(trackerAddress, trackerPort);
 						if (validTracker) {
-							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, blueNodePubKey);
 							connection.start();
 						} else {
 							writeInfo("Terminating connection");
@@ -374,9 +374,8 @@ public class LoginWindow extends javax.swing.JFrame {
 						if (element != null) {
 							hostname = jTextField1.getText();	
 							TrackerClient tr = new TrackerClient(element, hostname);
-							tr.getBlueNodesPubKey(blueNodeName);
-							
-							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+							PublicKey bnPub = tr.getBlueNodesPubKey(blueNodeName);
+							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, bnPub);
 							connection.start();
 						}
 					}					
@@ -388,7 +387,7 @@ public class LoginWindow extends javax.swing.JFrame {
 					} else {
 						writeInfo("Blue Node's key collected...");
 						writeInfo("Connecting to Standalone Blue Node...");
-						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, pub);
 						connection.start();
 					}
 				}

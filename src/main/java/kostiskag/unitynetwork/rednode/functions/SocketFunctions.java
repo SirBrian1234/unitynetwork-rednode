@@ -41,7 +41,7 @@ public class SocketFunctions {
 		if (authPort > 0 && authPort <= 65535) {
 			try {
 				socket = new Socket(IPaddress, authPort);
-				socket.setSoTimeout(3000);
+				socket.setSoTimeout(8000);
 			} catch (java.net.NoRouteToHostException ex) {
 				App.login.writeInfo(pre + "NO ROUTE");
 				return null;
