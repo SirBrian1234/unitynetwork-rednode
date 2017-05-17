@@ -377,6 +377,9 @@ public class LoginWindow extends javax.swing.JFrame {
 							PublicKey bnPub = tr.getBlueNodesPubKey(blueNodeName);
 							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, bnPub);
 							connection.start();
+						} else {
+							writeInfo("Could not connect to the tracker.");
+							setLogedOut();
 						}
 					}					
 				} else {
@@ -384,6 +387,7 @@ public class LoginWindow extends javax.swing.JFrame {
 					PublicKey pub = BlueNodeClient.getPubKey(blueNodeAddress, blueNodePort);
 					if (pub == null) {
 						writeInfo("Could not connect to bluenode and retrieve Blue Node's key.");
+						setLogedOut();
 					} else {
 						writeInfo("Blue Node's key collected...");
 						writeInfo("Connecting to Standalone Blue Node...");

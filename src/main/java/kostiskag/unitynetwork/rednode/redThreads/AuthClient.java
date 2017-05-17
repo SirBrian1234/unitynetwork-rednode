@@ -100,19 +100,21 @@ public class AuthClient extends Thread {
 			//this bn is to be authenticated by the target bn
 			args = SocketFunctions.sendReceiveAESEncryptedStringData("REDNODE "+hostname, socketReader, socketWriter, sessionKey);
 			
-			//decode question
-			byte[] question = CryptoMethods.base64StringTobytes(args[0]);
-			
-			//decrypt with private
-			String answer = CryptoMethods.decryptWithPrivate(question, App.rednodeKeys.getPrivate());
-			
-			//send back plain answer
-			args = SocketFunctions.sendReceiveAESEncryptedStringData(answer, socketReader, socketWriter, sessionKey);
-			
 			if (!args[0].equals("OK")) {
-				throw new Exception("Could not connect to bluenode. RedNode authentication failed. \nPlease check that your given hostname matches your keypair.");
-			} 
-			System.out.println(args[0]);
+				//decode question
+				byte[] question = CryptoMethods.base64StringTobytes(args[0]);
+				
+				//decrypt with private
+				String answer = CryptoMethods.decryptWithPrivate(question, App.rednodeKeys.getPrivate());
+				
+				//send back plain answer
+				args = SocketFunctions.sendReceiveAESEncryptedStringData(answer, socketReader, socketWriter, sessionKey);
+				
+				if (!args[0].equals("OK")) {
+					throw new Exception("Could not connect to bluenode. RedNode authentication failed. \nPlease check that your given hostname matches your keypair.");
+				} 
+				System.out.println(args[0]);
+			}
 			
 			args = SocketFunctions.sendReceiveAESEncryptedStringData("LEASE "+username+" "+hashedData, socketReader, socketWriter, sessionKey);
 			if (args[0].equals("FAILED")) {
