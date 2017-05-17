@@ -82,18 +82,24 @@ public class SocketFunctions {
     }
     
     public static byte[] receiveData(DataInputStream reader) throws IOException {
-    	byte[] byteT = null;
-    	while (true) {
-	    	byte[] bytes = new byte[2048];
-			int read = reader.read(bytes);
-			byteT = new byte[read];
+    	byte[] byteT = new byte[]{0x00};
+    	byte[] bytes = new byte[2048];
+    	int read = reader.read(bytes);
+		if (read > 0) {
+	    	byteT = new byte[read];
 			System.arraycopy(bytes, 0, byteT, 0, read);
-		
-			if (byteT[0] != (int)13 && byteT[0] != (int)10) {
-				break;
+			
+			if (byteT[0] == (int)13) {
+				System.out.println(pre + "RECEIVED new line");
+			} else if (byteT[0] == (int)10) {
+				System.out.println(pre+ "received return char");
 			}
-    	}
-		return byteT;		
+		} else if (read == 0){
+			System.out.println(pre + "RECEIVED zero");
+		} else {
+			System.out.println(pre + "RECEIVED "+read);
+		}
+    	return byteT;			
     }
     
     public static byte[] sendReceiveData(byte[] toSend, DataInputStream reader, DataOutputStream writer) throws Exception  {
@@ -110,7 +116,7 @@ public class SocketFunctions {
         	message = "\n\r";
         }        
     	//include a line feed and a return char
-    	message += "\n\r";
+    	//message += "\n\r";
     	byte[] toSend = message.getBytes();        
         sendData(toSend, writer);
     }
@@ -136,7 +142,7 @@ public class SocketFunctions {
         	message = "\n";
         }        
     	//include a line feed and a return char
-    	message += "\n\r";
+    	//message += "\n\r";
     	byte[] chiphered = CryptoMethods.aesEncrypt(message, sessionKey);
         sendData(chiphered, writer);
     }
@@ -161,7 +167,7 @@ public class SocketFunctions {
         	message = "\n";
         }        
     	//include a line feed and a return char
-    	message += "\n\r";
+    	//message += "\n\r";
     	byte[] chiphered = CryptoMethods.encryptWithPublic(message, key);
         sendData(chiphered, writer);
     }

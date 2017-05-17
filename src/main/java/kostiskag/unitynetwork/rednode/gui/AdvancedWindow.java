@@ -12,6 +12,8 @@ import kostiskag.unitynetwork.rednode.App;
 import kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import kostiskag.unitynetwork.rednode.tables.trackerInstance;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JFrame;
 
 /**
  *
@@ -40,11 +42,15 @@ public class AdvancedWindow extends javax.swing.JFrame {
     private DefaultTableModel bluenodes;
     private String hostname;
     private JLabel lblNewLabel;
+    private JTextField textField;
+    private JTextField textField_1;
 
     public AdvancedWindow(String address, String portField, String hostname) {
+    	setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     	this.hostname = hostname;
-        bluenodes = new DefaultTableModel(new String[][]{}, new String[]{"Hostname", "Physical Address", "Auth Port", "RedNode Load"});
+        bluenodes = new DefaultTableModel(new String[][]{}, new String[]{"Name", "Physical Address", "Auth Port", "RedNode Load"});
         initComponents();
+        textField_1.setText(hostname);
         jTextField1.setText(address);
         jTextField2.setText(portField);
     }
@@ -100,7 +106,13 @@ public class AdvancedWindow extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(bluenodes);
+        jTable1.setModel(new DefaultTableModel(
+        	new Object[][] {
+        	},
+        	new String[] {
+        		"Name", "Physical Address", "Auth Port", "RedNode Load"
+        	}
+        ));
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
@@ -109,32 +121,51 @@ public class AdvancedWindow extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTable1);
         
         lblNewLabel = new JLabel("");
+        
+        JLabel lblHostname = new JLabel("Your hostname is:");
+        
+        textField_1 = new JTextField();
+        textField_1.setEditable(false);
+        textField_1.setColumns(10);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+        		.addGroup(jPanel1Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(lblHostname)
+        			.addGap(12)
+        			.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 212, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(216, Short.MAX_VALUE))
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+        				.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(jLabel1))
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(jLabel2)
         				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(jTextField1, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(jLabel1))
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(jLabel2)
-        						.addGroup(jPanel1Layout.createSequentialGroup()
-        							.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-        							.addPreferredGap(ComponentPlacement.UNRELATED)
-        							.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)))))
+        					.addComponent(jTextField2, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(jButton1, GroupLayout.PREFERRED_SIZE, 220, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(59, Short.MAX_VALUE))
+        		.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+        		.addGroup(jPanel1Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
         			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addContainerGap()
+        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(jPanel1Layout.createSequentialGroup()
+        					.addGap(3)
+        					.addComponent(lblHostname))
+        				.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addGap(18)
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jLabel1)
         				.addComponent(jLabel2))
@@ -145,9 +176,8 @@ public class AdvancedWindow extends javax.swing.JFrame {
         				.addComponent(jButton1))
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(jScrollPane2, GroupLayout.PREFERRED_SIZE, 269, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        			.addGap(10)
+        			.addComponent(jScrollPane2, GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
         );
         jPanel1.setLayout(jPanel1Layout);
         
@@ -163,12 +193,22 @@ public class AdvancedWindow extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+        
+        JLabel lblBlueNodeName = new JLabel("Blue Node Name");
+        
+        textField = new JTextField();
+        textField.setEditable(false);
+        textField.setColumns(10);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2Layout.setHorizontalGroup(
         	jPanel2Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel2Layout.createSequentialGroup()
+        		.addGroup(Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
         			.addContainerGap()
+        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lblBlueNodeName, GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+        				.addComponent(textField, GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE))
+        			.addPreferredGap(ComponentPlacement.RELATED)
         			.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
         				.addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, 199, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jLabel3))
@@ -179,20 +219,22 @@ public class AdvancedWindow extends javax.swing.JFrame {
         					.addComponent(jTextField4, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
         					.addPreferredGap(ComponentPlacement.UNRELATED)
         					.addComponent(jButton2)))
-        			.addContainerGap(227, Short.MAX_VALUE))
+        			.addGap(42))
         );
         jPanel2Layout.setVerticalGroup(
         	jPanel2Layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(jPanel2Layout.createSequentialGroup()
-        			.addContainerGap(26, Short.MAX_VALUE)
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         			.addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jLabel3)
-        				.addComponent(jLabel4))
+        				.addComponent(jLabel4)
+        				.addComponent(lblBlueNodeName))
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(jTextField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jTextField4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jButton2))
+        				.addComponent(jButton2)
+        				.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
         );
         jPanel2.setLayout(jPanel2Layout);
@@ -200,13 +242,18 @@ public class AdvancedWindow extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.LEADING)
-        		.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        		.addComponent(jPanel2, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE)
+        		.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+        				.addComponent(jPanel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        				.addComponent(jPanel2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 568, Short.MAX_VALUE))
+        			.addContainerGap())
         );
         layout.setVerticalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(layout.createSequentialGroup()
-        			.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
+        			.addContainerGap()
+        			.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
@@ -217,9 +264,9 @@ public class AdvancedWindow extends javax.swing.JFrame {
     }
     
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
-        int[] table = jTable1.getSelectedRows();
-        if (table.length == 1) {
-            int num = table[0];            
+        int num  = jTable1.getSelectedRow();
+        if (num > -1) {
+            textField.setText((String) jTable1.getValueAt(num, 0));
             jTextField3.setText((String) jTable1.getValueAt(num, 1));            
             jTextField4.setText((String) jTable1.getValueAt(num, 2));
         }
@@ -253,8 +300,9 @@ public class AdvancedWindow extends javax.swing.JFrame {
 				        while(it.hasNext()) {
 				        	bluenodes.addRow(it.next());
 				        }
-					} else {
-						lblNewLabel.setText("Could not connect to tracker.");
+				        jTable1.setModel(bluenodes);
+				    } else {
+						lblNewLabel.setText("Could not connect to tracker. Check if your given hosname is the correct one.");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -267,6 +315,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
     	if (!jTextField3.getText().isEmpty()) {
+    		App.login.blueNodeName = textField.getText();
 	    	App.login.blueNodeAddress = jTextField3.getText();
 	        if (jTextField4.getText().isEmpty()) {
 	        	App.login.blueNodePort = App.defaultBlueNodeAuthPort;
@@ -275,7 +324,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	        }        
 	        App.login.useNetworkSelectedBN = true;
 	        App.login.toggleLogin();
-	        setVisible(false);
+	        dispose();
     	}
     }     
 }

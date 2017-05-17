@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 
 import javax.swing.GroupLayout;
@@ -18,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import kostiskag.unitynetwork.rednode.App;
+import kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
 import kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import kostiskag.unitynetwork.rednode.functions.HashFunctions;
@@ -45,13 +47,15 @@ public class LoginWindow extends javax.swing.JFrame {
 	private String trackerAddress;
 	private int trackerPort;
     // bluenode
-	public String blueNodeAddress = null;
-	public int blueNodePort = -1;
+	public String blueNodeName;
+	public String blueNodeAddress;
+	public int blueNodePort;
+	public PublicKey blueNodePubKey;
 	// data
-	public boolean useStandaloneBN = false;
-	public boolean useNetworkSelectedBN = false;
+	public boolean useStandaloneBN;
+	public boolean useNetworkSelectedBN;
+	private boolean validTracker;
 	private int loggedin = 0;
-	private boolean validTracker = false;
 	// objects
 	public MonitorWindow monitor;
 	public ConnectionManager connection;
@@ -253,16 +257,6 @@ public class LoginWindow extends javax.swing.JFrame {
 		jTextField6.setColumns(10);
 		jTextField6.setBounds(156, 31, 40, 20);
 		panel_1.add(jTextField6);
-		
-		button = new JButton("Keyring");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//manage keyring for standalone bns
-			}
-		});
-		button.setBackground(Color.BLACK);
-		button.setBounds(208, 29, 85, 25);
-		panel_1.add(button);
 		jPanel4.setLayout(jPanel4Layout);
 
 		jPanel1.add(jPanel4);
@@ -350,7 +344,6 @@ public class LoginWindow extends javax.swing.JFrame {
 	private JTextField jTextField6;
 	private JLabel lblHostname;
 	private JButton btnNewButton_1;
-	private JButton button;
 
 	public void toggleLogin() {
 		// does login
@@ -366,23 +359,38 @@ public class LoginWindow extends javax.swing.JFrame {
 			if (getInputData()) {
 				if (!useStandaloneBN) {
 					if (!useNetworkSelectedBN) {
-					validTracker = getRecomendedBlueNode(trackerAddress, trackerPort);
-					if (validTracker) {
-						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
-						connection.start();
-					} else {
-						writeInfo("Terminating connection");
-						setLogedOut();
-					}
-						} else {
-							writeInfo("Connecting to Network Blue Node...");
+						validTracker = getRecomendedBlueNode(trackerAddress, trackerPort);
+						if (validTracker) {
 							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
 							connection.start();
-						}					
+						} else {
+							writeInfo("Terminating connection");
+							setLogedOut();
+						}
+					} else {
+						writeInfo("Connecting to selected Network Blue Node...");
+						writeInfo("Collecting Blue Node's key from the Network...");
+						trackerInstance element = getTrackerInstance(trackerAddress, trackerPort);
+						if (element != null) {
+							hostname = jTextField1.getText();	
+							TrackerClient tr = new TrackerClient(element, hostname);
+							tr.getBlueNodesPubKey(blueNodeName);
+							
+							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+							connection.start();
+						}
+					}					
 				} else {
-					writeInfo("Connecting to Standalone Blue Node...");
-					connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
-					connection.start();
+					writeInfo("Collecting Blue Node's key from the Blue Node...");
+					PublicKey pub = BlueNodeClient.getPubKey(blueNodeAddress, blueNodePort);
+					if (pub == null) {
+						writeInfo("Could not connect to bluenode and retrieve Blue Node's key.");
+					} else {
+						writeInfo("Blue Node's key collected...");
+						writeInfo("Connecting to Standalone Blue Node...");
+						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort);
+						connection.start();
+					}
 				}
 			} else {
 				writeInfo("The given data were not valid.");
@@ -552,26 +560,39 @@ public class LoginWindow extends javax.swing.JFrame {
 			return true;
 		}		
 	}
+	
+	private trackerInstance getTrackerInstance(String TrackerAddress, int TrackerPort) {
+		if (App.trakerKeyRingTable.checkIfExisting(TrackerAddress, TrackerPort)) {
+			try {
+				return App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			writeInfo("The given tracker does not exist in the network keyring.\nPlease register the tracker in the keyring first...");
+		}
+		return null;
+	}
 
 	public boolean getRecomendedBlueNode(String TrackerAddress, int TrackerPort) {
 		writeInfo("Getting recomended BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
 		hostname = jTextField1.getText();
-		trackerInstance element;
-		if (App.trakerKeyRingTable.checkIfExisting(TrackerAddress, TrackerPort)) {
+		trackerInstance element = getTrackerInstance(TrackerAddress, TrackerPort);
+		if (element != null) {
 			try {
-				element = App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
 				TrackerClient tr = new TrackerClient(element, hostname);
 				if (tr.getRecomendedBlueNode()) {
 					blueNodePort = tr.getRecomendedBlueNodePort();
 					blueNodeAddress = tr.getRecomendedBlueNodeAddress();
+					blueNodePubKey =  tr.getRecomendedBlueNodePub();
 					return true;
+				} else {
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} else {
-			writeInfo("The given tracker " + TrackerAddress + ":" + TrackerPort + " is not registered into the rednode's keyring ...");
 		}
 		return false;
 	}

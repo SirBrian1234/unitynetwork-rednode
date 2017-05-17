@@ -1,13 +1,10 @@
 package kostiskag.unitynetwork.rednode.connection;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.security.PublicKey;
 import java.util.LinkedList;
 
@@ -32,6 +29,7 @@ public class TrackerClient {
 	private DataOutputStream socketWriter;
 	private String RecBlueNodeAddress;
 	private int RecBlueNodePort;
+	private PublicKey RecBlueNodePub;
 	private boolean connected = false;
 	private trackerInstance tracker;
 	private SecretKey sessionKey;
@@ -129,9 +127,12 @@ public class TrackerClient {
 			try {
 				args = SocketFunctions.sendReceiveAESEncryptedStringData("GETRBN",  socketReader, socketWriter, sessionKey);
 				if (!args[0].equals("NONE")) {
-					App.login.writeInfo("Tracker Gave BN " + args[0] + " " + args[1] + " " + args[2] + " " + args[3]);
+					App.login.writeInfo("Tracker Gave BN "+args[0]+" "+args[1]+" " +args[2]+" "+args[3]+" "+args[4]);
+					//arg0 is name
 					RecBlueNodeAddress = args[1];
 					RecBlueNodePort = Integer.parseInt(args[2]);
+					//args3 is load
+					RecBlueNodePub =  (PublicKey) CryptoMethods.base64StringRepresentationToObject(args[4]);
 					return true;
 				} else {
 					App.login.writeInfo(
@@ -152,6 +153,10 @@ public class TrackerClient {
 
 	public String getRecomendedBlueNodeAddress() {
 		return RecBlueNodeAddress;
+	}
+	
+	public PublicKey getRecomendedBlueNodePub() {
+		return RecBlueNodePub;
 	}
 	
 	public LinkedList<String[]> getBNs() {
