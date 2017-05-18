@@ -25,7 +25,7 @@ In general, you may perform any kind of task that is currently being done in an 
 * Bob may directly send a file from his laptop to David's Laptop
 * Lucy may connect from her mobile phone to a social media server
 * Steve may video-call Jenny from his computer to her mobile phone
-* May may leave a message to her home's noticeboard from her laptop
+* May leaves a message from her laptop to her home's noticeboard
 * Bill calls Dave from his mobile to Dave's mobile
 
 ## Applications
