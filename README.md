@@ -9,8 +9,7 @@ The network is based in three key-principles:
 
 * **Identification**: Each registered user or organisation may own multiple host-clients where each host-client may receive the same network address each time the device connects to the network
 * **Freedom**: Each client may host any kind of service and transfer any kind of data towards any other host-client without limitations of any kind
-* **Security**: The network provides authentication and encryption in order to defend its host-client privacy 
-[currently under dev under encryption branch]
+* **Security**: The network provides RSA and AES encryption algorithms, public key distribution to all blue and red nodes, authentication and encryption in order to defend its host-client privacy. (If you do not want to use the encryption version you may use the non_encrypted version from the respective branch)
 
 ## Reasoning
 This software was build as part of my BSc Thesis in order to demonstare a live and tangible example of a better version of today's Internet. Inside the network, users may experience a much more vivid communication, the ability to share any kind of data or services between them and the ability to know each other. 
@@ -48,14 +47,14 @@ mvn package
 
 ## Option B - Download and use a pre-built version
 You can download, unzip and use a pre-built version of Red Node from this url:
-https://drive.google.com/file/d/0BzPrI7NjFz2SSDhfZzQ4U2lUUVk/view?usp=sharing
+[not yet]
 
 In order to establish data integrity, you should verify the zip file's signature to be:
 
 | Algorithm | Hash Signature |
 | --- | --- |
-| MD5 | 970b78033c214a6e356480af63564c29 |
-| SHA256 | b5cda1faf0cc97376481bcc4d0c7eac0276912cd92ab01f8ed123f0735539e7b |
+| MD5 | 000 |
+| SHA256 | 000 |
 
 ## Requirements
 In order to be able to use the Red Node, your system has to be able to create tun/tap interfaces or to have a tun/tap adapter pre-installed.
