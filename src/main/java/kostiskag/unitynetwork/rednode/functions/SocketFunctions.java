@@ -84,22 +84,27 @@ public class SocketFunctions {
     public static byte[] receiveData(DataInputStream reader) throws IOException {
     	byte[] byteT = new byte[]{0x00};
     	byte[] bytes = new byte[2048];
-    	int read = reader.read(bytes);
-		if (read > 0) {
-	    	byteT = new byte[read];
-			System.arraycopy(bytes, 0, byteT, 0, read);
+    	for (int i=0; i<2; i++) {
+	    	int read = reader.read(bytes);
+			if (read > 0) {
+		    	byteT = new byte[read];
+				System.arraycopy(bytes, 0, byteT, 0, read);
 			
-			if (byteT[0] == (int)13) {
-				System.out.println(pre + "RECEIVED new line");
-			} else if (byteT[0] == (int)10) {
-				System.out.println(pre+ "received return char");
+				if (byteT[0] == (int)0) {
+					System.out.println(pre + "RECEIVED a zero char");
+			    } else if (byteT[0] == (int)13) {
+			    	System.out.println(pre + "RECEIVED a new line char");
+				} else if (byteT[0] == (int)10) {
+					System.out.println(pre+ "received a return char");
+				}
+				return byteT;
+			} else if (read == 0){
+				System.out.println(pre + "RECEIVED zero");
+			} else {
+				System.out.println(pre + "RECEIVED "+read);
 			}
-		} else if (read == 0){
-			System.out.println(pre + "RECEIVED zero");
-		} else {
-			System.out.println(pre + "RECEIVED "+read);
-		}
-    	return byteT;			
+    	}
+    	return byteT; 			
     }
     
     public static byte[] sendReceiveData(byte[] toSend, DataInputStream reader, DataOutputStream writer) throws Exception  {
@@ -113,7 +118,7 @@ public class SocketFunctions {
         	throw new Exception(pre+"NO DATA TO SEND");
         } else if (message.isEmpty()) {
         	//line feed
-        	message = "\n\r";
+        	message = "\n";
         }        
     	//include a line feed and a return char
     	//message += "\n\r";
