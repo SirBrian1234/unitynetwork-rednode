@@ -162,21 +162,21 @@ public class TrackerClient {
 	public LinkedList<String[]> getBNs() {
 		LinkedList<String[]> fetched = new LinkedList<String[]>();
 		if (connected) {
-			String[] args;
 			try {
-				args = SocketFunctions.sendReceiveAESEncryptedStringData("GETBNS",  socketReader, socketWriter, sessionKey);
-				if (!args[0].equals("NONE")) {
-					int count = Integer.parseInt(args[1]);
-		            for (int i = 0; i < count; i++) {
-		                args = SocketFunctions.receiveAESEncryptedStringData(socketReader, sessionKey);
-		                fetched.add(new String[]{args[0], args[1], args[2], args[3]});
-		            }
-				}
+				SocketFunctions.sendAESEncryptedStringData("GETBNS", socketWriter, sessionKey);
+				String received = SocketFunctions.receiveAESEncryptedString(socketReader, sessionKey);
+				closeCon();
+				String[] lines = received.split("\n+"); //split into sentences
+				String[] args = lines[0].split("\\s+"); //the first sentence contains the number
+				int count = Integer.parseInt(args[1]);  //for the given number read the rest sentences
+				for (int i = 1; i < count+1; i++) {        	
+					args = lines[i].split("\\s+");
+					fetched.add(new String[]{args[0], args[1], args[2], args[3]});		
+		        }	    	    				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-        	closeCon();
-		}
+        }
 		return fetched;
 	}
 	
