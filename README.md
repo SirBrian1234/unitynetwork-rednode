@@ -48,21 +48,21 @@ mvn package
 
 ## Option B - Download and use a pre-built version
 You can download, unzip and use a pre-built version of Red Node from this url:
-[not yet]
+https://drive.google.com/file/d/0BzPrI7NjFz2SR1NROV9JNGYwSUE/view?usp=sharing
 
 In order to establish data integrity, you should verify the zip file's signature to be:
 
 | Algorithm | Hash Signature |
 | --- | --- |
-| MD5 | 000 |
-| SHA256 | 000 |
+| MD5 | 8a81c8919f5676cc979bd310c24dd6b1 |
+| SHA256 | 53f04c3a7d2f8f215d7bff5d840bf40c490b268ca6c55a33700221ecb9891520 |
 
 ## Requirements
 In order to be able to use the Red Node, your system has to be able to create tun/tap interfaces or to have a tun/tap adapter pre-installed.
 
 **In Linux Ubuntu:** The adapters can be dynamicaly generated, other Linux distributions may work under the same manner
 
-**In Windows 7 or older:** You may use OpenVPN's tun/tap adapter found from here:
+**In Windows 7 or older:** You may download OpenVPN's tun/tap adapter from the below url under the section Tap-windows:
 https://openvpn.net/index.php/download/community-downloads.html
 
 ## Run
