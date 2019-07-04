@@ -11,10 +11,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.crypto.SecretKey;
 
+import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
+import org.kostiskag.unitynetwork.common.utilities.HashUtilities;
+import org.kostiskag.unitynetwork.common.utilities.SocketUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.functions.CryptoMethods;
-import org.kostiskag.unitynetwork.rednode.functions.HashFunctions;
-import org.kostiskag.unitynetwork.rednode.functions.SocketFunctions;
 
 /**
  * Auth client is responsible to connect to the blue node's TCP auth port
@@ -72,24 +72,24 @@ public class AuthClient extends Thread {
 
 		try {
 			String hashedData = null;
-			hashedData = HashFunctions.SHA256(App.SALT) +HashFunctions.SHA256(username) + HashFunctions.SHA256(App.SALT + password);
-			hashedData = HashFunctions.SHA256(hashedData);
+			hashedData = HashUtilities.SHA256(App.SALT) +HashUtilities.SHA256(username) + HashUtilities.SHA256(App.SALT + password);
+			hashedData = HashUtilities.SHA256(hashedData);
 			
-			socket = SocketFunctions.absoluteConnect(serverIPAddress, serverPort);
+			socket = SocketUtilities.absoluteConnect(serverIPAddress, serverPort);
 			//socket.setSoTimeout(timeout);
 			
-			socketReader = SocketFunctions.makeDataReader(socket);
-			socketWriter = SocketFunctions.makeDataWriter(socket);
+			socketReader = SocketUtilities.makeDataReader(socket);
+			socketWriter = SocketUtilities.makeDataWriter(socket);
 			
-			sessionKey = CryptoMethods.generateAESSessionkey();
+			sessionKey = CryptoUtilities.generateAESSessionkey();
 			if (sessionKey == null) {
 				throw new Exception("Could not generate session key.");
 			}
 
-			String keyStr = CryptoMethods.objectToBase64StringRepresentation(sessionKey);
-			SocketFunctions.sendRSAEncryptedStringData(keyStr, socketWriter, blueNodePubKey);
+			String keyStr = CryptoUtilities.objectToBase64StringRepresentation(sessionKey);
+			SocketUtilities.sendRSAEncryptedStringData(keyStr, socketWriter, blueNodePubKey);
 			
-			String[] args = SocketFunctions.receiveAESEncryptedStringData(socketReader, sessionKey);
+			String[] args = SocketUtilities.receiveAESEncryptedStringData(socketReader, sessionKey);
 			System.out.println(args[0]);
 			
 			if(!args[0].equals("BLUENODE")) {
@@ -98,17 +98,17 @@ public class AuthClient extends Thread {
 			System.out.println(args[0]+" "+args[1]);
 			
 			//this bn is to be authenticated by the target bn
-			args = SocketFunctions.sendReceiveAESEncryptedStringData("REDNODE "+hostname, socketReader, socketWriter, sessionKey);
+			args = SocketUtilities.sendReceiveAESEncryptedStringData("REDNODE "+hostname, socketReader, socketWriter, sessionKey);
 			
 			if (!args[0].equals("OK")) {
 				//decode question
-				byte[] question = CryptoMethods.base64StringTobytes(args[0]);
+				byte[] question = CryptoUtilities.base64StringTobytes(args[0]);
 				
 				//decrypt with private
-				String answer = CryptoMethods.decryptWithPrivate(question, App.rednodeKeys.getPrivate());
+				String answer = CryptoUtilities.decryptWithPrivate(question, App.rednodeKeys.getPrivate());
 				
 				//send back plain answer
-				args = SocketFunctions.sendReceiveAESEncryptedStringData(answer, socketReader, socketWriter, sessionKey);
+				args = SocketUtilities.sendReceiveAESEncryptedStringData(answer, socketReader, socketWriter, sessionKey);
 				
 				if (!args[0].equals("OK")) {
 					throw new Exception("Could not connect to bluenode. RedNode authentication failed. \nPlease check that your given hostname matches your keypair.");
@@ -116,7 +116,7 @@ public class AuthClient extends Thread {
 				System.out.println(args[0]);
 			}
 			
-			args = SocketFunctions.sendReceiveAESEncryptedStringData("LEASE "+username+" "+hashedData, socketReader, socketWriter, sessionKey);
+			args = SocketUtilities.sendReceiveAESEncryptedStringData("LEASE "+username+" "+hashedData, socketReader, socketWriter, sessionKey);
 			if (args[0].equals("FAILED")) {
 				if (args[1].equals("BLUENODE")) {
 					App.login.writeInfo("BlueNode Error, try connecting from a different BN");
@@ -149,7 +149,7 @@ public class AuthClient extends Thread {
 
 	public void sendAuthData(String messageToSend) {
 		try {
-			SocketFunctions.sendAESEncryptedStringData(messageToSend, socketWriter, sessionKey);
+			SocketUtilities.sendAESEncryptedStringData(messageToSend, socketWriter, sessionKey);
 			App.login.monitor.writeToCommands(pre+"send "+messageToSend);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,7 +188,7 @@ public class AuthClient extends Thread {
 		String[] args;
 		while (!kill.get()) {
 			try {
-				args = SocketFunctions.receiveAESEncryptedStringData(socketReader, sessionKey);
+				args = SocketUtilities.receiveAESEncryptedStringData(socketReader, sessionKey);
 			} catch (Exception ex) {
 				ex.printStackTrace();				
 				sendKill("Auth connection closed.");				

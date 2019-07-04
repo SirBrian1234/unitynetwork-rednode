@@ -4,8 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.UnknownHostException;
+import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -19,11 +22,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import org.kostiskag.unitynetwork.common.utilities.HashUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
 import org.kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.functions.HashFunctions;
 import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
 
 /**
@@ -376,11 +379,17 @@ public class LoginWindow extends javax.swing.JFrame {
 						writeInfo("Collecting Blue Node's key from the Network...");
 						trackerInstance element = getTrackerInstance(trackerAddress, trackerPort);
 						if (element != null) {
-							hostname = jTextField1.getText();	
-							TrackerClient tr = new TrackerClient(element, hostname);
-							PublicKey bnPub = tr.getBlueNodesPubKey(blueNodeName);
-							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, bnPub);
-							connection.start();
+							hostname = jTextField1.getText();
+							TrackerClient tr = null;
+							try {
+								tr = new TrackerClient(element, hostname);
+								PublicKey bnPub = tr.getBlueNodesPubKey(blueNodeName);
+								connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, bnPub);
+								connection.start();
+							} catch (UnknownHostException e) {
+								writeInfo("Could not connect to the tracker.");
+								setLogedOut();
+							}
 						} else {
 							writeInfo("Could not connect to the tracker.");
 							setLogedOut();
@@ -388,15 +397,20 @@ public class LoginWindow extends javax.swing.JFrame {
 					}					
 				} else {
 					writeInfo("Collecting Blue Node's key from the Blue Node...");
-					PublicKey pub = BlueNodeClient.getPubKey(blueNodeAddress, blueNodePort);
-					if (pub == null) {
-						writeInfo("Could not connect to bluenode and retrieve Blue Node's key.");
-						setLogedOut();
-					} else {
-						writeInfo("Blue Node's key collected...");
-						writeInfo("Connecting to Standalone Blue Node...");
-						connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, pub);
-						connection.start();
+					PublicKey pub = null;
+					try {
+						pub = BlueNodeClient.getPubKey(blueNodeAddress, blueNodePort);
+						if (pub == null) {
+							writeInfo("Could not connect to bluenode and retrieve Blue Node's key.");
+							setLogedOut();
+						} else {
+							writeInfo("Blue Node's key collected...");
+							writeInfo("Connecting to Standalone Blue Node...");
+							connection = new ConnectionManager(username, password, hostname, blueNodeAddress, blueNodePort, pub);
+							connection.start();
+						}
+					} catch (IOException e) {
+						System.out.println("Could not connect to BlueNode");
 					}
 				}
 			} else {
@@ -543,8 +557,8 @@ public class LoginWindow extends javax.swing.JFrame {
 				ranGen.nextBytes(salt);
 				
 				try {
-					hostname = HashFunctions.MD5(new String(salt));
-				} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+					hostname = HashUtilities.MD5(new String(salt));
+				} catch (GeneralSecurityException e) {
 					e.printStackTrace();
 					hostname = "nohost";
 				}

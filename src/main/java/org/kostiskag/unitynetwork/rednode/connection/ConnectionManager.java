@@ -22,7 +22,7 @@ import org.kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
 import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceRead;
 import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceWrite;
 import org.kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
-import org.kostiskag.unitynetwork.rednode.functions.DetectOS;
+import org.kostiskag.unitynetwork.rednode.DetectOS;
 
 /**
  *

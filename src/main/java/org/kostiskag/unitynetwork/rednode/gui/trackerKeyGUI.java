@@ -3,9 +3,9 @@ package org.kostiskag.unitynetwork.rednode.gui;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
+import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.functions.CryptoMethods;
 import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
 
 import javax.swing.JLabel;
@@ -15,6 +15,8 @@ import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 public class trackerKeyGUI {
 
@@ -47,7 +49,7 @@ public class trackerKeyGUI {
 		initialize();
 		textField_4.setText(hostname);
 		if (element.getPubKey() != null) {
-			textArea.setText(CryptoMethods.bytesToBase64String(element.getPubKey().getEncoded()));
+			textArea.setText(CryptoUtilities.bytesToBase64String(element.getPubKey().getEncoded()));
 			textField_2.setText("Key is set");
 			button.setEnabled(true);
 			btnRevokeThisRed.setEnabled(true);
@@ -182,9 +184,13 @@ public class trackerKeyGUI {
 	}
 	
 	private void collectTrackerKey() {
-		TrackerClient.getPubKey(element);
+		try {
+			TrackerClient.getPubKey(element);
+		} catch (IOException e) {
+
+		}
 		if (element.getPubKey() != null) {
-			textArea.setText(CryptoMethods.bytesToBase64String(element.getPubKey().getEncoded()));
+			textArea.setText(CryptoUtilities.bytesToBase64String(element.getPubKey().getEncoded()));
 			textField_2.setText("Key is set");
 			btnDownloadTrackersPublic.setEnabled(false);
 			button.setEnabled(true);
@@ -202,13 +208,17 @@ public class trackerKeyGUI {
 	}
 	
 	private void revokePubKey() {
-		TrackerClient tr = new TrackerClient(element, hostname);
-		String responce;
-		if (tr.isConnected()) {
-			responce = tr.revokePubKey();
-		} else {
-			responce = tr.reason;
+		try {
+			TrackerClient tr = new TrackerClient(element, hostname);
+			String responce;
+			if (tr.isConnected()) {
+				responce = tr.revokePubKey();
+			} else {
+				responce = tr.reason;
+			}
+			textField_3.setText(responce);
+		} catch (UnknownHostException e) {
+			textField_3.setText("Unknown host address");
 		}
-		textField_3.setText(responce);
 	}
 }

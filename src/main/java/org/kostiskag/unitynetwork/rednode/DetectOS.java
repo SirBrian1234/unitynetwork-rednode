@@ -1,4 +1,4 @@
-package org.kostiskag.unitynetwork.rednode.functions;
+package org.kostiskag.unitynetwork.rednode;
 
 public class DetectOS {
 

@@ -5,8 +5,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.functions.CryptoMethods;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -18,6 +18,7 @@ import java.io.File;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.Color;
+import java.io.IOException;
 
 public class keyringGUI {
 
@@ -47,9 +48,13 @@ public class keyringGUI {
 		frmNetworkKeyring.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frmNetworkKeyring.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent we) { 
-            	CryptoMethods.objectToFile(App.trakerKeyRingTable, new File(App.unityKeyringFileName));
-                frmNetworkKeyring.dispose();
+            public void windowClosing(WindowEvent we) {
+				try {
+					CryptoUtilities.objectToFile(App.trakerKeyRingTable, new File(App.unityKeyringFileName));
+				} catch (IOException e) {
+					System.out.println("Could not store keyring file.");
+				}
+				frmNetworkKeyring.dispose();
             }
         });
 		
