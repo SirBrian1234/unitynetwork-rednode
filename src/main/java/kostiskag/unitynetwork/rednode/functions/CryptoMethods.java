@@ -4,6 +4,8 @@
  */
 package kostiskag.unitynetwork.rednode.functions;
 
+import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,13 +16,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
+import java.security.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -28,8 +24,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-
-import javax.xml.bind.DatatypeConverter;
 
 /**
  *
@@ -181,22 +175,26 @@ public class CryptoMethods {
 	public static String objectToBase64StringRepresentation(Object obj) {
 		byte[] serial = objectToBytes(obj);
 		if (serial != null) {
-			return DatatypeConverter.printBase64Binary(serial);
+			return CryptoUtilities.bytesToBase64String(serial);
 		}
 		return null;
 	}
 	
 	public static Object base64StringRepresentationToObject(String base64Str) {
-		byte[] serial = DatatypeConverter.parseBase64Binary(base64Str);
-		return bytesToObject(serial); 
+		try {
+			return CryptoUtilities.base64StringRepresentationToObject(base64Str);
+		} catch (GeneralSecurityException | IOException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static String bytesToBase64String(byte[] b) {
-		return DatatypeConverter.printBase64Binary(b);
+		return CryptoUtilities.bytesToBase64String(b);
 	}
 	
 	public static byte[] base64StringTobytes(String base64Str) {
-		return DatatypeConverter.parseBase64Binary(base64Str);
+		return CryptoUtilities.base64StringTobytes(base64Str);
 	}
 
 	public static void objectToFile(Object obj, File file) {

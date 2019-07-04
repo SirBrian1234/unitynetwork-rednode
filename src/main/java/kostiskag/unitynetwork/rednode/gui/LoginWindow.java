@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -297,7 +298,10 @@ public class LoginWindow extends javax.swing.JFrame {
 		btnNewButton.setBounds(489, 430, 89, 30);
 		jPanel1.add(btnNewButton);
 
-		jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("loginBg.jpg"))); // NOI18N
+		URL url = getClass().getResource("loginBg.jpg");
+		if (url != null) {
+			jLabel1.setIcon(new javax.swing.ImageIcon(url)); // NOI18N
+		}
 		getContentPane().add(jLabel1);
 		jLabel1.setBounds(-95, -70, 800, 600);
 
