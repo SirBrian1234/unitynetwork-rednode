@@ -22,7 +22,7 @@ package org.p2pvpn.tuntap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kostiskag.unitynetwork.rednode.App;
+import org.kostiskag.unitynetwork.rednode.App;
 
 /**
  * The TunTap class for linux.

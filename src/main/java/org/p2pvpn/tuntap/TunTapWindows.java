@@ -18,7 +18,7 @@
  */
 package org.p2pvpn.tuntap;
 
-import kostiskag.unitynetwork.rednode.App;
+import org.kostiskag.unitynetwork.rednode.App;
 
 /**
  * The TunTap class for Windows
