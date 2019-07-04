@@ -14,7 +14,7 @@ import javax.crypto.SecretKey;
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.common.utilities.SocketUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
+import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
 
 /**
  * 
@@ -32,12 +32,12 @@ public class TrackerClient {
 	private int RecBlueNodePort;
 	private PublicKey RecBlueNodePub;
 	private boolean connected = false;
-	private trackerInstance tracker;
+	private TrackerEntry tracker;
 	private SecretKey sessionKey;
 	public String reason;
 	private String hostname;
 
-	public TrackerClient(trackerInstance tracker, String hostname) throws UnknownHostException {
+	public TrackerClient(TrackerEntry tracker, String hostname) throws UnknownHostException {
 		this.hostname = hostname;
 		this.tracker = tracker;
 		this.trackerInetAddress = SocketUtilities.getAddress(tracker.getAddress());
@@ -239,7 +239,7 @@ public class TrackerClient {
      * it writes a file and updates bn's tracker public key
      * to use.
      */
-	public static void getPubKey(trackerInstance element) throws UnknownHostException, IOException {
+	public static void getPubKey(TrackerEntry element) throws UnknownHostException, IOException {
 		InetAddress addr = SocketUtilities.getAddress(element.getAddress());		
 		Socket socket = SocketUtilities.absoluteConnect(addr, element.getPort());
 		if (socket == null) {
@@ -271,7 +271,7 @@ public class TrackerClient {
 	 * @param hostname the rednode's hostname
 	 * @return an information message
 	 */
-	public static String offerPubKey(String ticket, String hostname, trackerInstance tr) {
+	public static String offerPubKey(String ticket, String hostname, TrackerEntry tr) {
 		String pre = "^OFFERPUB ";
 		PublicKey trackerPublic = tr.getPubKey();
 		

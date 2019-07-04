@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.gui.LoginWindow;
-import org.kostiskag.unitynetwork.rednode.tables.trackerTable;
+import org.kostiskag.unitynetwork.rednode.tables.TrackerTable;
 
 /**
  *
@@ -24,7 +24,7 @@ public class App {
 	public static final String redNodeKeysFileName = "public_private.keypair";
 	public static final String unityKeyringFileName = "unity.keyring";
 	public static KeyPair rednodeKeys;
-	public static trackerTable trakerKeyRingTable;
+	public static TrackerTable trakerKeyRingTable;
 	public static LoginWindow login;
 	
 
@@ -75,7 +75,7 @@ public class App {
 			// the rednode has keyring in file
 			System.out.println("Loading Unity keyring from file...");
 			try {
-				trakerKeyRingTable = (trackerTable) CryptoUtilities.fileToObject(unityKeyringFile);
+				trakerKeyRingTable = (TrackerTable) CryptoUtilities.fileToObject(unityKeyringFile);
 			} catch (GeneralSecurityException | IOException e) {
 				System.out.println("Error reading keyring from file");
 				System.exit(1);
@@ -83,7 +83,7 @@ public class App {
 			System.out.println("Unity keyring loaded from file");			
 		} else {
 			System.out.println("Generating Unity keyring...");
-			trakerKeyRingTable = new trackerTable();			
+			trakerKeyRingTable = new TrackerTable();
 		}
 		
 		// gui

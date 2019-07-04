@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.kostiskag.unitynetwork.common.routing.packet.UnityPacket;
 import org.kostiskag.unitynetwork.rednode.redThreads.AuthClient;
 import org.kostiskag.unitynetwork.rednode.redThreads.RedReceive;
 import org.kostiskag.unitynetwork.rednode.redThreads.RedSend;
@@ -21,7 +22,6 @@ import org.kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 import org.kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
 import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceRead;
 import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceWrite;
-import org.kostiskag.unitynetwork.rednode.Routing.packets.UnityPacket;
 import org.kostiskag.unitynetwork.rednode.DetectOS;
 
 /**

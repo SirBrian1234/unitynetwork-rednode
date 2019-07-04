@@ -2,12 +2,12 @@ package org.kostiskag.unitynetwork.rednode.Routing;
 
 import java.net.InetAddress;
 
+import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.Routing.data.ARPGenerate;
 import org.kostiskag.unitynetwork.rednode.Routing.data.ARPPacketRequest;
 import org.kostiskag.unitynetwork.rednode.Routing.data.DHCPGenerate;
 import org.kostiskag.unitynetwork.rednode.Routing.data.DHCPrequest;
-import org.kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
 /**
  * This linear progress code will help up organize ethernet

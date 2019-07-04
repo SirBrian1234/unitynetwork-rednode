@@ -3,12 +3,12 @@ package org.kostiskag.unitynetwork.rednode.Routing;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.Routing.data.ARPGenerate;
 import org.kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
 import org.kostiskag.unitynetwork.rednode.Routing.data.ReverseARPInstance;
 import org.kostiskag.unitynetwork.rednode.Routing.packets.EthernetFrame;
-import org.kostiskag.unitynetwork.rednode.Routing.packets.IPv4Packet;
 
 /**
  * Gets packets from the incoming queue and writes them to the medium.

@@ -3,7 +3,7 @@ package org.kostiskag.unitynetwork.rednode.tables;
 import java.io.Serializable;
 import java.security.PublicKey;
 
-public class trackerInstance implements Serializable {
+public class TrackerEntry implements Serializable {
 
 	/**
 	 * 
@@ -13,7 +13,7 @@ public class trackerInstance implements Serializable {
 	private final int port;
 	private PublicKey pubKey;
 	
-	public trackerInstance(String address, int port) {
+	public TrackerEntry(String address, int port) {
 		this.address = address;
 		this.port = port;
 	}

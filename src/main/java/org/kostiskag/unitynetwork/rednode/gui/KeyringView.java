@@ -20,7 +20,7 @@ import java.awt.Font;
 import java.awt.Color;
 import java.io.IOException;
 
-public class keyringGUI {
+public class KeyringView {
 
 	private JFrame frmNetworkKeyring;
 	private JTable table;
@@ -32,7 +32,7 @@ public class keyringGUI {
 	/**
 	 * Create the application.
 	 */
-	public keyringGUI(String hostname) {
+	public KeyringView(String hostname) {
 		initialize();
 		populateJTable();
 		this.hostname = hostname;
@@ -154,7 +154,7 @@ public class keyringGUI {
 				}
 			} 
 			//opens a new window to edit the given entry
-			new trackerKeyGUI(address, port, hostname).setVisible();
+			new TrackerKeyView(address, port, hostname).setVisible();
 		}
 	}
 	

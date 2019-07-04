@@ -6,7 +6,7 @@ import javax.swing.JTextField;
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
+import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-public class trackerKeyGUI {
+public class TrackerKeyView {
 
 	private JFrame frame;
 	private JTextField textField;
@@ -30,7 +30,7 @@ public class trackerKeyGUI {
 	private JButton btnDownloadTrackersPublic;
 	private JButton btnRevokeThisRed;
 	private JButton button;
-	private trackerInstance element;
+	private TrackerEntry element;
 	private String hostname;
 	private JLabel lblNewLabel_1;
 	private JTextField textField_4;
@@ -38,7 +38,7 @@ public class trackerKeyGUI {
 	/**
 	 * Create the application.
 	 */
-	public trackerKeyGUI(String address, int port, String hostname) {
+	public TrackerKeyView(String address, int port, String hostname) {
 		this.hostname = hostname;
 		try {
 			element = App.trakerKeyRingTable.getEntry(address, port);

@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
+import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -290,7 +290,7 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	        }
 	
 	        if (App.trakerKeyRingTable.checkIfExisting(addr, port)) {
-	        	trackerInstance tr;
+	        	TrackerEntry tr;
 				try {
 					tr = App.trakerKeyRingTable.getEntry(addr, port);
 					TrackerClient cl = new TrackerClient(tr, hostname);

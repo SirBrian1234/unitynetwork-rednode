@@ -5,11 +5,9 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
@@ -27,7 +25,7 @@ import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
 import org.kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.trackerInstance;
+import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
 
 /**
  *
@@ -227,7 +225,7 @@ public class LoginWindow extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				//open keyring gui
 				hostname = jTextField1.getText();
-				new keyringGUI(hostname).setVisible();	 			
+				new KeyringView(hostname).setVisible();
 			}
 		});
 		btnNewButton_1.setBackground(new Color(0, 0, 0));
@@ -377,7 +375,7 @@ public class LoginWindow extends javax.swing.JFrame {
 					} else {
 						writeInfo("Connecting to selected Network Blue Node...");
 						writeInfo("Collecting Blue Node's key from the Network...");
-						trackerInstance element = getTrackerInstance(trackerAddress, trackerPort);
+						TrackerEntry element = getTrackerInstance(trackerAddress, trackerPort);
 						if (element != null) {
 							hostname = jTextField1.getText();
 							TrackerClient tr = null;
@@ -582,7 +580,7 @@ public class LoginWindow extends javax.swing.JFrame {
 		}		
 	}
 	
-	private trackerInstance getTrackerInstance(String TrackerAddress, int TrackerPort) {
+	private TrackerEntry getTrackerInstance(String TrackerAddress, int TrackerPort) {
 		if (App.trakerKeyRingTable.checkIfExisting(TrackerAddress, TrackerPort)) {
 			try {
 				return App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
@@ -599,7 +597,7 @@ public class LoginWindow extends javax.swing.JFrame {
 		writeInfo("Getting recomended BlueNode from tracker " + TrackerAddress + ":" + TrackerPort + " ...");
 
 		hostname = jTextField1.getText();
-		trackerInstance element = getTrackerInstance(TrackerAddress, TrackerPort);
+		TrackerEntry element = getTrackerInstance(TrackerAddress, TrackerPort);
 		if (element != null) {
 			try {
 				TrackerClient tr = new TrackerClient(element, hostname);
