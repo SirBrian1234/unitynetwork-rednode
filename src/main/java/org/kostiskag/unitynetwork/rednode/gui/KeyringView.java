@@ -1,28 +1,26 @@
 package org.kostiskag.unitynetwork.rednode.gui;
 
+import java.net.UnknownHostException;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.ActionEvent;
+import java.awt.Font;
+import java.awt.Color;
+
+import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import org.kostiskag.unitynetwork.common.address.PhysicalAddress;
-import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
+
 import org.kostiskag.unitynetwork.rednode.App;
 
-import javax.swing.JLabel;
-import javax.swing.JButton;
 
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
-import java.awt.Color;
-import java.io.IOException;
-import java.net.UnknownHostException;
-
-public class KeyringView {
+final class KeyringView {
 
 	private JFrame frmNetworkKeyring;
 	private JTable table;

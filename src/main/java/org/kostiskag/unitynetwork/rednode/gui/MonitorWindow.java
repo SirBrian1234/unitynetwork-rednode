@@ -1,41 +1,40 @@
 package org.kostiskag.unitynetwork.rednode.gui;
 
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.kostiskag.unitynetwork.rednode.App;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JCheckBox;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import javax.swing.JPanel;
+
 
 /**
  *
  * @author Konstantinos Kagiampakis
  */
-public class MonitorWindow extends javax.swing.JFrame {
+final class MonitorWindow extends JFrame {
 
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 9169713706944195555L;
-	private int commandCounter = 0;
-	private int upConCounter = 0;
-    private int downConCounter = 0;
-	private int upCounter = 0;
-    private int downCounter = 0;
-    public String command;
-    public boolean loggedin = false;
+
+	private int commandCounter;
+	private int upConCounter;
+    private int downConCounter;
+	private int upCounter;
+    private int downCounter;
     private boolean autoScrollDownCommands;
     private boolean autoScrollDownSocketSend;
     private boolean autoScrollDownSocketReceive;
     private boolean autoScrollDownIntRead;
     private boolean autoScrollDownIntWrite;
+
+    //todo private
+    public boolean loggedin = false;
+    public String command;
 
     public MonitorWindow() {
         System.out.println("@Started MainWindow at " + Thread.currentThread().getName());
@@ -655,63 +654,6 @@ public class MonitorWindow extends javax.swing.JFrame {
         }
     }
 
-    private javax.swing.JPanel commandw;
-    private javax.swing.JButton btnExit;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea4;
-    private javax.swing.JTextArea jTextArea5;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
-    private javax.swing.JTextField jTextField13;
-    private javax.swing.JTextField jTextField14;
-    private javax.swing.JTextField jTextField15;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
-    private JCheckBox chckbxKeepScrolledDown;
-    private JCheckBox checkBox;
-    private JCheckBox checkBox_1;
-    private JPanel panel_1;
-    private JPanel panel_2;
-    private JPanel panel_3;
-    private JCheckBox checkBox_2;
-    private JCheckBox checkBox_3;
-    
     public void setLogedOut() {       
     	btnExit.setEnabled(false);
         jButton2.setEnabled(false);
@@ -881,5 +823,69 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextField15.setText("");
         jTextField13.setText("");
         jTextField14.setText("");
-    }      
+    }
+
+    private JPanel commandw;
+    private JPanel jPanel1;
+    private JPanel jPanel2;
+    private JPanel jPanel5;
+    private JPanel jPanel6;
+    private JPanel jPanel7;
+    private JPanel jPanel8;
+    private JPanel panel_2;
+    private JPanel panel_3;
+    private JPanel panel_1;
+
+    private JButton btnExit;
+    private JButton jButton10;
+    private JButton jButton11;
+    private JButton jButton14;
+    private JButton jButton15;
+    private JButton jButton2;
+    private JButton jButton3;
+    private JButton jButton4;
+    private JButton jButton5;
+    private JButton jButton6;
+    private JButton jButton7;
+    private JButton jButton8;
+    private JButton jButton9;
+
+    private JLabel jLabel1;
+    private JLabel jLabel10;
+    private JLabel jLabel11;
+    private JLabel jLabel12;
+    private JLabel jLabel13;
+    private JLabel jLabel14;
+    private JLabel jLabel15;
+    private JLabel jLabel16;
+    private JLabel jLabel2;
+    private JLabel jLabel9;
+
+    private JScrollPane jScrollPane1;
+    private JScrollPane jScrollPane2;
+    private JScrollPane jScrollPane3;
+    private JScrollPane jScrollPane4;
+    private JScrollPane jScrollPane5;
+
+    private JTextArea jTextArea1;
+    private JTextArea jTextArea2;
+    private JTextArea jTextArea3;
+    private JTextArea jTextArea4;
+    private JTextArea jTextArea5;
+
+    private JTextField jTextField10;
+    private JTextField jTextField11;
+    private JTextField jTextField12;
+    private JTextField jTextField13;
+    private JTextField jTextField14;
+    private JTextField jTextField15;
+    private JTextField jTextField3;
+    private JTextField jTextField4;
+
+    private JCheckBox chckbxKeepScrolledDown;
+    private JCheckBox checkBox;
+    private JCheckBox checkBox_1;
+    private JCheckBox checkBox_2;
+    private JCheckBox checkBox_3;
+
 }

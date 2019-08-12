@@ -1,31 +1,28 @@
 package org.kostiskag.unitynetwork.rednode.gui;
 
-import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.net.UnknownHostException;
 
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableModel;
 
-import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.App;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JFrame;
 
 /**
  *
  * @author Konstantinos Kagiampakis
  */
-public class AdvancedWindow extends javax.swing.JFrame {
+final class AdvancedWindow extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 8836862621884801942L;
 	private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

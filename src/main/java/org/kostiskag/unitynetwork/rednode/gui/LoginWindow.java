@@ -1,15 +1,15 @@
 package org.kostiskag.unitynetwork.rednode.gui;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
@@ -17,17 +17,19 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.kostiskag.unitynetwork.common.address.PhysicalAddress;
 import org.kostiskag.unitynetwork.common.utilities.HashUtilities;
-import org.kostiskag.unitynetwork.rednode.App;
+
 import org.kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
 import org.kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
 import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.App;
+
 
 /**
  *
  * @author Konstantinos Kagiampakis
  */
-public class LoginWindow extends JFrame {
+final class LoginWindow extends JFrame {
 
 	private static final long serialVersionUID = -6012084060013753191L;
 	// max sizes
