@@ -17,7 +17,7 @@ import org.kostiskag.unitynetwork.rednode.App;
  *
  * @author Konstantinos Kagiampakis
  */
-final class MonitorWindow extends JFrame {
+public final class MonitorWindow extends JFrame {
 
 	private static final long serialVersionUID = 9169713706944195555L;
 

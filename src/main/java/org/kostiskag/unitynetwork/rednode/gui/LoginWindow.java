@@ -29,7 +29,7 @@ import org.kostiskag.unitynetwork.rednode.App;
  *
  * @author Konstantinos Kagiampakis
  */
-final class LoginWindow extends JFrame {
+public final class LoginWindow extends JFrame {
 
 	private static final long serialVersionUID = -6012084060013753191L;
 	// max sizes
