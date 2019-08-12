@@ -1,8 +1,10 @@
 package org.kostiskag.unitynetwork.rednode.routing.networkinterface;
 
+import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.kostiskag.unitynetwork.common.routing.QueueManager;
+import org.kostiskag.unitynetwork.common.service.SimpleUnstoppedCyclicService;
 
 import org.p2pvpn.tuntap.TunTap;
 
@@ -13,12 +15,15 @@ import org.kostiskag.unitynetwork.rednode.App;
  *
  * @author Konstantinos Kagiampakis
  */
-public class InterfaceWrite extends Thread {
+public class InterfaceWrite extends SimpleUnstoppedCyclicService {
 
     private final String pre = "^InterfaceWrite ";
     private final TunTap tuntap;
     private final QueueManager writeQueue;
+
     private AtomicBoolean kill = new AtomicBoolean(false);
+    private int numberOfWrittenFrames;
+
 
     public InterfaceWrite(TunTap tuntap, QueueManager writeQueue) {
         this.tuntap = tuntap;
@@ -26,30 +31,28 @@ public class InterfaceWrite extends Thread {
     }
 
     @Override
-    public void run() {
+    protected void preActions() {
         System.out.println("@Interface write started at " + Thread.currentThread().getName());
+    }
 
-        int i = 0;
-        byte[] data;
-        while (!kill.get()) {
-            try {
-                data = writeQueue.poll();
-            } catch (java.lang.NullPointerException ex1) {
-                continue;
-            } catch (java.util.NoSuchElementException ex) {
-                continue;
-            }
-            
-            App.login.monitor.writeToIntWrite(pre + "WRITTING TO MEDIUM");
-            tuntap.write(data, data.length);
-            App.login.monitor.updateIntWriteBufferNumber(writeQueue.getlen());
-            App.login.monitor.updateIntWriteNumber(i);
-            i++;
-        }
+    @Override
+    protected void postActions() {
         App.login.monitor.writeToIntWrite(pre+"ended");
     }
 
-    public void kill() {
-        kill.set(true);
+    @Override
+    protected void cyclicActions() {
+        byte[] data;
+        try {
+            data = writeQueue.poll();
+        } catch (NullPointerException | NoSuchElementException ex) {
+            return;
+        }
+
+        App.login.monitor.writeToIntWrite(pre + "WRITTING TO MEDIUM");
+        tuntap.write(data, data.length);
+        App.login.monitor.updateIntWriteBufferNumber(writeQueue.getlen());
+        App.login.monitor.updateIntWriteNumber(++numberOfWrittenFrames);
     }
+
 }

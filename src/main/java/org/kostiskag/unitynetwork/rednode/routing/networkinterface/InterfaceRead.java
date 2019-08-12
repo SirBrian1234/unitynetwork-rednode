@@ -1,8 +1,9 @@
 package org.kostiskag.unitynetwork.rednode.routing.networkinterface;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Arrays;
 
 import org.kostiskag.unitynetwork.common.routing.QueueManager;
+import org.kostiskag.unitynetwork.common.service.SimpleUnstoppedCyclicService;
 
 import org.p2pvpn.tuntap.TunTap;
 
@@ -13,12 +14,16 @@ import org.kostiskag.unitynetwork.rednode.App;
  *
  * @author Konstantinos Kagiampakis
  */
-public class InterfaceRead extends Thread {
+public class InterfaceRead extends SimpleUnstoppedCyclicService {
+
+    private static final int MIN_ALLOWED_FRAME_LENGTH = 14;
 
     private final String pre = "^InterfaceRead ";
     private final TunTap tuntap;
     private final QueueManager readQueue;
-    private AtomicBoolean kill = new AtomicBoolean(false);
+
+    private int numberOfReadFrames;
+    private byte[] buffer = new byte[2048];
     
     public InterfaceRead(TunTap tuntap, QueueManager readQueue) {
        this.tuntap = tuntap;
@@ -26,27 +31,23 @@ public class InterfaceRead extends Thread {
     }
 
     @Override
-    public void run() {
-        System.out.println("@Interface read started at "+Thread.currentThread().getName());                   
-        
-        byte[] buffer = new byte[2048];		    
-        int i=0;
-        while(!kill.get()){
-            App.login.monitor.writeToIntRead(pre+"READING");
-            int len = tuntap.read(buffer);
-            App.login.monitor.updateIntReadBufferNumber(readQueue.getlen());
-            if (len > 14) {
-                byte[] frame = new byte[len];
-                System.arraycopy(buffer, 0, frame, 0, len);                
-                readQueue.offer(frame);                
-                App.login.monitor.updateIntReadNumber(i);                 
-                i++;
-            }
-        }       
+    protected void preActions() {
+        System.out.println("@Interface read started at "+Thread.currentThread().getName());
+    }
+
+    @Override
+    protected void postActions() {
         App.login.monitor.writeToIntRead(pre+"ended");
     }
-    
-    public void kill(){
-        kill.set(true);                        
+
+    @Override
+    protected void cyclicActions() {
+        int len = tuntap.read(buffer);
+        App.login.monitor.updateIntReadBufferNumber(readQueue.getlen());
+        if (len > InterfaceRead.MIN_ALLOWED_FRAME_LENGTH) {
+            byte[] frame = Arrays.copyOf(buffer, len);
+            readQueue.offer(frame);
+            App.login.monitor.updateIntReadNumber(++numberOfReadFrames);
+        }
     }
 }

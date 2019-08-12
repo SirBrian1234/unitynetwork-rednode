@@ -824,7 +824,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea4.setText("");
     }
     
-    public void updateIntReadNumber(int num) {
+    public synchronized void updateIntReadNumber(int num) {
         jTextField11.setText(""+num);
     }
     
@@ -832,7 +832,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextField11.setText("");
     }
     
-    public void updateIntReadBufferNumber(int num) {
+    public synchronized void updateIntReadBufferNumber(int num) {
         jTextField13.setText(""+num);
     }
     
@@ -840,7 +840,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextField13.setText("");
     }
     
-    public void writeToIntWrite(String info) {
+    public synchronized void writeToIntWrite(String info) {
         jTextArea5.append(info + "\n");
         upCounter++;
         if (upCounter > 600) {
@@ -856,7 +856,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextArea5.setText("");
     }
     
-    public void updateIntWriteNumber(int num) {
+    public synchronized void updateIntWriteNumber(int num) {
         jTextField12.setText(num+"");
     }
     
@@ -864,7 +864,7 @@ public class MonitorWindow extends javax.swing.JFrame {
         jTextField12.setText("");
     }
     
-    public void updateIntWriteBufferNumber(int num) {
+    public synchronized void updateIntWriteBufferNumber(int num) {
         jTextField14.setText(num+"");
     }
     
