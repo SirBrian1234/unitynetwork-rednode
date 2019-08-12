@@ -19,7 +19,7 @@ public class InterfaceWrite extends SimpleUnstoppedCyclicService {
 
     private final String pre = "^InterfaceWrite ";
     private final TunTap tuntap;
-    private final QueueManager writeQueue;
+    private final QueueManager<byte[]> writeQueue;
 
     private AtomicBoolean kill = new AtomicBoolean(false);
     private int numberOfWrittenFrames;

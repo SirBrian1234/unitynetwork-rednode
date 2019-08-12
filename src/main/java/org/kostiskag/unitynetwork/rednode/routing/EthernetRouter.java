@@ -21,8 +21,8 @@ import org.kostiskag.unitynetwork.rednode.App;
 public class EthernetRouter extends Thread {
 
     private final String pre = "^EthernetRouter ";
-    private final QueueManager interfaceReadQueue;
-    private final QueueManager sendQueue;
+    private final QueueManager<byte[]> interfaceReadQueue;
+    private final QueueManager<byte[]> sendQueue;
     private final UploadManager trafficMan;
     private final AtomicBoolean kill = new AtomicBoolean(false);
     

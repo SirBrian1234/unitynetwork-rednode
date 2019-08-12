@@ -21,8 +21,8 @@ import org.kostiskag.unitynetwork.rednode.App;
 public class VirtualRouter extends Thread {
 
 	private final String pre = "^VirtualRouter ";
-	private final QueueManager interfaceWriteQueue;
-	private final QueueManager receiveQueue;
+	private final QueueManager<byte[]> interfaceWriteQueue;
+	private final QueueManager<byte[]> receiveQueue;
 	private final AtomicBoolean kill = new AtomicBoolean(false);
     
     public VirtualRouter(QueueManager interfaceWriteQueue, QueueManager receiveQueue) {

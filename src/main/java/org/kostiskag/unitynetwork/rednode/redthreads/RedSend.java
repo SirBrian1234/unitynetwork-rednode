@@ -26,7 +26,7 @@ public class RedSend extends Thread {
     
     private final InetAddress address;
     private final int port;
-    private final QueueManager sendQueue;
+    private final QueueManager<byte[]> sendQueue;
     private DatagramSocket socket;
     private AtomicBoolean kill = new AtomicBoolean(false);
 

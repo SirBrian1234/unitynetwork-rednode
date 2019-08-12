@@ -20,7 +20,7 @@ public class InterfaceRead extends SimpleUnstoppedCyclicService {
 
     private final String pre = "^InterfaceRead ";
     private final TunTap tuntap;
-    private final QueueManager readQueue;
+    private final QueueManager<byte[]> readQueue;
 
     private int numberOfReadFrames;
     private byte[] buffer = new byte[2048];
