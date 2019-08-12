@@ -1,7 +1,7 @@
-package org.kostiskag.unitynetwork.rednode.Routing.networkInterface;
+package org.kostiskag.unitynetwork.rednode.routing.networkinterface;
 
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.Routing.QueueManager;
+import org.kostiskag.unitynetwork.rednode.routing.QueueManager;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

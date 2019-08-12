@@ -17,7 +17,7 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-package org.kostiskag.unitynetwork.rednode.Routing.data;
+package org.kostiskag.unitynetwork.rednode.routing.data;
 
 import java.util.StringTokenizer;
 

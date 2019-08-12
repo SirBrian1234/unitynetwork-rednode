@@ -6,7 +6,7 @@ import javax.swing.JTextField;
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;

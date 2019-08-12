@@ -1,4 +1,4 @@
-package org.kostiskag.unitynetwork.rednode.redThreads;
+package org.kostiskag.unitynetwork.rednode.redthreads;
 
 import java.io.IOException;
 import java.net.*;
@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
 import org.kostiskag.unitynetwork.common.routing.packet.UnityPacket;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.Routing.QueueManager;
+import org.kostiskag.unitynetwork.rednode.routing.QueueManager;
 
 /**
  * This class's thread listens for incoming traffic and writes them to the received Queue.

@@ -25,7 +25,7 @@ import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
 import org.kostiskag.unitynetwork.rednode.connection.ConnectionManager;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
 
 /**
  *

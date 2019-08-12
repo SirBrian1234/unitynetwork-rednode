@@ -1,4 +1,4 @@
-package org.kostiskag.unitynetwork.rednode.redThreads;
+package org.kostiskag.unitynetwork.rednode.redthreads;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

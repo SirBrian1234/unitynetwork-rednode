@@ -1,4 +1,4 @@
-package org.kostiskag.unitynetwork.rednode.tables;
+package org.kostiskag.unitynetwork.rednode.table;
 
 import java.io.Serializable;
 import java.util.Iterator;

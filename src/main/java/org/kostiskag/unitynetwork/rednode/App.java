@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.gui.LoginWindow;
-import org.kostiskag.unitynetwork.rednode.tables.TrackerTable;
+import org.kostiskag.unitynetwork.rednode.table.TrackerTable;
 
 /**
  *

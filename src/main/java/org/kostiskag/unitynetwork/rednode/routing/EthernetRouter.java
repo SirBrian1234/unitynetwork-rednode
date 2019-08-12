@@ -1,10 +1,10 @@
-package org.kostiskag.unitynetwork.rednode.Routing;
+package org.kostiskag.unitynetwork.rednode.routing;
 
 import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.Routing.data.DHCPrequest;
-import org.kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
-import org.kostiskag.unitynetwork.rednode.Routing.packets.EthernetFrame;
+import org.kostiskag.unitynetwork.rednode.routing.data.DHCPrequest;
+import org.kostiskag.unitynetwork.rednode.routing.data.MacAddress;
+import org.kostiskag.unitynetwork.rednode.routing.packet.EthernetFrame;
 
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;

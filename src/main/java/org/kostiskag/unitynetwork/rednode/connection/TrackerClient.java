@@ -14,7 +14,7 @@ import javax.crypto.SecretKey;
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.common.utilities.SocketUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
 
 /**
  * 

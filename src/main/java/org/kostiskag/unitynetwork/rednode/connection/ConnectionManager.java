@@ -8,20 +8,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kostiskag.unitynetwork.common.routing.packet.UnityPacket;
-import org.kostiskag.unitynetwork.rednode.redThreads.AuthClient;
-import org.kostiskag.unitynetwork.rednode.redThreads.RedReceive;
-import org.kostiskag.unitynetwork.rednode.redThreads.RedSend;
+import org.kostiskag.unitynetwork.rednode.redthreads.AuthClient;
+import org.kostiskag.unitynetwork.rednode.redthreads.RedReceive;
+import org.kostiskag.unitynetwork.rednode.redthreads.RedSend;
 import org.p2pvpn.tuntap.TunTap;
 
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.Routing.EthernetRouter;
-import org.kostiskag.unitynetwork.rednode.Routing.QueueManager;
-import org.kostiskag.unitynetwork.rednode.Routing.UploadManager;
-import org.kostiskag.unitynetwork.rednode.Routing.VirtualRouter;
-import org.kostiskag.unitynetwork.rednode.Routing.data.MacAddress;
-import org.kostiskag.unitynetwork.rednode.Routing.data.ReverseARPTable;
-import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceRead;
-import org.kostiskag.unitynetwork.rednode.Routing.networkInterface.InterfaceWrite;
+import org.kostiskag.unitynetwork.rednode.routing.EthernetRouter;
+import org.kostiskag.unitynetwork.rednode.routing.QueueManager;
+import org.kostiskag.unitynetwork.rednode.routing.UploadManager;
+import org.kostiskag.unitynetwork.rednode.routing.VirtualRouter;
+import org.kostiskag.unitynetwork.rednode.routing.data.MacAddress;
+import org.kostiskag.unitynetwork.rednode.routing.data.ReverseARPTable;
+import org.kostiskag.unitynetwork.rednode.routing.networkinterface.InterfaceRead;
+import org.kostiskag.unitynetwork.rednode.routing.networkinterface.InterfaceWrite;
 import org.kostiskag.unitynetwork.rednode.DetectOS;
 
 /**

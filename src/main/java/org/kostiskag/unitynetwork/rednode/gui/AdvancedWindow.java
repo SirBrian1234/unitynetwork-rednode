@@ -10,7 +10,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.TrackerClient;
-import org.kostiskag.unitynetwork.rednode.tables.TrackerEntry;
+import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
