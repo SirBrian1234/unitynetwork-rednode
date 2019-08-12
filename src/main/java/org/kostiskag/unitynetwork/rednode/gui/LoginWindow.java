@@ -11,13 +11,8 @@ import java.security.GeneralSecurityException;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import org.kostiskag.unitynetwork.common.address.PhysicalAddress;
@@ -32,11 +27,8 @@ import org.kostiskag.unitynetwork.rednode.table.TrackerEntry;
  *
  * @author Konstantinos Kagiampakis
  */
-public class LoginWindow extends javax.swing.JFrame {
+public class LoginWindow extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6012084060013753191L;
 	// max sizes
 	int max_str_size = 128;
@@ -70,6 +62,7 @@ public class LoginWindow extends javax.swing.JFrame {
 		monitor = new MonitorWindow();
 		jScrollPane1.setVisible(false);
 		jTextArea1.setVisible(false);
+		super.setVisible(true);
 	}
 
 	private void initComponents() {

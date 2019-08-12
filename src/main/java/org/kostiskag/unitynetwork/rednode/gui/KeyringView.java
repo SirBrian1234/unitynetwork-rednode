@@ -51,11 +51,7 @@ public class KeyringView {
 		frmNetworkKeyring.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent we) {
-				try {
-					CryptoUtilities.objectToFile(App.trakerKeyRingTable, new File(App.unityKeyringFileName));
-				} catch (IOException e) {
-					System.out.println("Could not store keyring file.");
-				}
+            	App.storeKeyringObjectToFile();
 				frmNetworkKeyring.dispose();
             }
         });

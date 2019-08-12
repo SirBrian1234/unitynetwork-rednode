@@ -114,6 +114,14 @@ public class App {
 		}
 
 		login = new LoginWindow();
-		login.setVisible(true);
+
+	}
+
+	public static void storeKeyringObjectToFile() {
+		try {
+			CryptoUtilities.objectToFile(App.trakerKeyRingTable, FileNames.UNITY_KEYRING_FILE_NAME.getPath());
+		} catch (IOException e) {
+			System.out.println("Could not store keyring file.");
+		}
 	}
 }
