@@ -1,17 +1,19 @@
 package org.kostiskag.unitynetwork.rednode.routing.networkinterface;
 
-import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.routing.QueueManager;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.kostiskag.unitynetwork.common.routing.QueueManager;
+
 import org.p2pvpn.tuntap.TunTap;
+
+import org.kostiskag.unitynetwork.rednode.App;
+
 
 /**
  *
  * @author Konstantinos Kagiampakis
  */
-public class InterfaceRead extends Thread{
+public class InterfaceRead extends Thread {
 
     private final String pre = "^InterfaceRead ";
     private final TunTap tuntap;

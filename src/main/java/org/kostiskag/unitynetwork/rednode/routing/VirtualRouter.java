@@ -1,14 +1,17 @@
 package org.kostiskag.unitynetwork.rednode.routing;
 
-import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.net.InetAddress;
 
+import org.kostiskag.unitynetwork.common.routing.QueueManager;
 import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
-import org.kostiskag.unitynetwork.rednode.App;
+
 import org.kostiskag.unitynetwork.rednode.routing.data.ARPGenerate;
 import org.kostiskag.unitynetwork.rednode.routing.data.MacAddress;
 import org.kostiskag.unitynetwork.rednode.routing.data.ReverseARPInstance;
 import org.kostiskag.unitynetwork.rednode.routing.packet.EthernetFrame;
+import org.kostiskag.unitynetwork.rednode.App;
+
 
 /**
  * Gets packets from the incoming queue and writes them to the medium.

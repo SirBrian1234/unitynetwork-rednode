@@ -1,18 +1,20 @@
 package org.kostiskag.unitynetwork.rednode.redthreads;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.kostiskag.unitynetwork.common.routing.QueueManager;
 import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
 import org.kostiskag.unitynetwork.common.routing.packet.UnityPacket;
+
 import org.kostiskag.unitynetwork.rednode.App;
-import org.kostiskag.unitynetwork.rednode.routing.QueueManager;
+
 
 /**
  *

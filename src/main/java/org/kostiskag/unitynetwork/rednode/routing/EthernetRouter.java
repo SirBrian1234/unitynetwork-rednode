@@ -1,13 +1,16 @@
 package org.kostiskag.unitynetwork.rednode.routing;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.net.InetAddress;
+
+import org.kostiskag.unitynetwork.common.routing.QueueManager;
 import org.kostiskag.unitynetwork.common.routing.packet.IPv4Packet;
-import org.kostiskag.unitynetwork.rednode.App;
+
 import org.kostiskag.unitynetwork.rednode.routing.data.DHCPrequest;
 import org.kostiskag.unitynetwork.rednode.routing.data.MacAddress;
 import org.kostiskag.unitynetwork.rednode.routing.packet.EthernetFrame;
+import org.kostiskag.unitynetwork.rednode.App;
 
-import java.net.InetAddress;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This class is responsible to examine all the received frames from read and send
