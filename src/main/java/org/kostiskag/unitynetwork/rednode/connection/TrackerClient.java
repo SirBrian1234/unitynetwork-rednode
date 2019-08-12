@@ -40,7 +40,7 @@ public class TrackerClient {
 	public TrackerClient(TrackerEntry tracker, String hostname) throws UnknownHostException {
 		this.hostname = hostname;
 		this.tracker = tracker;
-		this.trackerInetAddress = SocketUtilities.getAddress(tracker.getAddress());
+		this.trackerInetAddress =  tracker.getAddress().asInet();
 		this.trackerPort = tracker.getPort();
 		try {
 			connect();
@@ -240,7 +240,7 @@ public class TrackerClient {
      * to use.
      */
 	public static void getPubKey(TrackerEntry element) throws UnknownHostException, IOException {
-		InetAddress addr = SocketUtilities.getAddress(element.getAddress());		
+		InetAddress addr = element.getAddress().asInet();
 		Socket socket = SocketUtilities.absoluteConnect(addr, element.getPort());
 		if (socket == null) {
 			return;
@@ -283,7 +283,7 @@ public class TrackerClient {
 		int port = tr.getPort();
 		Socket socket = null;
 		try {
-			InetAddress addr = SocketUtilities.getAddress(tr.getAddress());
+			InetAddress addr = tr.getAddress().asInet();
 			socket = SocketUtilities.absoluteConnect(addr, port);
 			
 			DataInputStream reader = SocketUtilities.makeDataReader(socket);

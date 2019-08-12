@@ -20,6 +20,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import org.kostiskag.unitynetwork.common.address.PhysicalAddress;
 import org.kostiskag.unitynetwork.common.utilities.HashUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 import org.kostiskag.unitynetwork.rednode.connection.BlueNodeClient;
@@ -581,14 +582,18 @@ public class LoginWindow extends javax.swing.JFrame {
 	}
 	
 	private TrackerEntry getTrackerInstance(String TrackerAddress, int TrackerPort) {
-		if (App.trakerKeyRingTable.checkIfExisting(TrackerAddress, TrackerPort)) {
-			try {
-				return App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if (App.trakerKeyRingTable.checkIfExisting(PhysicalAddress.valueOf(TrackerAddress), TrackerPort)) {
+				try {
+					return App.trakerKeyRingTable.getEntry(TrackerAddress, TrackerPort);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				writeInfo("The given tracker does not exist in the network keyring.\nPlease register the tracker in the keyring first...");
 			}
-		} else {
-			writeInfo("The given tracker does not exist in the network keyring.\nPlease register the tracker in the keyring first...");
+		} catch (UnknownHostException e) {
+
 		}
 		return null;
 	}

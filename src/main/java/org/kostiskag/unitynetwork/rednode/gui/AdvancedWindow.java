@@ -1,5 +1,6 @@
 package org.kostiskag.unitynetwork.rednode.gui;
 
+import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -288,29 +289,33 @@ public class AdvancedWindow extends javax.swing.JFrame {
 	        } else {
 	        	port = Integer.parseInt(jTextField2.getText());
 	        }
-	
-	        if (App.trakerKeyRingTable.checkIfExisting(addr, port)) {
-	        	TrackerEntry tr;
-				try {
-					tr = App.trakerKeyRingTable.getEntry(addr, port);
-					TrackerClient cl = new TrackerClient(tr, hostname);
-					if (cl.isConnected()) {
-			        	LinkedList<String[]> list = cl.getBNs();
-				        
-				        Iterator<String[]> it = list.listIterator();
-				        while(it.hasNext()) {
-				        	bluenodes.addRow(it.next());
-				        }
-				        jTable1.setModel(bluenodes);
-				    } else {
-						lblNewLabel.setText("Could not connect to tracker. Check if your given hosname is the correct one.");
+
+	        try {
+				if (App.trakerKeyRingTable.checkIfExisting(addr, port)) {
+					TrackerEntry tr;
+					try {
+						tr = App.trakerKeyRingTable.getEntry(addr, port);
+						TrackerClient cl = new TrackerClient(tr, hostname);
+						if (cl.isConnected()) {
+							LinkedList<String[]> list = cl.getBNs();
+
+							Iterator<String[]> it = list.listIterator();
+							while (it.hasNext()) {
+								bluenodes.addRow(it.next());
+							}
+							jTable1.setModel(bluenodes);
+						} else {
+							lblNewLabel.setText("Could not connect to tracker. Check if your given hosname is the correct one.");
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
+				} else {
+					lblNewLabel.setText("The given tracker credentials were not registered with the keyring.");
 				}
-	        } else {
-	        	lblNewLabel.setText("The given tracker credentials were not registered with the keyring.");
-	        }	        
+			} catch (UnknownHostException e) {
+				System.out.println(e.getLocalizedMessage());
+			}
         }
     }
 

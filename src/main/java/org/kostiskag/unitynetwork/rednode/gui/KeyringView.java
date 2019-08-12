@@ -5,6 +5,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import org.kostiskag.unitynetwork.common.address.PhysicalAddress;
 import org.kostiskag.unitynetwork.common.utilities.CryptoUtilities;
 import org.kostiskag.unitynetwork.rednode.App;
 
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Font;
 import java.awt.Color;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 public class KeyringView {
 
@@ -123,63 +125,72 @@ public class KeyringView {
 	private synchronized void editSelected() {
 		int selected = table.getSelectedRow();
 		if (selected > -1) {
-			String address = (String) table.getValueAt(selected, 0);
-			if (address.isEmpty()) {
-				lblNewLabel_1.setText("Please provide an address");
-				return;
-			}
-			
-			int port;
-			if ( ((String) table.getValueAt(selected, 1)).isEmpty()) {
-				port = 8000;
-			} else {
-				try {
-				    port = Integer.parseInt((String) table.getValueAt(selected, 1));
-				} catch (NumberFormatException ex) {
-					lblNewLabel_1.setText("Please Provide a proper port number from 1 to 65535 or leave it empty for the default port.");
+			try {
+				var strAddr = (String) table.getValueAt(selected, 0);
+				if (strAddr.isEmpty()) {
+					lblNewLabel_1.setText("Please provide an address");
 					return;
 				}
-				if (port<=0 || port > 65535) {
-					lblNewLabel_1.setText("Please Provide a proper port number from 1 to 65535 or leave it empty for the default port.");
-					return;
+				PhysicalAddress address = PhysicalAddress.valueOf(strAddr);
+
+				int port;
+				if (((String) table.getValueAt(selected, 1)).isEmpty()) {
+					port = 8000;
+				} else {
+					try {
+						port = Integer.parseInt((String) table.getValueAt(selected, 1));
+					} catch (NumberFormatException ex) {
+						lblNewLabel_1.setText("Please Provide a proper port number from 1 to 65535 or leave it empty for the default port.");
+						return;
+					}
+					if (port <= 0 || port > 65535) {
+						lblNewLabel_1.setText("Please Provide a proper port number from 1 to 65535 or leave it empty for the default port.");
+						return;
+					}
 				}
+
+				if (!App.trakerKeyRingTable.checkIfExisting(address, port)) {
+					//there is no entry in the table, init please
+					try {
+						App.trakerKeyRingTable.addEntry(address, port);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				//opens a new window to edit the given entry
+				new TrackerKeyView(address.asString(), port, hostname).setVisible();
+			} catch (UnknownHostException e) {
+				System.out.println(e.getLocalizedMessage());
 			}
-			
-			if (!App.trakerKeyRingTable.checkIfExisting(address, port)) {
-				//there is no entry in the table, init please
-				try {
-					App.trakerKeyRingTable.addEntry(address, port);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} 
-			//opens a new window to edit the given entry
-			new TrackerKeyView(address, port, hostname).setVisible();
 		}
 	}
 	
 	private synchronized void deleteSelected() {
 		int selected = table.getSelectedRow();
 		if (selected > -1) {
-			String address = (String) table.getValueAt(selected, 0);
-			int port;
 			try {
-			    port = Integer.parseInt((String) table.getValueAt(selected, 1));
-			} catch (NumberFormatException ex) {
-				port = -1;
-			}
-			
-			if (App.trakerKeyRingTable.checkIfExisting(address, port)) {
-				//delete the table entry
+				var address = PhysicalAddress.valueOf((String) table.getValueAt(selected, 0));
+				int port;
 				try {
-					App.trakerKeyRingTable.removeEntry(address, port);
-				} catch (Exception e) {
-					e.printStackTrace();
+					port = Integer.parseInt((String) table.getValueAt(selected, 1));
+				} catch (NumberFormatException ex) {
+					port = -1;
 				}
+
+				if (App.trakerKeyRingTable.checkIfExisting(address, port)) {
+					//delete the table entry
+					try {
+						App.trakerKeyRingTable.removeEntry(address, port);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				//delete the row
+				model.removeRow(selected);
+				table.setModel(model);
+			} catch (UnknownHostException e) {
+				System.out.println("delete failed "+e.getLocalizedMessage());
 			}
-			//delete the row
-			model.removeRow(selected);
-			table.setModel(model);
 		}
 	}
 	

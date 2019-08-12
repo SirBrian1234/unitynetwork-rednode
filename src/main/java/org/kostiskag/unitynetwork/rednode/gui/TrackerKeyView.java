@@ -65,7 +65,7 @@ public class TrackerKeyView {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		textField = new JTextField(element.getAddress());
+		textField = new JTextField(element.getAddress().asString());
 		textField.setEditable(false);
 		textField.setBounds(114, 44, 180, 20);
 		frame.getContentPane().add(textField);
