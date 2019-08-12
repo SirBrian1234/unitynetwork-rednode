@@ -22,7 +22,7 @@ import org.kostiskag.unitynetwork.rednode.routing.data.MacAddress;
 import org.kostiskag.unitynetwork.rednode.routing.data.ReverseARPTable;
 import org.kostiskag.unitynetwork.rednode.routing.networkinterface.InterfaceRead;
 import org.kostiskag.unitynetwork.rednode.routing.networkinterface.InterfaceWrite;
-import org.kostiskag.unitynetwork.rednode.DetectOS;
+import org.kostiskag.unitynetwork.rednode.OSFamilyType;
 import org.kostiskag.unitynetwork.rednode.App;
 
 
@@ -62,7 +62,7 @@ public class ConnectionManager extends Thread {
     private RedSend send;
     
     //ehternet & routing       
-    private  int osType;
+    private  OSFamilyType.OSType osType;
     private  ReverseARPTable arpTable;
     private  MacAddress myMac;
     private  boolean interfaceSet;
@@ -177,8 +177,8 @@ public class ConnectionManager extends Thread {
      */
     @Override
     public void run() {        
-        osType = new DetectOS().getType();
-        App.login.writeInfo("Running On " + DetectOS.getString());                                                
+        osType = OSFamilyType.getOSFamilyType();
+        App.login.writeInfo("Running On " + osType.toString());
         
         App.login.writeInfo("Starting Connection...");
         App.login.writeInfo("Loging in Blue Node " + blueNodeAddress + ":" + blueNodePort + " ...");
@@ -533,7 +533,7 @@ public class ConnectionManager extends Thread {
 
     private boolean checkDHCP() {
         App.login.writeInfo("Checking DHCP...");
-        if (osType == 2) {
+        if (osType.equals(OSFamilyType.OSType.UNIX)) {
             App.login.writeInfo("QUICK SET YOUR DHCP!!! Open a terminal and type: \n dhclient " + tuntap.getDev()+" to start the interface. You have 30 sec!");
         }
         for (int i = 0; i < 60; i++) {
