@@ -63,10 +63,12 @@ public class VirtualRouter extends Thread {
                 continue;
             }
 
-            String info = pre + "RECEIVED IPv4 Packet";
-            info = info + "Source: " + source.getHostAddress() + " ";
-            info = info + "Dest: " + dest.getHostAddress();
-            info = info + "Len: " + len;
+            String info = String.join("",
+                    pre + "RECEIVED IPv4 Packet",
+                    "Source: " + source.getHostAddress() + " ",
+                    "Dest: " + dest.getHostAddress(),
+                    "Len: " + len
+            );
             App.login.monitor.writeToIntWrite(info);
 
             /* the collected ipv4 packet has to be encapsulated 

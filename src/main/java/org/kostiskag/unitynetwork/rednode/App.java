@@ -2,6 +2,8 @@ package org.kostiskag.unitynetwork.rednode;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 
@@ -21,24 +23,35 @@ public class App {
 	public static final int defaultTrackerAuthPort = 8000;
 	public static final int keepAliveTimeSec = 10;
 	public static final String SALT = "=UrBN&RLJ=dBshBX3HFn!S^Au?yjqV8MBx7fMyg5p6U8T^%2kp^X-sk9EQeENgVEj%DP$jNnz&JeF?rU-*meW5yFkmAvYW_=mA+E$F$xwKmw=uSxTdznSTbunBKT*-&!";
-	public static final String redNodeKeysFileName = "public_private.keypair";
-	public static final String unityKeyringFileName = "unity.keyring";
 	public static KeyPair rednodeKeys;
 	public static TrackerTable trakerKeyRingTable;
 	public static LoginWindow login;
-	
 
-	public static void main(String args[]) {
+	private enum FileNames {
+		RED_NODE_KEYS_FILE_NAME("public_private.keypair"),
+		UNITY_KEYRING_FILE_NAME("unity.keyring");
+
+		private Path path;
+
+		FileNames(String name) {
+			this.path = Path.of(name);
+		}
+
+		public Path getPath() {
+			return path;
+		}
+	}
+
+	public static void main(String... args) {
 		System.out.println("@Started main at " + Thread.currentThread().getName());
 
 		// init rsa key pair
-		File keyPairFile = new File(redNodeKeysFileName);
-		if (keyPairFile.exists()) {
+		if (Files.exists(FileNames.RED_NODE_KEYS_FILE_NAME.getPath())) {
 
 			// the rednode has key pair in file
 			System.out.println("Loading RSA key pair from file...");
 			try {
-				rednodeKeys = (KeyPair) CryptoUtilities.fileToObject(keyPairFile);
+				rednodeKeys = CryptoUtilities.fileToObject(FileNames.RED_NODE_KEYS_FILE_NAME.getPath());
 			} catch (GeneralSecurityException | IOException e) {
 				System.out.println("Loading keypair from file");
 				System.exit(1);
@@ -60,7 +73,7 @@ public class App {
 			// and storing
 			System.out.println("Generating key file...");
 			try {
-				CryptoUtilities.objectToFile(rednodeKeys, keyPairFile);
+				CryptoUtilities.objectToFile(rednodeKeys, FileNames.RED_NODE_KEYS_FILE_NAME.getPath());
 			} catch (IOException e) {
 				System.out.println("Error storing keypair to file");
 				System.exit(1);
@@ -70,12 +83,11 @@ public class App {
 		}
 
 		// init tracker keyring
-		File unityKeyringFile = new File(unityKeyringFileName);
-		if (unityKeyringFile.exists()) {
+		if (Files.exists(FileNames.UNITY_KEYRING_FILE_NAME.getPath())) {
 			// the rednode has keyring in file
 			System.out.println("Loading Unity keyring from file...");
 			try {
-				trakerKeyRingTable = (TrackerTable) CryptoUtilities.fileToObject(unityKeyringFile);
+				trakerKeyRingTable = CryptoUtilities.fileToObject(FileNames.UNITY_KEYRING_FILE_NAME.getPath());
 			} catch (GeneralSecurityException | IOException e) {
 				System.out.println("Error reading keyring from file");
 				System.exit(1);
