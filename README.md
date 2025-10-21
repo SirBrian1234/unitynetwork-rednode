@@ -38,21 +38,13 @@ The rednode is the host-client application responsible to transfer a host to the
 ## Option A - Build from source code
 In order to build this project, Java JDK 1.7 or greater and Apache Maven have to be installed on your system.
 ```
-git clone https://github.com/kostiskag/unitynetwork-rednode.git
+git clone https://github.com/SirBrian1234/unitynetwork-rednode.git
 cd unitynetwork-rednode
 mvn package
 ```
 
 ## Option B - Download and use a pre-built version
-You can download, unzip and use a pre-built version of Red Node from this url:
-https://drive.google.com/file/d/0BzPrI7NjFz2SR1NROV9JNGYwSUE/view?usp=sharing
-
-In order to establish data integrity, you should verify the zip file's signature to be:
-
-| Algorithm | Hash Signature |
-| --- | --- |
-| MD5 | 8a81c8919f5676cc979bd310c24dd6b1 |
-| SHA256 | 53f04c3a7d2f8f215d7bff5d840bf40c490b268ca6c55a33700221ecb9891520 |
+`Currently not available`
 
 ## Requirements
 In order to be able to use the Red Node, your system has to be able to create tun/tap interfaces or to have a tun/tap adapter pre-installed.
